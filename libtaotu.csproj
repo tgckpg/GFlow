@@ -107,14 +107,19 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dialogs\EditProcUrlList.xaml.cs">
+      <DependentUpon>EditProcUrlList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="libtaotu\Controls\ProcManager.cs" />
     <Compile Include="libtaotu\Crawler\ProceduralSpider.cs" />
     <Compile Include="libtaotu\HtmlParser.cs" />
-    <Compile Include="libtaotu\Models\Procedure.cs" />
-    <Compile Include="Pages\ListofProcedures.xaml.cs">
-      <DependentUpon>ListofProcedures.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\ProcedureEdit.xaml.cs">
-      <DependentUpon>ProcedureEdit.xaml</DependentUpon>
+    <Compile Include="libtaotu\Models\Procedure\ProcDownload.cs" />
+    <Compile Include="libtaotu\Models\Procedure\Procedure.cs" />
+    <Compile Include="libtaotu\Models\ProcConvoy.cs" />
+    <Compile Include="libtaotu\Models\Procedure\ProcFind.cs" />
+    <Compile Include="libtaotu\Models\Procedure\ProcUrlList.cs" />
+    <Compile Include="Pages\ProceduresPanel.xaml.cs">
+      <DependentUpon>ProceduresPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\libtaotu.rd.xml" />
@@ -126,13 +131,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Pages\ListofProcedures.xaml">
+    <Page Include="Dialogs\EditProcUrlList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\ProcedureEdit.xaml">
+    <Page Include="Pages\ProceduresPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Button.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

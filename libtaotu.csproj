@@ -109,7 +109,6 @@
   <ItemGroup>
     <Compile Include="libtaotu\Crawler\ProceduralSpider.cs" />
     <Compile Include="libtaotu\HtmlParser.cs" />
-    <Compile Include="libtaotu\Models\ModelImport.cs" />
     <Compile Include="libtaotu\Models\Procedure.cs" />
     <Compile Include="Pages\ListofProcedures.xaml.cs">
       <DependentUpon>ListofProcedures.xaml</DependentUpon>

@@ -107,9 +107,34 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="libtaotu\Crawler\ProceduralSpider.cs" />
     <Compile Include="libtaotu\HtmlParser.cs" />
+    <Compile Include="libtaotu\Models\ModelImport.cs" />
+    <Compile Include="libtaotu\Models\Procedure.cs" />
+    <Compile Include="Pages\ListofProcedures.xaml.cs">
+      <DependentUpon>ListofProcedures.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ProcedureEdit.xaml.cs">
+      <DependentUpon>ProcedureEdit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\libtaotu.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\libpenguin\Net.Astropenguin\Net.Astropenguin.csproj">
+      <Project>{5a6b4589-8c63-40d5-946f-759a9282a176}</Project>
+      <Name>Net.Astropenguin</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Pages\ListofProcedures.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ProcedureEdit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

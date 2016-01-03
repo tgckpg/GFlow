@@ -13,16 +13,28 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+using Net.Astropenguin.Loaders;
+
 using libtaotu.Models.Procedure;
+using libtaotu.Resources;
 
 namespace libtaotu.Dialogs
 {
     sealed partial class EditProcUrlList : ContentDialog
     {
         private ProcUrlList EditTarget;
+
         private EditProcUrlList()
         {
             InitializeComponent();
+            SetTemplate();
+        }
+
+        private void SetTemplate()
+        {
+            StringResources stx = new StringResources( "Message" );
+            PrimaryButtonText = stx.Str( "OK" );
+
         }
 
         public EditProcUrlList( ProcUrlList procUrlList )
@@ -41,10 +53,6 @@ namespace libtaotu.Dialogs
             }
         }
 
-        private void ContentDialog_PrimaryButtonClick( ContentDialog sender, ContentDialogButtonClickEventArgs args )
-        {
-        }
-
         private void AddUrl( object sender, RoutedEventArgs e )
         {
             TryAddUrl();
@@ -58,6 +66,19 @@ namespace libtaotu.Dialogs
 
             UrlList.ItemsSource = null;
             UrlList.ItemsSource = EditTarget.Urls;
+        }
+
+        private async void PreviewUrl( object sender, RoutedEventArgs e )
+        {
+            Button B = sender as Button;
+            string Url = B.DataContext as string;
+            Frame.Navigate( Shared.SourceView, await EditTarget.DownloadSource( Url ) );
+            FrameContainer.Visibility = Visibility.Visible;
+        }
+
+        private void CloseFrame( object sender, RoutedEventArgs e )
+        {
+            FrameContainer.Visibility = Visibility.Collapsed;
         }
 
         private void TryAddUrl()

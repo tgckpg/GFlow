@@ -104,15 +104,22 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <None Include="libtaotu.pfx" />
     <None Include="project.json" />
+    <PRIResource Include="Strings\zh-TW\Message.resw" />
+    <PRIResource Include="Strings\zh-CN\Message.resw" />
+    <PRIResource Include="Strings\ja\Message.resw" />
+    <PRIResource Include="Strings\en-US\Message.resw" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dialogs\EditProcFind.xaml.cs">
+      <DependentUpon>EditProcFind.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\EditProcUrlList.xaml.cs">
       <DependentUpon>EditProcUrlList.xaml</DependentUpon>
     </Compile>
     <Compile Include="libtaotu\Controls\ProcManager.cs" />
     <Compile Include="libtaotu\Crawler\ProceduralSpider.cs" />
-    <Compile Include="libtaotu\HtmlParser.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcDownload.cs" />
     <Compile Include="libtaotu\Models\Procedure\Procedure.cs" />
     <Compile Include="libtaotu\Models\ProcConvoy.cs" />
@@ -122,6 +129,7 @@
       <DependentUpon>ProceduresPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="libtaotu\Resources\Shared.cs" />
     <EmbeddedResource Include="Properties\libtaotu.rd.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -131,6 +139,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Dialogs\EditProcFind.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\EditProcUrlList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -150,6 +162,12 @@
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>libtaotu.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

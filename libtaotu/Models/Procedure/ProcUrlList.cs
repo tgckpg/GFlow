@@ -1,10 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
+using Windows.Storage.Streams;
+using Windows.UI.Xaml.Controls;
 
+using Net.Astropenguin.Helpers;
+using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
+using Net.Astropenguin.Loaders;
 
 namespace libtaotu.Models.Procedure
 {
@@ -33,7 +40,44 @@ namespace libtaotu.Models.Procedure
 
         public override async Task Edit()
         {
-            await Net.Astropenguin.Helpers.Popups.ShowDialog( new Dialogs.EditProcUrlList( this ) );
+            await Popups.ShowDialog( new Dialogs.EditProcUrlList( this ) );
+        }
+
+        public async Task<IStorageFile> DownloadSource( string url )
+        {
+            TaskCompletionSource<IStorageFile> TCS = new TaskCompletionSource<IStorageFile>();
+            HttpRequest Request = new HttpRequest( new Uri( url ) );
+
+            StorageFile SF = await AppStorage.MkTemp();
+            Request.OnRequestComplete += async ( DRequestCompletedEventArgs DArgs ) =>
+            {
+                try
+                {
+                    IRandomAccessStream IRS = await SF.OpenAsync( FileAccessMode.ReadWrite );
+
+                    try
+                    {
+                        await IRS.WriteAsync( DArgs.ResponseBytes.AsBuffer() );
+                    }
+                    catch ( Exception ex )
+                    {
+                        await IRS.WriteAsync( Encoding.UTF8.GetBytes( ex.Message ).AsBuffer() );
+                    }
+
+                    await IRS.FlushAsync();
+                    IRS.Dispose();
+                    TCS.SetResult( SF );
+                }
+                catch( Exception ex )
+                {
+                    Logger.Log( ID, ex.Message, LogType.ERROR );
+                    TCS.SetResult( null );
+                }
+            };
+
+            Request.OpenAsync();
+
+            return await TCS.Task;
         }
     }
 }

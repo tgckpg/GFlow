@@ -71,12 +71,22 @@
         <ListView x:Name="ProcSteps" Grid.Row="1" Style="{StaticResource VerticalListView}" Background="#444">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid Width="100" Height="100" Background="#888"
-                          RightTapped="ShowProcContext"
+                    <Grid RightTapped="ShowProcContext" Margin="5"
                           FlyoutBase.AttachedFlyout="{StaticResource ProcedureContext}">
-                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
-                                   Foreground="White"
-                                   Text="{Binding Type, Converter={StaticResource EnumNameConverter}}" />
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <i:IconNavigateArrow Foreground="White" Grid.Column="0"
+                                             Width="40" Height="40" Margin="5"
+                                             HorizontalAlignment="Center" VerticalAlignment="Center"
+                                             AutoScale="True" />
+                        <Border Width="100" Height="100" Background="#888"
+                                Grid.Column="1">
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
+                                       Foreground="White"
+                                       Text="{Binding Type, Converter={StaticResource EnumNameConverter}}" />
+                        </Border>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>

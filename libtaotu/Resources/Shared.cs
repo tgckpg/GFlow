@@ -13,6 +13,7 @@ namespace libtaotu.Resources
     class Shared
     {
         public static Type SourceView;
+        public static Type RenameDialog;
 
         public static Type ProcExtractor { get; private set; }
         public static Type ProcMarker { get; private set; }

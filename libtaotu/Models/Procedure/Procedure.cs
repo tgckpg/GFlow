@@ -23,12 +23,13 @@ namespace libtaotu.Models.Procedure
         PAUSE = 16,
     }
 
-    abstract class Procedure : ActiveData
+    abstract class Procedure : ActiveData, INamable
     {
         public ProcType Type { get; protected set; }
         public string RawName { get; protected set; }
         public string TypeName { get; protected set; }
 
+        public ProcConvoy Convoy { get; protected set; }
         public bool Faulted { get; set; }
 
         private bool _running = false;
@@ -38,8 +39,16 @@ namespace libtaotu.Models.Procedure
             set { _running = value; NotifyChanged( "Running" ); }
         }
 
-        public ProcConvoy Convoy { get; protected set; }
-        public string Name { get; protected set; }
+        private string _name;
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                _name = value;
+                NotifyChanged( "Name" );
+            }
+        }
 
         protected static StringResources ProcStrRes;
 
@@ -58,9 +67,24 @@ namespace libtaotu.Models.Procedure
             return Task.Run( () => this.Convoy = Convoy );
         }
 
+        virtual public void ReadParam( XParameter Param )
+        {
+            string PName = Param.GetValue( "Name" );
+            if ( PName != null ) Name = PName;
+        }
+
+        virtual public XParameter ToXParem()
+        {
+            XParameter Param = new XParameter( RawName );
+            if( Name != TypeName )
+            {
+                Param.SetValue( new XKey( "Name", Name ) );
+            }
+
+            return Param;
+        }
+
         abstract public Task Edit();
-        abstract public void ReadParam( XParameter Param );
-        abstract public XParameter ToXParem();
     }
 }
 

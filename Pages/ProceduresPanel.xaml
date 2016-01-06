@@ -57,9 +57,9 @@
         <vp:BoolStateConverter x:Key="BoolStateConverter" />
 
         <MenuFlyout x:Key="ProcedureContext">
-            <MenuFlyoutItem Text="Edit" Click="EditProcedure" />
-            <MenuFlyoutItem Text="ToXParam" Click="ViewRaw" />
-            <MenuFlyoutItem Text="Remove" Click="RemoveProcedure" />
+            <MenuFlyoutItem x:Uid="/libtaotu/ContextMenu/Rename" Text="Rename" Click="RenameProcedure" />
+            <MenuFlyoutItem x:Uid="/libtaotu/ContextMenu/Edit" Text="Edit" Click="EditProcedure" />
+            <MenuFlyoutItem x:Uid="/libtaotu/ContextMenu/Delete" Text="Remove" Click="RemoveProcedure" />
         </MenuFlyout>
 
     </Page.Resources>
@@ -131,7 +131,7 @@
                                                  Width="40" Height="40" Margin="5"
                                                  HorizontalAlignment="Center" VerticalAlignment="Center"
                                                  AutoScale="True" />
-                            <Grid Width="100" Height="100" Background="#888"
+                            <Grid MinWidth="100" MaxWidth="200" Height="100" Background="#888"
                                     Grid.Column="1">
                                 <StackPanel Orientation="Horizontal"
                                             HorizontalAlignment="Right" VerticalAlignment="Top">
@@ -147,8 +147,9 @@
                                     </Button>
                                 </StackPanel>
                                 <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"
-                                           Foreground="White"
-                                           Text="{Binding TypeName}" />
+                                           Margin="10"
+                                           Foreground="White" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
+                                           Text="{Binding Name}" />
                             </Grid>
                         </Grid>
                     </DataTemplate>

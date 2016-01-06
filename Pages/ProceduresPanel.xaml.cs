@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 using Net.Astropenguin.Controls;
+using Net.Astropenguin.Helpers;
 using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
 using Net.Astropenguin.Messaging;
@@ -23,6 +24,7 @@ using Net.Astropenguin.UI;
 using libtaotu.Controls;
 using libtaotu.Models.Interfaces;
 using libtaotu.Models.Procedure;
+using libtaotu.Resources;
 
 namespace libtaotu.Pages
 {
@@ -111,6 +113,13 @@ namespace libtaotu.Pages
             if ( SelectedItem == null ) return;
             await SelectedItem.Edit();
         }
+
+        private async void RenameProcedure( object sender, RoutedEventArgs e )
+        {
+            if ( SelectedItem == null ) return;
+            ContentDialog Dialog = ( ContentDialog ) Activator.CreateInstance( Shared.RenameDialog, SelectedItem );
+            await Popups.ShowDialog( Dialog );
+        }
         #endregion
 
         #region Item Controls 
@@ -119,12 +128,6 @@ namespace libtaotu.Pages
             Grid G = sender as Grid;
             FlyoutBase.ShowAttachedFlyout( G );
             SelectedItem = G.DataContext as Procedure;
-        }
-
-        private void ViewRaw( object sender, RoutedEventArgs e )
-        {
-            if ( SelectedItem == null ) return;
-            SelectedItem.ToXParem();
         }
 
         private void MoveLeft( object sender, RoutedEventArgs e )

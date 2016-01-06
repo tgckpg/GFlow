@@ -24,6 +24,9 @@ namespace libtaotu.Controls
         public ObservableCollection<Procedure> ProcList { get; private set; }
         public bool Async { get; set; }
 
+        private Guid _Guid;
+        public Guid GUID { get { return _Guid; } }
+
         private int From = 0;
         private int To = 0;
 
@@ -62,9 +65,20 @@ namespace libtaotu.Controls
             );
         }
 
+        public static void PanelMessage( Procedure P, string Mesg, LogType LogLevel )
+        {
+            string Tag = P.Name == P.TypeName
+                ? P.Name
+                : string.Format( "[{0}({1})]", P.Name, P.RawName )
+                ;
+
+            PanelMessage( Tag, Mesg, LogLevel );
+        }
+
         public ProcManager()
         {
             ProcList = new ObservableCollection<Procedure>();
+            _Guid = Guid.NewGuid();
             Async = false;
         }
 
@@ -147,23 +161,6 @@ namespace libtaotu.Controls
             ProcList.Remove( P );
         }
 
-        public void ReadParam( XParameter List )
-        {
-            XParameter[] ProcParams = List.GetParametersWithKey( "ProcType" );
-            Async = List.GetBool( "Async", false );
-
-            Type PType = typeof( ProcType );
-            IEnumerable<ProcType> P = Enum.GetValues( PType ).Cast<ProcType>();
-            foreach( XParameter Param in ProcParams )
-            {
-                string ProcName = Param.GetValue( "ProcType" );
-                ProcType Proc = P.First( x => Enum.GetName( PType, x ) == ProcName );
-
-                Procedure NProc = NewProcedure( Proc );
-                NProc.ReadParam( Param );
-            }
-        }
-
         public void Move( Procedure P, int dir )
         {
             int i = ProcList.IndexOf( P );
@@ -178,10 +175,34 @@ namespace libtaotu.Controls
             }
         }
 
+        public void ReadParam( XParameter List )
+        {
+            XParameter[] ProcParams = List.GetParametersWithKey( "ProcType" );
+            Async = List.GetBool( "Async", false );
+            if( !Guid.TryParse( "NAN", out _Guid ) )
+            {
+                _Guid = Guid.NewGuid();
+            }
+
+            Type PType = typeof( ProcType );
+            IEnumerable<ProcType> P = Enum.GetValues( PType ).Cast<ProcType>();
+            foreach( XParameter Param in ProcParams )
+            {
+                string ProcName = Param.GetValue( "ProcType" );
+                ProcType Proc = P.First( x => Enum.GetName( PType, x ) == ProcName );
+
+                Procedure NProc = NewProcedure( Proc );
+                NProc.ReadParam( Param );
+            }
+        }
+
         public XParameter ToXParam()
         {
             XParameter Param = new XParameter( "Procedures" );
-            Param.SetValue( new XKey( "Async", Async ) );
+            Param.SetValue( new XKey[] {
+                new XKey( "Async", Async )
+                , new XKey( "Guid", GUID )
+            } );
 
             int i = 0;
             foreach ( Procedure P in ProcList )

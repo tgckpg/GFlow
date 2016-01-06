@@ -69,7 +69,7 @@ namespace libtaotu.Models.Procedure
 
             if( UsableConvoy == null )
             {
-                ProcManager.PanelMessage( ID, "Unable to find a usable payload, skipping this step", LogType.WARNING );
+                ProcManager.PanelMessage( this, "Unable to find a usable payload, skipping this step", LogType.WARNING );
                 Faulted = true;
                 return Convoy;
             }
@@ -153,7 +153,7 @@ namespace libtaotu.Models.Procedure
             }
             catch ( Exception ex )
             {
-                ProcManager.PanelMessage( ID, ex.Message, LogType.INFO );
+                ProcManager.PanelMessage( this, ex.Message, LogType.INFO );
             }
 
             return new string[] { v };
@@ -186,6 +186,8 @@ namespace libtaotu.Models.Procedure
 
         public override void ReadParam( XParameter Param )
         {
+            base.ReadParam( Param );
+
             XParameter[] RegParams = Param.GetParametersWithKey( "i" );
             TestLink = Param.GetValue( "TestLink" );
             SetMode( Param.GetValue( "Mode" ) );
@@ -198,7 +200,8 @@ namespace libtaotu.Models.Procedure
 
         public override XParameter ToXParem()
         {
-            XParameter Param = new XParameter( RawName );
+            XParameter Param = base.ToXParem();
+
             Param.SetValue( new XKey[] {
                 new XKey( "TestLink", TestLink )
                 , new XKey( "Mode", RawModeName )

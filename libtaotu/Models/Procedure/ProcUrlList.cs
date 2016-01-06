@@ -65,7 +65,7 @@ namespace libtaotu.Models.Procedure
 
             if ( ConvoyUrls == null && Urls.Count == 0 )
             {
-                ProcManager.PanelMessage( TypeName, "Empty list, did you forget to add urls?", LogType.WARNING );
+                ProcManager.PanelMessage( this, "Empty list, did you forget to add urls?", LogType.WARNING );
             }
 
             List<IStorageFile> ISF = new List<IStorageFile>();
@@ -93,7 +93,7 @@ namespace libtaotu.Models.Procedure
 
         public async Task<IStorageFile> DownloadSource( string url )
         {
-            ProcManager.PanelMessage( TypeName, "Downloading: " + url, LogType.INFO );
+            ProcManager.PanelMessage( this, "Downloading: " + url, LogType.INFO );
 
             TaskCompletionSource<IStorageFile> TCS = new TaskCompletionSource<IStorageFile>();
 
@@ -123,7 +123,7 @@ namespace libtaotu.Models.Procedure
                     }
                     catch ( Exception ex )
                     {
-                        ProcManager.PanelMessage( TypeName, ex.Message, LogType.ERROR );
+                        ProcManager.PanelMessage( this, ex.Message, LogType.ERROR );
                         TCS.SetResult( null );
                     }
                 };
@@ -140,6 +140,8 @@ namespace libtaotu.Models.Procedure
 
         public override void ReadParam( XParameter Param )
         {
+            base.ReadParam( Param );
+
             Incoming = Param.GetBool( "Incoming" );
             Prefix = Param.GetValue( "Prefix" );
 
@@ -152,7 +154,7 @@ namespace libtaotu.Models.Procedure
 
         public override XParameter ToXParem()
         {
-            XParameter Param = new XParameter( RawName );
+            XParameter Param = base.ToXParem();
             int i = 0;
 
             Param.SetValue( new XKey[] {

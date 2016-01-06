@@ -32,16 +32,19 @@ namespace libtaotu.Dialogs
 
         private void SetTemplate()
         {
-            StringResources stx = new StringResources( "Message" );
+            StringResources stx = new StringResources( "/libtaotu/Message" );
             PrimaryButtonText = stx.Str( "OK" );
-
         }
 
         public EditProcUrlList( ProcUrlList procUrlList )
             :this()
         {
             EditTarget = procUrlList;
+
+            IncomingCheck.IsChecked = EditTarget.Incoming;
+            PrefixInput.Text = EditTarget.Prefix;
             UrlList.ItemsSource = EditTarget.Urls;
+
             UrlInput.KeyDown += UrlInput_KeyDown;
         }
 
@@ -86,28 +89,21 @@ namespace libtaotu.Dialogs
             string url = UrlInput.Text.Trim();
             if ( string.IsNullOrEmpty( url ) ) return;
 
-            try
-            {
-                Uri u = new Uri( url );
-                switch( u.Scheme )
-                {
-                    case "http":
-                    case "https":
-                        break;
-                    default:
-                        throw new InvalidDataException( "Url" );
-                }
+            EditTarget.Urls.Add( url );
 
-                EditTarget.Urls.Add( url );
+            UrlInput.Text = "";
+            UrlList.ItemsSource = null;
+            UrlList.ItemsSource = EditTarget.Urls;
+        }
 
-                UrlInput.Text = "";
-                UrlList.ItemsSource = null;
+        private void SetPrefix( object sender, RoutedEventArgs e )
+        {
+            EditTarget.Prefix = ( sender as TextBox ).Text;
+        }
 
-                UrlList.ItemsSource = EditTarget.Urls;
-            }
-            catch( Exception )
-            {
-            }
+        private void SetIncoming( object sender, RoutedEventArgs e )
+        {
+            EditTarget.Incoming = ( bool ) IncomingCheck.IsChecked;
         }
     }
 }

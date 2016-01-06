@@ -11,14 +11,13 @@
     mc:Ignorable="d"
     Style="{StaticResource ScrollContentDialog}"
     Background="#111"
-    PrimaryButtonText="Button1"
     IsSecondaryButtonEnabled="False">
     <ContentDialog.Resources>
         <Style x:Key="StretchListItem" TargetType="ListViewItem">
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="Padding" Value="0" />
         </Style>
-        <v:BoolStateConverter x:Key="BoolStateConveter" />
+        <v:BoolStateConverter x:Key="BoolStateConverter" />
     </ContentDialog.Resources>
     <ContentDialog.Title>
         <TextBlock Text="Edit Find Conditions" Foreground="White" />
@@ -56,13 +55,13 @@
                             </Grid.ColumnDefinitions>
 
                             <TextBox Grid.Column="0"
-                                     PlaceholderText="Pattern" Margin="5"
+                                     PlaceholderText="Pattern" Margin="3"
                                      Text="{Binding Pattern}"
                                      FontFamily="Lucida Console"
                                      LostFocus="SetPattern"/>
 
                             <TextBox Grid.Column="1"
-                                     PlaceholderText="Format" Margin="5"
+                                     PlaceholderText="Format" Margin="3"
                                      Text="{Binding Format}"
                                      FontFamily="Lucida Console"
                                      LostFocus="SetFormat"/>
@@ -72,7 +71,12 @@
                                     HorizontalAlignment="Center" VerticalAlignment="Center"
                                     Width="30" Height="30"
                                     Click="ApplyRegex">
-                                <i:IconLogin AutoScale="True" Direction="Rotate270"/>
+                                <Grid>
+                                    <i:IconLogin AutoScale="True" Direction="Rotate270"/>
+                                    <p:StateControl State="{Binding Enabled, Converter={StaticResource BoolStateConverter}}">
+                                        <i:IconLogin AutoScale="True" Foreground="DodgerBlue" Direction="Rotate270"/>
+                                    </p:StateControl>
+                                </Grid>
                             </Button>
                             <Button Style="{StaticResource IconButton}"
                                     Grid.Column="3"
@@ -83,7 +87,7 @@
                             </Button>
 
                             <p:StateControl Grid.Column="2"
-                                            State="{Binding Valid, Converter={StaticResource BoolStateConveter}, ConverterParameter=1}">
+                                            State="{Binding Valid, Converter={StaticResource BoolStateConverter}, ConverterParameter=1}">
                                 <Border Width="30" Height="30" Background="OrangeRed">
                                     <TextBlock Text="!" Foreground="White" FontWeight="Bold" FontSize="20"
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -103,6 +107,7 @@
             </Grid.ColumnDefinitions>
 
             <TextBox x:Name="TestLink" PlaceholderText="Test Link"
+                     LostFocus="SetTestLink"
                      Grid.Column="0" />
             <Button Style="{StaticResource IconButton}"
                     Grid.Column="1"

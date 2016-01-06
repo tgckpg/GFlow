@@ -12,38 +12,25 @@ using Net.Astropenguin.DataModel;
 using Net.Astropenguin.Helpers;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
-using System.Reflection;
 
 namespace libtaotu.Models.Procedure
 {
+    using Controls;
+
     class ProcFind : Procedure
     {
         public static readonly string ID = typeof( ProcFind ).Name;
 
-        public HashSet<string> FilteredContent { get; private set; }
+        public string TestLink { get; set; }
 
+        public HashSet<string> FilteredContent { get; private set; }
         public ObservableCollection<RegItem> RegexPairs { get; private set; }
 
         public ProcFind()
+            : base( ProcType.FIND )
         {
-            Type = ProcType.FIND;
             FilteredContent = new HashSet<string>();
             RegexPairs = new ObservableCollection<RegItem>();
-        }
-
-        public void ValidateRegex( RegItem R )
-        {
-            try
-            {
-                Regex RegEx = R.RegExObj;
-                string.Format( R.Format.Trim(), RegEx.GetGroupNames() );
-                R.Valid = true;
-            }
-            catch( Exception ex )
-            {
-                Logger.Log( ID, ex.Message, LogType.INFO );
-                R.Valid = false;
-            }
         }
 
         public void RemoveRegex( RegItem Item )
@@ -55,27 +42,30 @@ namespace libtaotu.Models.Procedure
         public override async Task<ProcConvoy> Run( ProcConvoy Convoy )
         {
             await base.Run( Convoy );
-            IEnumerable<string> ThingsToMatch = TryFindPayload( Convoy );
 
-            if( ThingsToMatch == null )
+            ProcConvoy UsableConvoy = ProcManager.TracePackage(
+                Convoy, ( P, C ) =>
+                {
+                    return C.Payload is IEnumerable<IStorageFile>;
+                }
+            );
+
+            if( UsableConvoy == null )
             {
-                Logger.Log( ID, "Unable to find a usable payload, skipping this step", LogType.WARNING );
-                return null;
+                ProcManager.PanelMessage( ID, "Unable to find a usable payload, skipping this step", LogType.WARNING );
+                Faulted = true;
+                return Convoy;
             }
 
-            throw new NotImplementedException();
-        }
+            List<IStorageFile> TargetFiles = new List<IStorageFile>();
+            IEnumerable<IStorageFile> SrcFiles = UsableConvoy.Payload as IEnumerable<IStorageFile>;
 
-        private IEnumerable<string> TryFindPayload( ProcConvoy convoy )
-        {
-            if ( convoy == null ) return null;
-
-            while( convoy.Payload as IEnumerable<string> == null && convoy.Dispatcher != null )
+            foreach( IStorageFile ISF in SrcFiles )
             {
-                convoy = convoy.Dispatcher.Convoy;
+                TargetFiles.Add( await FilterContent( ISF ) );
             }
 
-            return convoy.Payload as IEnumerable<string>;
+            return new ProcConvoy( this, TargetFiles );
         }
 
         public override async Task Edit()
@@ -101,8 +91,10 @@ namespace libtaotu.Models.Procedure
         {
             try
             {
-                List<string> MatchingResult = new List<string>();
                 bool RegExed = false;
+
+                SortedDictionary<int, string> OrderedMatchings = new SortedDictionary<int, string>();
+
                 foreach ( RegItem R in RegexPairs )
                 {
                     if ( !R.Enabled ) continue;
@@ -112,30 +104,60 @@ namespace libtaotu.Models.Procedure
 
                     foreach ( Match match in matches )
                     {
-                        string[] s = new string[ match.Groups.Count ];
+                        string formatted = string.Format(
+                            R.Format
+                            , match.Groups
+                                .Cast<Group>()
+                                .Select( g => g.Value )
+                                .ToArray()
+                        );
 
-                        int i = 0;
-                        foreach ( Group m in match.Groups ) s[ i++ ] = m.Value;
-
-                        string formatted = string.Format( R.Format, s );
-
-                        MatchingResult.Add( formatted );
+                        OrderedMatchings.Add( match.Index, formatted );
                     }
                 }
 
-                if( RegExed ) return MatchingResult;
+                if( RegExed ) return OrderedMatchings.Values;
             }
             catch ( Exception ex )
             {
+                ProcManager.PanelMessage( ID, ex.Message, LogType.INFO );
             }
 
             return new string[] { v };
         }
 
+        public override void ReadParam( XParameter Param )
+        {
+            XParameter[] RegParams = Param.GetParametersWithKey( "i" );
+            TestLink = Param.GetValue( "TestLink" );
+            foreach ( XParameter RegParam in RegParams )
+            {
+                RegexPairs.Add( new RegItem( RegParam ) );
+            }
+        }
+
+        public override XParameter ToXParem()
+        {
+            XParameter Param = new XParameter( RawName );
+            Param.SetValue( new XKey( "TestLink", TestLink ) );
+
+            int i = 0;
+            foreach( RegItem R in RegexPairs )
+            {
+                XParameter RegParam = R.ToXParam();
+                RegParam.ID += i;
+                RegParam.SetValue( new XKey( "i", i++ ) );
+
+                Param.SetParameter( RegParam );
+            }
+
+            return Param;
+        }
+
         public class RegItem : ActiveData
         {
-            public string Pattern;
-            public string Format;
+            public string Pattern { get; set; }
+            public string Format { get; set; }
 
             public Regex RegExObj
             {
@@ -154,6 +176,7 @@ namespace libtaotu.Models.Procedure
             }
 
             private bool _enabled = false;
+
             public bool Enabled
             {
                 get
@@ -179,6 +202,44 @@ namespace libtaotu.Models.Procedure
                 this.Pattern = pattern;
                 this.Format = format;
                 this.Enabled = enable;
+            }
+
+            public RegItem( XParameter Param )
+            {
+                Pattern = Param.GetValue( "Pattern" );
+                Format = Param.GetValue( "Format" );
+                Enabled = Param.GetBool( "Enabled" );
+            }
+
+            public bool Validate()
+            {
+                try
+                {
+                    Regex RegEx = RegExObj;
+                    string.Format( Format.Trim(), RegEx.GetGroupNames() );
+                    Valid = true;
+                }
+                catch( Exception ex )
+                {
+                    ProcManager.PanelMessage( ID, ex.Message, LogType.ERROR );
+                    Valid = false;
+                }
+
+                return Valid;
+            }
+
+
+            public XParameter ToXParam()
+            {
+                XParameter Param = new XParameter( "RegItem" );
+                Param.SetValue( new XKey[] {
+                    // Pattern will be the key identifier
+                    new XKey( "Pattern", Pattern )
+                    , new XKey( "Format", Format )
+                    , new XKey( "Enabled", Enabled )
+                } );
+
+                return Param;
             }
         }
     }

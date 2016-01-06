@@ -15,9 +15,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-using Net.Astropenguin.Helpers;
+using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
-using Net.Astropenguin.UI.Icons;
 
 using libtaotu.Models.Procedure;
 using libtaotu.Resources;
@@ -40,7 +39,8 @@ namespace libtaotu.Dialogs
 
         private void SetTemplate()
         {
-
+            StringResources stx = new StringResources( "/libtaotu/Message" );
+            PrimaryButtonText = stx.Str( "OK" );
         }
 
         public EditProcFind( ProcFind EditTarget )
@@ -54,6 +54,10 @@ namespace libtaotu.Dialogs
             }
 
             RegexControl.DataContext = EditTarget;
+            if ( !string.IsNullOrEmpty( EditTarget.TestLink ) )
+            {
+                TestLink.Text = EditTarget.TestLink;
+            }
         }
 
         private async void PreviewProcess( object sender, RoutedEventArgs e )
@@ -85,7 +89,7 @@ namespace libtaotu.Dialogs
             ProcFind.RegItem Item = Input.DataContext as ProcFind.RegItem;
             Item.Pattern = Input.Text;
 
-            EditTarget.ValidateRegex( Item );
+            Item.Validate();
         }
 
         private void SetFormat( object sender, RoutedEventArgs e )
@@ -94,7 +98,13 @@ namespace libtaotu.Dialogs
             ProcFind.RegItem Item = Input.DataContext as ProcFind.RegItem;
             Item.Format = Input.Text;
 
-            EditTarget.ValidateRegex( Item );
+            Item.Validate();
+        }
+
+        private void SetTestLink( object sender, RoutedEventArgs e )
+        {
+            TextBox Input = sender as TextBox;
+            EditTarget.TestLink = Input.Text;
         }
 
         private void RemoveRegex( object sender, RoutedEventArgs e )
@@ -111,17 +121,8 @@ namespace libtaotu.Dialogs
             ProcFind.RegItem Item = B.DataContext as ProcFind.RegItem;
 
             Item.Enabled = !Item.Enabled;
-            ToggleIcon( Item.Enabled, sender as Button );
 
             UpdateTestSubject();
-        }
-
-        private void ToggleIcon( bool v, Button button )
-        {
-            IconBase Icon = button.ChildAt<IconBase>( 0, 0, 0 );
-            Icon.Foreground = new SolidColorBrush(
-                v ? Windows.UI.Colors.DodgerBlue : Windows.UI.Colors.White
-            );
         }
 
         private async void UpdateTestSubject()

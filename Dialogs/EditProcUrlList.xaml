@@ -20,21 +20,28 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <TextBox x:Name="UrlInput"
-                     Grid.Column="0" Margin="10" />
-            <Button Style="{StaticResource IconButton}"
-                    Grid.Column="1"
-                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                    Width="40" Height="40"
-                    Click="AddUrl">
-                <i:IconPlusSign AutoScale="True"/>
-            </Button>
-        </Grid>
+        <StackPanel>
+            <CheckBox x:Name="IncomingCheck" Foreground="White"
+                      Unchecked="SetIncoming" Checked="SetIncoming" >
+                <TextBlock Text="Incoming" />
+            </CheckBox>
+            <TextBox x:Name="PrefixInput" PlaceholderText="Prefix" LostFocus="SetPrefix" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="UrlInput"
+                         Grid.Column="0" Margin="10" />
+                <Button Style="{StaticResource IconButton}"
+                        Grid.Column="1"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Width="40" Height="40"
+                        Click="AddUrl">
+                    <i:IconPlusSign AutoScale="True"/>
+                </Button>
+            </Grid>
+        </StackPanel>
         <ListView x:Name="UrlList" Grid.Row="1">
             <ListView.ItemTemplate>
                 <DataTemplate>

@@ -106,6 +106,10 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="libtaotu.pfx" />
     <None Include="project.json" />
+    <PRIResource Include="Strings\zh-TW\ProcItems.resw" />
+    <PRIResource Include="Strings\zh-CN\ProcItems.resw" />
+    <PRIResource Include="Strings\ja\ProcItems.resw" />
+    <PRIResource Include="Strings\en-US\ProcItems.resw" />
     <PRIResource Include="Strings\zh-TW\Message.resw" />
     <PRIResource Include="Strings\zh-CN\Message.resw" />
     <PRIResource Include="Strings\ja\Message.resw" />
@@ -120,13 +124,18 @@
     </Compile>
     <Compile Include="libtaotu\Controls\ProcManager.cs" />
     <Compile Include="libtaotu\Crawler\ProceduralSpider.cs" />
-    <Compile Include="libtaotu\Models\Procedure\ProcDownload.cs" />
+    <Compile Include="libtaotu\Models\Interfaces\ISubProcedure.cs" />
+    <Compile Include="libtaotu\Models\Procedure\ProcExtract.cs" />
     <Compile Include="libtaotu\Models\Procedure\Procedure.cs" />
     <Compile Include="libtaotu\Models\ProcConvoy.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcFind.cs" />
+    <Compile Include="libtaotu\Models\Procedure\ProcMark.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcUrlList.cs" />
     <Compile Include="Pages\ProceduresPanel.xaml.cs">
       <DependentUpon>ProceduresPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SubProceduresPanel.xaml.cs">
+      <DependentUpon>SubProceduresPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="libtaotu\Resources\Shared.cs" />
@@ -148,6 +157,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\ProceduresPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SubProceduresPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

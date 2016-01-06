@@ -14,9 +14,11 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+using Net.Astropenguin.Controls;
 using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
 using Net.Astropenguin.Messaging;
+using Net.Astropenguin.UI;
 
 using libtaotu.Controls;
 using libtaotu.Models.Interfaces;
@@ -29,43 +31,35 @@ namespace libtaotu.Pages
         public static readonly string ID = typeof( ProceduresPanel ).Name;
 
         private bool Running = false;
+
+        private ProcManager RootManager;
         private ProcManager PM;
         private Procedure SelectedItem;
+        private List<Procedure> ProcChains;
 
         private ObservableCollection<LogArgs> Logs = new ObservableCollection<LogArgs>();
 
         public ProceduresPanel()
         {
             this.InitializeComponent();
+            if( ProcChains == null )
+            {
+                ProcChains = new List<Procedure>();
+            }
+
+            NavigationHandler.InsertHandlerOnNavigatedBack( StepSubProcedures );
+            MessageBus.OnDelivery += MessageBus_OnDelivery;
             SetTemplate();
         }
 
         ~ProceduresPanel()
         {
+            NavigationHandler.OnNavigatedBack -= StepSubProcedures;
             MessageBus.OnDelivery -= MessageBus_OnDelivery;
-        }
-
-        protected override void OnNavigatedFrom( NavigationEventArgs e )
-        {
-            base.OnNavigatedFrom( e );
-            Logger.Log( ID, string.Format( "OnNavigatedFrom: {0}", e.SourcePageType.Name ), LogType.INFO );
-        }
-
-        protected override void OnNavigatedTo( NavigationEventArgs e )
-        {
-            base.OnNavigatedTo( e );
-            Logger.Log( ID, string.Format( "OnNavigatedTo: {0}", e.SourcePageType.Name ), LogType.INFO );
-
-            if ( e.NavigationMode == NavigationMode.Back )
-            {
-                SelectedItem.Edit();
-            }
         }
 
         private void SetTemplate()
         {
-            PM = new ProcManager();
-
             StringResources stx = new StringResources( "/libtaotu/ProcItems" );
             Dictionary<ProcType, string> ProcChoices = new Dictionary<ProcType, string>();
 
@@ -79,36 +73,27 @@ namespace libtaotu.Pages
                 ProcChoices.Add( P, ProcName );
             }
 
+            RootManager = new ProcManager();
             ProcComboBox.ItemsSource = ProcChoices;
-            ProcSteps.ItemsSource = PM.ProcList;
             RunLog.ItemsSource = Logs;
-
-            MessageBus.OnDelivery += MessageBus_OnDelivery;
 
             ProcManager.PanelMessage( ID, "Welcome to Procedural Spider's Control", LogType.INFO );
 
             Logs.CollectionChanged += ( s, e ) => ScrollToBottom();
+
+            PM = RootManager;
+
             ReadProcedures();
+            UpdateVisualData();
         }
 
+        #region Add / Remove / Edit
         private void AddProcedure( object sender, RoutedEventArgs e )
         {
             if ( ProcComboBox.SelectedItem == null ) return;
 
             KeyValuePair<ProcType, string> p = ( KeyValuePair<ProcType, string> ) ProcComboBox.SelectedItem;
             PM.NewProcedure( p.Key );
-        }
-
-        private async void EditProcedure( object sender, RoutedEventArgs e )
-        {
-            if ( SelectedItem == null ) return;
-            await SelectedItem.Edit();
-        }
-
-        private void ViewRaw( object sender, RoutedEventArgs e )
-        {
-            if ( SelectedItem == null ) return;
-            SelectedItem.ToXParem();
         }
 
         private void RemoveProcedure( object sender, RoutedEventArgs e )
@@ -119,6 +104,43 @@ namespace libtaotu.Pages
             SelectedItem = null;
         }
 
+        private void EditProcedure( object sender, RoutedEventArgs e ) { EditProcedure(); }
+
+        private async void EditProcedure()
+        {
+            if ( SelectedItem == null ) return;
+            await SelectedItem.Edit();
+        }
+        #endregion
+
+        #region Item Controls 
+        private void ShowProcContext( object sender, RightTappedRoutedEventArgs e )
+        {
+            Grid G = sender as Grid;
+            FlyoutBase.ShowAttachedFlyout( G );
+            SelectedItem = G.DataContext as Procedure;
+        }
+
+        private void ViewRaw( object sender, RoutedEventArgs e )
+        {
+            if ( SelectedItem == null ) return;
+            SelectedItem.ToXParem();
+        }
+
+        private void MoveLeft( object sender, RoutedEventArgs e )
+        {
+            Button B = sender as Button;
+            PM.Move( B.DataContext as Procedure, -1 );
+        }
+
+        private void MoveRight( object sender, RoutedEventArgs e )
+        {
+            Button B = sender as Button;
+            PM.Move( B.DataContext as Procedure, 1 );
+        }
+        #endregion
+
+        #region R/W & Run
         private void ReadProcedures()
         {
             // XXX: Experimental Read/Write Settings
@@ -131,38 +153,102 @@ namespace libtaotu.Pages
         {
             // XXX: Experimental Read/Write Settings
             Net.Astropenguin.IO.XRegistry XReg = new Net.Astropenguin.IO.XRegistry( "<pp />", "Setting/Test.xml" );
-            XReg.SetParameter( PM.ToXParam() );
+            XReg.SetParameter( RootManager.ToXParam() );
             XReg.Save();
         }
 
-        private async void RunProcedure( object sender, RoutedEventArgs e )
+        private void RunProcedure( object sender, RoutedEventArgs e )
+        {
+            if ( Running ) return;
+            PM.ActiveRange( 0, 0 );
+            ProcRun();
+        }
+        #endregion
+
+        // Run from Message
+        private async void ProcRun()
         {
             if ( Running ) return;
             Running = true;
-            await PM.Run();
+            ProcConvoy Convoy = await PM.Run();
             Running = false;
+
+            MessageBus.SendUI( new Message( GetType(), "RUN_RESULT", Convoy ) );
         }
 
-        private void ShowProcContext( object sender, RightTappedRoutedEventArgs e )
+        private void SubEdit( Procedure Proc )
         {
-            Grid G = sender as Grid;
-            FlyoutBase.ShowAttachedFlyout( G );
-            SelectedItem = G.DataContext as Procedure;
+            if ( !ProcChains.Contains( Proc ) )
+            {
+                ProcChains.Add( Proc );
+            }
+
+            PM = ( Proc as ISubProcedure ).SubProcedures;
+            UpdateVisualData();
+        }
+
+        private string GetNameFromChains()
+        {
+            string Name = "Start";
+            foreach( Procedure P in ProcChains )
+            {
+                Name += " > " + P.Name;
+            }
+
+            return Name;
+        }
+
+        private void StepSubProcedures( object sender, XBackRequestedEventArgs e )
+        {
+            if ( 0 < ProcChains.Count )
+            {
+                e.Handled = true;
+
+                SelectedItem = ProcChains.Last();
+                EditProcedure();
+
+                ProcChains.Remove( SelectedItem );
+
+                if ( 0 < ProcChains.Count )
+                {
+                    SubEdit( ProcChains.Last() );
+                    return;
+                }
+            }
+
+            PM = RootManager;
+            UpdateVisualData();
+        }
+
+        private void UpdateVisualData()
+        {
+            NameLevel.Text = GetNameFromChains();
+            LayoutRoot.DataContext = PM;
+            SubProcInd.State = PM == RootManager
+                ? ControlState.Foreatii
+                : ControlState.Reovia
+                ;
         }
 
         private async void MessageBus_OnDelivery( Message Mesg )
         {
             if ( Mesg.TargetType != GetType() ) return;
 
+            // Procedure Run
+            if( Mesg.Content == "RUN" )
+            {
+                if ( Running ) return;
+                PM.ActiveRange( 0, PM.ProcList.IndexOf( Mesg.Payload as Procedure ) );
+                ProcRun();
+            }
+
             // Goto SubProcedures Edit
-            if ( Mesg.Payload is ISubProcedure )
+            else if ( Mesg.Payload is ISubProcedure )
             {
                 Procedure P = Mesg.Payload as Procedure;
                 if ( PM.ProcList.Contains( P ) )
                 {
-                    await Dispatcher.RunIdleAsync( x => {
-                        Frame.Navigate( typeof( SubProceduresPanel ), P );
-                    } );
+                    await Dispatcher.RunIdleAsync( x => SubEdit( P ) );
                 }
             }
 
@@ -176,6 +262,9 @@ namespace libtaotu.Pages
 
         private void PanelLogItem( string id, string content, LogType level )
         {
+#if DEBUG
+            Logger.Log( id, content, level );
+#endif
             Logs.Add( new LogArgs( id, content, level, Signal.LOG ) );
 
             while ( 1000 < Logs.Count )
@@ -200,5 +289,6 @@ namespace libtaotu.Pages
             public string ID;
             public LogType LogType;
         }
+
     }
 }

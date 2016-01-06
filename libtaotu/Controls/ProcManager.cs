@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using Windows.UI.Xaml.Controls;
 
+using Net.Astropenguin.DataModel;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
 using Net.Astropenguin.Messaging;
@@ -16,11 +17,12 @@ namespace libtaotu.Controls
     using Models.Procedure;
     using Pages;
 
-    class ProcManager
+    class ProcManager : ActiveData
     {
         public static readonly string ID = typeof( ProcManager ).Name;
 
         public ObservableCollection<Procedure> ProcList { get; private set; }
+        public bool Async { get; set; }
 
         private int From = 0;
         private int To = 0;
@@ -63,6 +65,7 @@ namespace libtaotu.Controls
         public ProcManager()
         {
             ProcList = new ObservableCollection<Procedure>();
+            Async = false;
         }
 
         public ProcManager( XParameter Param )
@@ -114,7 +117,7 @@ namespace libtaotu.Controls
             int i = 0;
             foreach ( Procedure Proc in ProcList )
             {
-                if ( 0 < To && i < To ) continue;
+                if ( 0 < To && To < i ) continue;
                 if ( ++i < From ) continue;
 
                 PanelMessage( ID, "Running " + Proc.TypeName, LogType.INFO );
@@ -147,6 +150,7 @@ namespace libtaotu.Controls
         public void ReadParam( XParameter List )
         {
             XParameter[] ProcParams = List.GetParametersWithKey( "ProcType" );
+            Async = List.GetBool( "Async", false );
 
             Type PType = typeof( ProcType );
             IEnumerable<ProcType> P = Enum.GetValues( PType ).Cast<ProcType>();
@@ -160,9 +164,25 @@ namespace libtaotu.Controls
             }
         }
 
+        public void Move( Procedure P, int dir )
+        {
+            int i = ProcList.IndexOf( P );
+            if ( ( 0 < i && dir < 0 ) || ( -1 < i && 0 < dir ) )
+            {
+                i += dir;
+                if ( -1 < i && i < ProcList.Count )
+                {
+                    ProcList.Remove( P );
+                    ProcList.Insert( i, P );
+                }
+            }
+        }
+
         public XParameter ToXParam()
         {
             XParameter Param = new XParameter( "Procedures" );
+            Param.SetValue( new XKey( "Async", Async ) );
+
             int i = 0;
             foreach ( Procedure P in ProcList )
             {

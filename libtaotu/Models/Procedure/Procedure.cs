@@ -39,6 +39,7 @@ namespace libtaotu.Models.Procedure
         }
 
         public ProcConvoy Convoy { get; protected set; }
+        public string Name { get; protected set; }
 
         protected static StringResources ProcStrRes;
 
@@ -49,6 +50,7 @@ namespace libtaotu.Models.Procedure
             if ( ProcStrRes == null ) ProcStrRes = new StringResources( "/libtaotu/ProcItems" );
             RawName = Enum.GetName( typeof( ProcType ), P );
             TypeName = ProcStrRes.Str( RawName );
+            Name = TypeName;
         }
 
         virtual public Task<ProcConvoy> Run( ProcConvoy Convoy )

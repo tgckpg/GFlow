@@ -40,7 +40,7 @@ namespace libtaotu.Models.Procedure
 
         public ProcConvoy Convoy { get; protected set; }
 
-        private static StringResources ProcStrRes;
+        protected static StringResources ProcStrRes;
 
         public Procedure( ProcType P )
         {

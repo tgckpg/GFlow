@@ -126,6 +126,12 @@
   <data name="MARK" xml:space="preserve">
     <value>标记</value>
   </data>
+  <data name="MATCH" xml:space="preserve">
+    <value>配对</value>
+  </data>
+  <data name="REPLACE" xml:space="preserve">
+    <value>取代</value>
+  </data>
   <data name="URLLIST" xml:space="preserve">
     <value>网址列表</value>
   </data>

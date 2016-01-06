@@ -40,6 +40,11 @@ namespace libtaotu.Pages
             SetTemplate();
         }
 
+        ~ProceduresPanel()
+        {
+            MessageBus.OnDelivery -= MessageBus_OnDelivery;
+        }
+
         protected override void OnNavigatedFrom( NavigationEventArgs e )
         {
             base.OnNavigatedFrom( e );
@@ -82,6 +87,7 @@ namespace libtaotu.Pages
 
             ProcManager.PanelMessage( ID, "Welcome to Procedural Spider's Control", LogType.INFO );
 
+            Logs.CollectionChanged += ( s, e ) => ScrollToBottom();
             ReadProcedures();
         }
 
@@ -176,6 +182,17 @@ namespace libtaotu.Pages
             {
                 Logs.RemoveAt( 0 );
             }
+        }
+
+        private void ScrollToBottom()
+        {
+            int selectedIndex = RunLog.Items.Count - 1;
+            if ( selectedIndex < 0 ) return;
+
+            RunLog.SelectedIndex = selectedIndex;
+            RunLog.UpdateLayout();
+
+            RunLog.ScrollIntoView( RunLog.SelectedItem );
         }
 
         public class PanelLog

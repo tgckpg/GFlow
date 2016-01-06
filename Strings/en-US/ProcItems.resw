@@ -126,6 +126,12 @@
   <data name="MARK" xml:space="preserve">
     <value>Marker</value>
   </data>
+  <data name="MATCH" xml:space="preserve">
+    <value>Match</value>
+  </data>
+  <data name="REPLACE" xml:space="preserve">
+    <value>Replace</value>
+  </data>
   <data name="URLLIST" xml:space="preserve">
     <value>Url List</value>
   </data>

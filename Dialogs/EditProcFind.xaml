@@ -37,6 +37,12 @@
             <StackPanel Grid.Row="0" Orientation="Horizontal"
                         VerticalAlignment="Center" HorizontalAlignment="Right">
                 <Button Style="{StaticResource IconButton}"
+                        Height="30"
+                        Click="ToggleMode">
+                    <TextBlock Text="{Binding ModeName}"
+                               Foreground="White" />
+                </Button>
+                <Button Style="{StaticResource IconButton}"
                         Width="30" Height="30"
                         Click="AddRegex">
                     <i:IconPlusSign AutoScale="True" />

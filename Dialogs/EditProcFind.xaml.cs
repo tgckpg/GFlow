@@ -83,13 +83,18 @@ namespace libtaotu.Dialogs
             EditTarget.RegexPairs.Add( new ProcFind.RegItem() );
         }
 
+        private void ToggleMode( object sender, RoutedEventArgs e )
+        {
+            EditTarget.ToggleMode();
+        }
+
         private void SetPattern( object sender, RoutedEventArgs e )
         {
             TextBox Input = sender as TextBox;
             ProcFind.RegItem Item = Input.DataContext as ProcFind.RegItem;
             Item.Pattern = Input.Text;
 
-            Item.Validate();
+            Item.Validate( EditTarget.Mode );
         }
 
         private void SetFormat( object sender, RoutedEventArgs e )
@@ -98,7 +103,7 @@ namespace libtaotu.Dialogs
             ProcFind.RegItem Item = Input.DataContext as ProcFind.RegItem;
             Item.Format = Input.Text;
 
-            Item.Validate();
+            Item.Validate( EditTarget.Mode );
         }
 
         private void SetTestLink( object sender, RoutedEventArgs e )

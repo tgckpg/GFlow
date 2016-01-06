@@ -52,6 +52,7 @@ namespace libtaotu.Pages
         {
             MasterProcedure = Proc;
             PM = ( Proc as ISubProcedure ).SubProcedures;
+            TitleText.Text = Proc.TypeName;
 
             StringResources stx = new StringResources( "/libtaotu/ProcItems" );
             Dictionary<ProcType, string> ProcChoices = new Dictionary<ProcType, string>();

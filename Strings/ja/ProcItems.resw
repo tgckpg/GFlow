@@ -126,6 +126,12 @@
   <data name="MARK" xml:space="preserve">
     <value>標識</value>
   </data>
+  <data name="MATCH" xml:space="preserve">
+    <value>配合</value>
+  </data>
+  <data name="REPLACE" xml:space="preserve">
+    <value>替える</value>
+  </data>
   <data name="URLLIST" xml:space="preserve">
     <value>URLリスト</value>
   </data>

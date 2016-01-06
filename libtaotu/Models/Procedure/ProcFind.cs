@@ -17,26 +17,43 @@ namespace libtaotu.Models.Procedure
 {
     using Controls;
 
+    enum FindMode
+    {
+        MATCH = 1, REPLACE = 2
+    }
+
     class ProcFind : Procedure
     {
         public static readonly string ID = typeof( ProcFind ).Name;
+
+        public FindMode Mode { get; set; }
 
         public string TestLink { get; set; }
 
         public HashSet<string> FilteredContent { get; private set; }
         public ObservableCollection<RegItem> RegexPairs { get; private set; }
 
+        public string RawModeName { get; private set; }
+        public string ModeName { get; private set; }
+
         public ProcFind()
             : base( ProcType.FIND )
         {
             FilteredContent = new HashSet<string>();
             RegexPairs = new ObservableCollection<RegItem>();
+
+            SetMode( FindMode.MATCH );
         }
 
         public void RemoveRegex( RegItem Item )
         {
             RegexPairs.Remove( Item );
             NotifyChanged( "RegexPairs" );
+        }
+
+        public void ToggleMode()
+        {
+            SetMode( Mode == FindMode.REPLACE ? FindMode.MATCH : FindMode.REPLACE );
         }
 
         public override async Task<ProcConvoy> Run( ProcConvoy Convoy )
@@ -100,6 +117,12 @@ namespace libtaotu.Models.Procedure
                     if ( !R.Enabled ) continue;
                     RegExed = true;
 
+                    if( Mode == FindMode.REPLACE )
+                    {
+                        v = R.RegExObj.Replace( v, R.Format );
+                        continue;
+                    }
+
                     MatchCollection matches = R.RegExObj.Matches( v );
 
                     foreach ( Match match in matches )
@@ -116,7 +139,17 @@ namespace libtaotu.Models.Procedure
                     }
                 }
 
-                if( RegExed ) return OrderedMatchings.Values;
+                if ( RegExed )
+                {
+                    if( Mode == FindMode.MATCH )
+                    {
+                        return OrderedMatchings.Values;
+                    }
+                    else
+                    {
+                        return new string[] { v };
+                    }
+                }
             }
             catch ( Exception ex )
             {
@@ -126,10 +159,37 @@ namespace libtaotu.Models.Procedure
             return new string[] { v };
         }
 
+        private void SetMode( string name )
+        {
+            switch( name )
+            {
+                case "REPLACE":
+                    SetMode( FindMode.REPLACE );
+                    break;
+                case "MATCH":
+                default:
+                    SetMode( FindMode.MATCH );
+                    break;
+            }
+        }
+
+        private void SetMode( FindMode Mode )
+        {
+            this.Mode = Mode;
+            RawModeName = Enum.GetName( typeof( FindMode ), Mode );
+            ModeName = ProcStrRes.Str( RawModeName );
+
+            foreach ( RegItem R in RegexPairs ) R.Validate( Mode );
+
+            NotifyChanged( "RawModeName", "ModeName" );
+        }
+
         public override void ReadParam( XParameter Param )
         {
             XParameter[] RegParams = Param.GetParametersWithKey( "i" );
             TestLink = Param.GetValue( "TestLink" );
+            SetMode( Param.GetValue( "Mode" ) );
+
             foreach ( XParameter RegParam in RegParams )
             {
                 RegexPairs.Add( new RegItem( RegParam ) );
@@ -139,7 +199,10 @@ namespace libtaotu.Models.Procedure
         public override XParameter ToXParem()
         {
             XParameter Param = new XParameter( RawName );
-            Param.SetValue( new XKey( "TestLink", TestLink ) );
+            Param.SetValue( new XKey[] {
+                new XKey( "TestLink", TestLink )
+                , new XKey( "Mode", RawModeName )
+            } );
 
             int i = 0;
             foreach( RegItem R in RegexPairs )
@@ -211,12 +274,15 @@ namespace libtaotu.Models.Procedure
                 Enabled = Param.GetBool( "Enabled" );
             }
 
-            public bool Validate()
+            public bool Validate( FindMode Mode = FindMode.MATCH )
             {
                 try
                 {
                     Regex RegEx = RegExObj;
-                    string.Format( Format.Trim(), RegEx.GetGroupNames() );
+                    if( Mode == FindMode.MATCH )
+                    {
+                        string.Format( Format.Trim(), RegEx.GetGroupNames() );
+                    }
                     Valid = true;
                 }
                 catch( Exception ex )

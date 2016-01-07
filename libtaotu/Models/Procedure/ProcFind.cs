@@ -119,7 +119,7 @@ namespace libtaotu.Models.Procedure
 
                     if( Mode == FindMode.REPLACE )
                     {
-                        v = R.RegExObj.Replace( v, R.Format );
+                        v = R.RegExObj.Replace( v, R.Format.Unescape() );
                         continue;
                     }
 
@@ -128,7 +128,7 @@ namespace libtaotu.Models.Procedure
                     foreach ( Match match in matches )
                     {
                         string formatted = string.Format(
-                            R.Format
+                            R.Format.Unescape()
                             , match.Groups
                                 .Cast<Group>()
                                 .Select( g => g.Value )

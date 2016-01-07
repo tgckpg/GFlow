@@ -14,6 +14,7 @@ using Net.Astropenguin.Messaging;
 
 namespace libtaotu.Controls
 {
+    using Crawler;
     using Models.Procedure;
     using Pages;
 
@@ -101,6 +102,9 @@ namespace libtaotu.Controls
                 case ProcType.FIND:
                     Proc = new ProcFind();
                     break;
+                case ProcType.GENERATOR:
+                    Proc = new ProcGenerator();
+                    break;
                 case ProcType.EXTRACT:
                     Proc = ProcExtract.Create();
                     break;
@@ -119,41 +123,21 @@ namespace libtaotu.Controls
             this.To = To;
         }
 
-        public async Task<ProcConvoy> Run( ProcConvoy Convoy = null )
+        public ProceduralSpider CreateSpider()
         {
-            ProcConvoy Conveying = Convoy;
-            if( ProcList.Count == 0 )
+            IEnumerable<Procedure> SelectedProcs = ProcList;
+
+            if( 0 < From )
             {
-                PanelMessage( ID, "Proc list is empty, nothing to do", LogType.INFO );
-                return Convoy;
+                SelectedProcs = SelectedProcs.Skip( From );
             }
 
-            int i = 0;
-            foreach ( Procedure Proc in ProcList )
+            if( 0 < To )
             {
-                if ( 0 < To && To < i ) continue;
-                if ( ++i < From ) continue;
-
-                PanelMessage( ID, "Running " + Proc.TypeName, LogType.INFO );
-
-                try
-                {
-                    Proc.Running = true;
-                    ProcConvoy Received = await Proc.Run( Conveying );
-                    Conveying = Received;
-                    Proc.Running = false;
-                }
-                catch ( Exception ex )
-                {
-                    PanelMessage( ID, ex.Message, LogType.ERROR );
-                    Proc.Running = false;
-                    Proc.Faulted = true;
-                    return null;
-                }
+                SelectedProcs = SelectedProcs.Take( To - From );
             }
 
-            PanelMessage( ID, "Cycle Completed", LogType.INFO );
-            return Conveying;
+            return new ProceduralSpider( SelectedProcs );
         }
 
         public void RemoveProcedure( Procedure P )

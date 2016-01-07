@@ -7,20 +7,18 @@ using Windows.UI.Xaml.Controls;
 using Net.Astropenguin.DataModel;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Loaders;
-using Net.Astropenguin.Logging;
-using Net.Astropenguin.Messaging;
 
 namespace libtaotu.Models.Procedure
 {
-    using Pages;
-
     internal enum ProcType
     {
         URLLIST = 1,
-        FIND = 2,
-        MARK = 4,
-        EXTRACT = 8,
-        PAUSE = 16,
+        GENERATOR = 2,
+        FIND = 4,
+        MARK = 8,
+        EXTRACT = 16,
+        PAUSE = 32,
+        INSTRUCTION = 64,
     }
 
     abstract class Procedure : ActiveData, INamable
@@ -62,9 +60,9 @@ namespace libtaotu.Models.Procedure
             Name = TypeName;
         }
 
-        virtual public Task<ProcConvoy> Run( ProcConvoy Convoy )
+        virtual public async Task<ProcConvoy> Run( ProcConvoy Convoy )
         {
-            return Task.Run( () => this.Convoy = Convoy );
+            return await Task.Run( () => this.Convoy = Convoy );
         }
 
         virtual public void ReadParam( XParameter Param )

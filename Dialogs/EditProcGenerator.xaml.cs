@@ -5,8 +5,6 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.Storage;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -18,21 +16,19 @@ using Windows.UI.Xaml.Navigation;
 using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
 
-using libtaotu.Crawler;
 using libtaotu.Models.Procedure;
 using libtaotu.Resources;
+using libtaotu.Crawler;
 
 namespace libtaotu.Dialogs
 {
-    sealed partial class EditProcFind : ContentDialog
+    sealed partial class EditProcGenerator : ContentDialog
     {
         public static readonly string ID = typeof( EditProcFind ).Name;
 
-        private IStorageFile TestContent;
+        private ProcGenerator EditTarget;
 
-        private ProcFind EditTarget;
-
-        private EditProcFind()
+        private EditProcGenerator()
         {
             this.InitializeComponent();
             SetTemplate();
@@ -44,49 +40,57 @@ namespace libtaotu.Dialogs
             PrimaryButtonText = stx.Str( "OK" );
         }
 
-        public EditProcFind( ProcFind EditTarget )
+        public EditProcGenerator( ProcGenerator EditTarget )
             :this()
         {
             this.EditTarget = EditTarget;
 
-            if( EditTarget.RegexPairs.Count == 0 )
+            if( EditTarget.StopIfs.Count == 0 )
             {
-                EditTarget.RegexPairs.Add( new ProcFind.RegItem() );
+                EditTarget.StopIfs.Add( new ProcFind.RegItem( "", "", true ) );
+            }
+
+            if( EditTarget.NextIfs.Count == 0 )
+            {
+                EditTarget.NextIfs.Add( new ProcFind.RegItem( "", "", true ) );
             }
 
             RegexControl.DataContext = EditTarget;
-            if ( !string.IsNullOrEmpty( EditTarget.TestLink ) )
+            UrlList.ItemsSource = EditTarget.Urls;
+
+            if ( !string.IsNullOrEmpty( EditTarget.EntryPoint ) )
             {
-                TestLink.Text = EditTarget.TestLink;
+                EntryPoint.Text = EditTarget.EntryPoint;
             }
         }
 
         private async void PreviewProcess( object sender, RoutedEventArgs e )
         {
-            string Url = TestLink.Text.Trim();
+            string Url = EntryPoint.Text.Trim();
             if ( string.IsNullOrEmpty( Url ) ) return;
 
             try
             {
-                TestContent = await ProceduralSpider.DownloadSource( Url );
+                Procedure[] PList = new Procedure[ 1 ];
+                PList[ 0 ] = EditTarget;
+
+                await new ProceduralSpider( PList ).Crawl();
             }
             catch( Exception ex )
             {
                 Logger.Log( ID, ex.Message, LogType.INFO );
                 return;
             }
-
-            UpdateTestSubject();
         }
 
-        private void AddRegex( object sender, RoutedEventArgs e )
+        private void AddNexts( object sender, RoutedEventArgs e )
         {
-            EditTarget.RegexPairs.Add( new ProcFind.RegItem() );
+            EditTarget.NextIfs.Add( new ProcFind.RegItem( "", "", true ) );
         }
 
-        private void ToggleMode( object sender, RoutedEventArgs e )
+        private void AddStops( object sender, RoutedEventArgs e )
         {
-            EditTarget.ToggleMode();
+            EditTarget.StopIfs.Add( new ProcFind.RegItem( "", "", true ) );
         }
 
         private void SetPattern( object sender, RoutedEventArgs e )
@@ -95,7 +99,7 @@ namespace libtaotu.Dialogs
             ProcFind.RegItem Item = Input.DataContext as ProcFind.RegItem;
             Item.Pattern = Input.Text;
 
-            Item.Validate( EditTarget.Mode );
+            Item.Validate( FindMode.MATCH );
         }
 
         private void SetFormat( object sender, RoutedEventArgs e )
@@ -104,40 +108,36 @@ namespace libtaotu.Dialogs
             ProcFind.RegItem Item = Input.DataContext as ProcFind.RegItem;
             Item.Format = Input.Text;
 
-            Item.Validate( EditTarget.Mode );
+            Item.Validate( FindMode.MATCH );
         }
 
-        private void SetTestLink( object sender, RoutedEventArgs e )
+        private void SetEntryPoint( object sender, RoutedEventArgs e )
         {
             TextBox Input = sender as TextBox;
-            EditTarget.TestLink = Input.Text;
+            EditTarget.EntryPoint = Input.Text;
         }
 
-        private void RemoveRegex( object sender, RoutedEventArgs e )
+        private void FirstStopSkip( object sender, RoutedEventArgs e )
+        {
+            Button Input = sender as Button;
+            EditTarget.FirstStopSkip = !EditTarget.FirstStopSkip;
+        }
+
+        private void RemoveNextRegex( object sender, RoutedEventArgs e )
         {
             Button B = sender as Button;
-            EditTarget.RemoveRegex( B.DataContext as ProcFind.RegItem );
-
-            UpdateTestSubject();
+            EditTarget.NextIfs.Remove( B.DataContext as ProcFind.RegItem );
         }
 
-        private void ApplyRegex( object sender, RoutedEventArgs e )
+        private void RemoveStopRegex( object sender, RoutedEventArgs e )
         {
             Button B = sender as Button;
-            ProcFind.RegItem Item = B.DataContext as ProcFind.RegItem;
-
-            Item.Enabled = !Item.Enabled;
-
-            UpdateTestSubject();
+            EditTarget.StopIfs.Remove( B.DataContext as ProcFind.RegItem );
         }
 
-        private async void UpdateTestSubject()
+        private void SetIncoming( object sender, RoutedEventArgs e )
         {
-            if ( TestContent == null ) return;
-            IStorageFile ISF = await EditTarget.FilterContent( TestContent );
-
-            Frame.Navigate( Shared.SourceView, ISF );
-            FrameContainer.Visibility = Visibility.Visible;
+            EditTarget.Incoming = ( bool ) IncomingCheck.IsChecked;
         }
     }
 }

@@ -123,6 +123,9 @@
   <data name="FIND" xml:space="preserve">
     <value>Finder</value>
   </data>
+  <data name="GENERATOR" xml:space="preserve">
+    <value>Url Generator</value>
+  </data>
   <data name="MARK" xml:space="preserve">
     <value>Marker</value>
   </data>

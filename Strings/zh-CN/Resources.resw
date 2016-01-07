@@ -117,25 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="EXTRACT" xml:space="preserve">
-    <value>提取</value>
-  </data>
-  <data name="FIND" xml:space="preserve">
-    <value>过滤</value>
-  </data>
-  <data name="GENERATOR" xml:space="preserve">
-    <value>网址生成</value>
-  </data>
-  <data name="MARK" xml:space="preserve">
-    <value>标记</value>
-  </data>
-  <data name="MATCH" xml:space="preserve">
-    <value>配对</value>
-  </data>
-  <data name="REPLACE" xml:space="preserve">
-    <value>取代</value>
-  </data>
-  <data name="URLLIST" xml:space="preserve">
-    <value>网址列表</value>
+  <data name="Test.Text" xml:space="preserve">
+    <value>测试</value>
   </data>
 </root>

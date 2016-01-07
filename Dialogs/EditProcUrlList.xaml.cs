@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Navigation;
 
 using Net.Astropenguin.Loaders;
 
+using libtaotu.Crawler;
 using libtaotu.Models.Procedure;
 using libtaotu.Resources;
 
@@ -75,7 +76,7 @@ namespace libtaotu.Dialogs
         {
             Button B = sender as Button;
             string Url = B.DataContext as string;
-            Frame.Navigate( Shared.SourceView, await EditTarget.DownloadSource( Url ) );
+            Frame.Navigate( Shared.SourceView, await ProceduralSpider.DownloadSource( Url ) );
             FrameContainer.Visibility = Visibility.Visible;
         }
 

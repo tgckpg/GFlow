@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -16,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 using Net.Astropenguin.Controls;
 using Net.Astropenguin.Helpers;
+using Net.Astropenguin.IO;
 using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
 using Net.Astropenguin.Messaging;
@@ -25,6 +27,7 @@ using libtaotu.Controls;
 using libtaotu.Models.Interfaces;
 using libtaotu.Models.Procedure;
 using libtaotu.Resources;
+using Windows.UI.Popups;
 
 namespace libtaotu.Pages
 {
@@ -33,6 +36,10 @@ namespace libtaotu.Pages
         public static readonly string ID = typeof( ProceduresPanel ).Name;
 
         private bool Running = false;
+
+        // XXX: Use a proper location
+        private const string LocalFile = "Setting/Test.xml";
+
 
         private ProcManager RootManager;
         private ProcManager PM;
@@ -144,20 +151,80 @@ namespace libtaotu.Pages
         #endregion
 
         #region R/W & Run
+        private async void OpenProcedures( object sender, RoutedEventArgs e )
+        {
+            bool Yes = false;
+
+            StringResources stx = new StringResources( "Message" );
+            MessageDialog Msg = new MessageDialog( "Do you want to discard the current document?" );
+            Msg.Commands.Add( new UICommand( stx.Str( "Yes" ), x => Yes = true ) );
+            Msg.Commands.Add( new UICommand( stx.Str( "No" ) ) );
+
+            await Popups.ShowDialog( Msg );
+
+            if ( !Yes ) return;
+            RootManager = PM = new ProcManager();
+            ProcChains.Clear();
+            SelectedItem = null;
+            UpdateVisualData();
+
+            try
+            {
+                // Remove the file
+                new AppStorage().DeleteFile( LocalFile );
+
+                IStorageFile ISF = await AppStorage.OpenFileAsync( ".xml" );
+                if ( ISF == null ) return;
+
+                ProcManager.PanelMessage( ID, "Openning " + ISF.Name, LogType.INFO );
+                ReadXReg( new XRegistry( await ISF.ReadString(), LocalFile ) );
+                ProcManager.PanelMessage( ID, "Parse Success", LogType.INFO );
+
+                UpdateVisualData();
+            }
+            catch( Exception ex )
+            {
+                ProcManager.PanelMessage( ID, ex.Message, LogType.ERROR );
+                ProcManager.PanelMessage( ID, "Invalid XML?", LogType.ERROR );
+            }
+        }
+
         private void ReadProcedures()
         {
-            // XXX: Experimental Read/Write Settings
-            Net.Astropenguin.IO.XRegistry XReg = new Net.Astropenguin.IO.XRegistry( "<pp />", "Setting/Test.xml" );
-            Net.Astropenguin.IO.XParameter Param = XReg.GetParameters().FirstOrDefault();
+            ReadXReg( new XRegistry( "<ProcSpider />", LocalFile ) );
+        }
+
+        private void ReadXReg( XRegistry XReg )
+        {
+            XParameter Param = XReg.GetParameters().FirstOrDefault();
             if ( Param != null ) PM.ReadParam( Param );
         }
 
         private void ExportProcedures( object sender, RoutedEventArgs e )
         {
-            // XXX: Experimental Read/Write Settings
-            Net.Astropenguin.IO.XRegistry XReg = new Net.Astropenguin.IO.XRegistry( "<pp />", "Setting/Test.xml" );
+            XRegistry XReg = new XRegistry( "<ProcSpider />", LocalFile );
             XReg.SetParameter( RootManager.ToXParam() );
             XReg.Save();
+        }
+
+        private async void SaveAs( object sender, RoutedEventArgs e )
+        {
+            IStorageFile ISF = await AppStorage.SaveFileAsync( "XML", new List<string>() { ".xml" } );
+            if ( ISF == null ) return;
+
+            try
+            {
+                XRegistry XReg = new XRegistry( "<ProcSpider />", null );
+                ProcManager.PanelMessage( ID, "Output settings", LogType.INFO );
+                XReg.SetParameter( RootManager.ToXParam() );
+                await ISF.WriteString( XReg.ToString() );
+                ProcManager.PanelMessage( ID, "Save Success", LogType.INFO );
+            }
+            catch( Exception ex )
+            {
+                ProcManager.PanelMessage( ID, ex.Message, LogType.ERROR );
+                ProcManager.PanelMessage( ID, "Save Failed", LogType.ERROR );
+            }
         }
 
         private void RunProcedure( object sender, RoutedEventArgs e )
@@ -173,7 +240,7 @@ namespace libtaotu.Pages
         {
             if ( Running ) return;
             Running = true;
-            ProcConvoy Convoy = await PM.Run();
+            ProcConvoy Convoy = await PM.CreateSpider().Crawl();
             Running = false;
 
             MessageBus.SendUI( new Message( GetType(), "RUN_RESULT", Convoy ) );
@@ -241,7 +308,7 @@ namespace libtaotu.Pages
             if( Mesg.Content == "RUN" )
             {
                 if ( Running ) return;
-                PM.ActiveRange( 0, PM.ProcList.IndexOf( Mesg.Payload as Procedure ) );
+                PM.ActiveRange( 0, PM.ProcList.IndexOf( Mesg.Payload as Procedure ) + 1 );
                 ProcRun();
             }
 

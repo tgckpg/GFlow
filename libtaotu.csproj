@@ -106,6 +106,10 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="libtaotu.pfx" />
     <None Include="project.json" />
+    <PRIResource Include="Strings\zh-TW\Resources.resw" />
+    <PRIResource Include="Strings\zh-CN\Resources.resw" />
+    <PRIResource Include="Strings\ja\Resources.resw" />
+    <PRIResource Include="Strings\en-US\Resources.resw" />
     <PRIResource Include="Strings\zh-TW\ContextMenu.resw" />
     <PRIResource Include="Strings\zh-CN\ContextMenu.resw" />
     <PRIResource Include="Strings\ja\ContextMenu.resw" />
@@ -123,6 +127,9 @@
     <Compile Include="Dialogs\EditProcFind.xaml.cs">
       <DependentUpon>EditProcFind.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\EditProcGenerator.xaml.cs">
+      <DependentUpon>EditProcGenerator.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\EditProcUrlList.xaml.cs">
       <DependentUpon>EditProcUrlList.xaml</DependentUpon>
     </Compile>
@@ -133,6 +140,7 @@
     <Compile Include="libtaotu\Models\Procedure\Procedure.cs" />
     <Compile Include="libtaotu\Models\ProcConvoy.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcFind.cs" />
+    <Compile Include="libtaotu\Models\Procedure\ProcGenerator.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcMark.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcUrlList.cs" />
     <Compile Include="Pages\ProceduresPanel.xaml.cs">
@@ -150,6 +158,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Dialogs\EditProcFind.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\EditProcGenerator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

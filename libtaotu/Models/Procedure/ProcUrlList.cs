@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.Storage.Streams;
 using Windows.UI.Xaml.Controls;
 
 using Net.Astropenguin.Helpers;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
-using Net.Astropenguin.Loaders;
 
 namespace libtaotu.Models.Procedure
 {
     using Controls;
+    using Crawler;
 
     class ProcUrlList : Procedure
     {
@@ -40,7 +38,7 @@ namespace libtaotu.Models.Procedure
 
             if ( Incoming )
             {
-                ProcManager.PanelMessage( ID, "Checking Incoming Urls", LogType.INFO );
+                ProcManager.PanelMessage( this, "Checking Incoming Urls", LogType.INFO );
 
                 ProcConvoy UsableConvoy = ProcManager.TracePackage(
                     Convoy, ( P, C ) =>
@@ -72,14 +70,14 @@ namespace libtaotu.Models.Procedure
 
             foreach ( string u in Urls )
             {
-                ISF.Add( await DownloadSource( Prefix + u ) );
+                ISF.Add( await ProceduralSpider.DownloadSource( Prefix + u ) );
             }
 
             if ( ConvoyUrls != null )
             {
                 foreach ( string u in ConvoyUrls )
                 {
-                    ISF.Add( await DownloadSource( Prefix + u ) );
+                    ISF.Add( await ProceduralSpider.DownloadSource( Prefix + u ) );
                 }
             }
 
@@ -89,53 +87,6 @@ namespace libtaotu.Models.Procedure
         public override async Task Edit()
         {
             await Popups.ShowDialog( new Dialogs.EditProcUrlList( this ) );
-        }
-
-        public async Task<IStorageFile> DownloadSource( string url )
-        {
-            ProcManager.PanelMessage( this, "Downloading: " + url, LogType.INFO );
-
-            TaskCompletionSource<IStorageFile> TCS = new TaskCompletionSource<IStorageFile>();
-
-            try
-            {
-                HttpRequest Request = new HttpRequest( new Uri( url ) );
-
-                StorageFile SF = await AppStorage.MkTemp();
-                Request.OnRequestComplete += async ( DRequestCompletedEventArgs DArgs ) =>
-                {
-                    try
-                    {
-                        IRandomAccessStream IRS = await SF.OpenAsync( FileAccessMode.ReadWrite );
-
-                        try
-                        {
-                            await IRS.WriteAsync( DArgs.ResponseBytes.AsBuffer() );
-                        }
-                        catch ( Exception ex )
-                        {
-                            await IRS.WriteAsync( Encoding.UTF8.GetBytes( ex.Message ).AsBuffer() );
-                        }
-
-                        await IRS.FlushAsync();
-                        IRS.Dispose();
-                        TCS.SetResult( SF );
-                    }
-                    catch ( Exception ex )
-                    {
-                        ProcManager.PanelMessage( this, ex.Message, LogType.ERROR );
-                        TCS.SetResult( null );
-                    }
-                };
-
-                Request.OpenAsync();
-            }
-            catch ( Exception ex )
-            {
-                ProcManager.PanelMessage( ID, ex.Message, LogType.ERROR );
-                TCS.TrySetResult( null );
-            }
-            return await TCS.Task;
         }
 
         public override void ReadParam( XParameter Param )

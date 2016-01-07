@@ -1,0 +1,241 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Windows.Storage;
+
+using Net.Astropenguin.Helpers;
+using Net.Astropenguin.IO;
+using Net.Astropenguin.Logging;
+
+
+namespace libtaotu.Models.Procedure
+{
+    using Controls;
+    using Crawler;
+    class ProcGenerator : Procedure
+    {
+        public string EntryPoint { get; set; }
+
+        public HashSet<string> Urls { get; private set; }
+
+        public bool Incoming { get; set; }
+        public string Prefix { get; set; }
+
+        public ObservableCollection<ProcFind.RegItem> NextIfs { get; set; }
+        public ObservableCollection<ProcFind.RegItem> StopIfs { get; set; }
+
+        private bool _FirstStopSkip = false;
+        public bool FirstStopSkip
+        {
+            get { return _FirstStopSkip; }
+            set
+            {
+                _FirstStopSkip = value;
+                NotifyChanged( "FirstStopSkip" );
+            }
+        }
+
+        private bool FirstStopped = false;
+
+        public ProcGenerator()
+            :base( ProcType.GENERATOR )
+        {
+            NextIfs = new ObservableCollection<ProcFind.RegItem>();
+            StopIfs = new ObservableCollection<ProcFind.RegItem>();
+            Urls = new HashSet<string>();
+        }
+
+        public override async Task<ProcConvoy> Run( ProcConvoy Convoy )
+        {
+            await base.Run( Convoy );
+
+            string LoadUrl = null;
+            FirstStopped = false;
+
+            if ( Incoming )
+            {
+                ProcManager.PanelMessage( this, "Checking Incoming EntryPoint", LogType.INFO );
+
+                ProcConvoy UsableConvoy = ProcManager.TracePackage(
+                    Convoy, ( P, C ) =>
+                    {
+                        return C.Payload is IEnumerable<string> || C.Payload is string;
+                    }
+                );
+
+                if ( UsableConvoy != null )
+                {
+                    if ( UsableConvoy.Payload is string )
+                    {
+                        LoadUrl = UsableConvoy.Payload as string;
+                    }
+                    else
+                    {
+                        LoadUrl = ( UsableConvoy.Payload as IEnumerable<string> ).FirstOrDefault();
+                    }
+
+                    if( !string.IsNullOrEmpty( LoadUrl ) )
+                    {
+                        LoadUrl = WebUtility.HtmlDecode( LoadUrl );
+                    }
+                }
+            }
+
+            if ( string.IsNullOrEmpty( LoadUrl ) ) LoadUrl = EntryPoint;
+
+            if( string.IsNullOrEmpty( LoadUrl ) )
+            {
+                ProcManager.PanelMessage( this, "No entry point found, did you forget to add one?", LogType.WARNING );
+                return Convoy;
+            }
+
+            List<IStorageFile> ISFs = new List<IStorageFile>();
+            bool Continue = true;
+            Urls.Clear();
+
+            while ( Continue )
+            {
+                IStorageFile ISF = await ProceduralSpider.DownloadSource( LoadUrl );
+
+                string Matchee = await ISF.ReadString();
+                Continue = NextUrl( Matchee, out LoadUrl ) && !WillStop( Matchee );
+
+                if( Continue )
+                {
+                    ISFs.Add( ISF );
+                }
+            }
+
+            return new ProcConvoy( this, ISFs );
+        }
+
+        private bool NextUrl( string v, out string loadUrl )
+        {
+            loadUrl = null;
+            foreach( ProcFind.RegItem R in NextIfs )
+            {
+                if ( !R.Enabled ) continue;
+
+                MatchCollection matches = R.RegExObj.Matches( v );
+                foreach( Match match in matches )
+                {
+                    string formatted = string.Format(
+                        R.Format
+                        , match.Groups
+                            .Cast<Group>()
+                            .Select( g => g.Value )
+                            .ToArray()
+                    );
+
+                    formatted = WebUtility.HtmlDecode( formatted );
+                    if ( Urls.Contains( formatted ) ) continue;
+
+                    Urls.Add( formatted );
+
+                    loadUrl = formatted;
+                    return true;
+                }
+
+            }
+
+            return false;
+        }
+
+        private bool WillStop( string v )
+        {
+            foreach( ProcFind.RegItem Reg in StopIfs )
+            {
+                if ( !Reg.Enabled ) continue;
+
+                if ( Reg.RegExObj.IsMatch( v ) )
+                {
+                    if( FirstStopSkip && !FirstStopped )
+                    {
+                        FirstStopped = true;
+                        return false;
+                    }
+
+                    ProcManager.PanelMessage(
+                        this
+                        , string.Format( "Condition Matched: {0}, Stopping ...", Reg.Pattern )
+                        , LogType.INFO
+                    );
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public override void ReadParam( XParameter Param )
+        {
+            base.ReadParam( Param );
+
+            EntryPoint = Param.GetValue( "EntryPoint" );
+            Incoming = Param.GetBool( "Incoming" );
+            FirstStopSkip = Param.GetBool( "FirstStopSkip" );
+
+            XParameter NextParams = Param.GetParameter( "NextIfs" );
+            XParameter[] RegParams = NextParams.GetParametersWithKey( "i" );
+            foreach ( XParameter RegParam in RegParams )
+            {
+                NextIfs.Add( new ProcFind.RegItem( RegParam ) );
+            }
+
+            XParameter StopParams = Param.GetParameter( "StopIfs" );
+            RegParams = StopParams.GetParametersWithKey( "i" );
+            foreach ( XParameter RegParam in RegParams )
+            {
+                StopIfs.Add( new ProcFind.RegItem( RegParam ) );
+            }
+        }
+
+        public override XParameter ToXParem()
+        {
+            XParameter Param = base.ToXParem();
+
+            Param.SetValue( new XKey[] {
+                new XKey( "EntryPoint", EntryPoint )
+                , new XKey( "Incoming", Incoming )
+                , new XKey( "FirstStopSkip", FirstStopSkip )
+            } );
+
+            int i = 0;
+
+            XParameter NextParams = new XParameter( "NextIfs" );
+            foreach( ProcFind.RegItem R in NextIfs )
+            {
+                XParameter RegParam = R.ToXParam();
+                RegParam.ID += i;
+                RegParam.SetValue( new XKey( "i", i++ ) );
+
+                NextParams.SetParameter( RegParam );
+            }
+
+            XParameter StopParams = new XParameter( "StopIfs" );
+            foreach( ProcFind.RegItem R in StopIfs )
+            {
+                XParameter RegParam = R.ToXParam();
+                RegParam.ID += i;
+                RegParam.SetValue( new XKey( "i", i++ ) );
+
+                StopParams.SetParameter( RegParam );
+            }
+
+            Param.SetParameter( NextParams );
+            Param.SetParameter( StopParams );
+
+            return Param;
+        }
+
+        public override async Task Edit()
+        {
+            await Popups.ShowDialog( new Dialogs.EditProcGenerator( this ) );
+        }
+    }
+}

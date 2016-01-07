@@ -123,6 +123,9 @@
   <data name="FIND" xml:space="preserve">
     <value>濾過</value>
   </data>
+  <data name="GENERATOR" xml:space="preserve">
+    <value>URL生成</value>
+  </data>
   <data name="MARK" xml:space="preserve">
     <value>標識</value>
   </data>

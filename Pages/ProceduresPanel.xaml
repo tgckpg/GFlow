@@ -5,8 +5,7 @@
     xmlns:local="using:libtaotu.Pages"
     xmlns:p="using:Net.Astropenguin.UI"
     xmlns:i="using:Net.Astropenguin.UI.Icons"
-    xmlns:vp="using:Net.Astropenguin.UI.Converters"
-    xmlns:v="using:Net.Astropenguin.Helpers.Converters"
+    xmlns:v="using:Net.Astropenguin.UI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     NavigationCacheMode="Enabled"
@@ -54,7 +53,7 @@
             <Setter Property="MinHeight" Value="0"/>
         </Style>
 
-        <vp:BoolStateConverter x:Key="BoolStateConverter" />
+        <v:BoolStateConverter x:Key="BoolStateConverter" />
 
         <MenuFlyout x:Key="ProcedureContext">
             <MenuFlyoutItem x:Uid="/libtaotu/ContextMenu/Rename" Text="Rename" Click="RenameProcedure" />
@@ -78,7 +77,8 @@
         <StackPanel Grid.Row="0" Margin="10, 5"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right" VerticalAlignment="Center">
-            <ComboBox x:Name="ProcComboBox">
+            <ComboBox x:Name="ProcComboBox"
+                      VerticalAlignment="Center">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Value}" />
@@ -97,8 +97,24 @@
             </Button>
             <Button Style="{StaticResource IconButton}"
                     Width="40" Height="40"
+                    Click="OpenProcedures">
+                <i:IconLogout AutoScale="True" Direction="Rotate270"/>
+            </Button>
+            <Button Style="{StaticResource IconButton}"
+                    Width="40" Height="40"
                     Click="ExportProcedures">
                 <i:IconSave AutoScale="True"/>
+            </Button>
+            <Button Style="{StaticResource IconButton}"
+                    Width="40" Height="40"
+                    Click="SaveAs">
+                <Grid>
+                    <i:IconSave AutoScale="True"/>
+                    <i:IconStar Width="20" Height="20"
+                                Foreground="Yellow"
+                                HorizontalAlignment="Right" VerticalAlignment="Top"
+                                AutoScale="True"/>
+                </Grid>
             </Button>
         </StackPanel>
 

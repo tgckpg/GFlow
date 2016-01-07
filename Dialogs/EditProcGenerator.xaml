@@ -1,0 +1,211 @@
+﻿<ContentDialog
+    x:Class="libtaotu.Dialogs.EditProcGenerator"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:libtaotu.Dialogs"
+    xmlns:p="using:Net.Astropenguin.UI"
+    xmlns:i="using:Net.Astropenguin.UI.Icons"
+    xmlns:v="using:Net.Astropenguin.UI.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Style="{StaticResource ScrollContentDialog}"
+    Background="#111"
+    IsSecondaryButtonEnabled="False">
+    <ContentDialog.Resources>
+        <Style x:Key="StretchListItem" TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+        <v:BoolStateConverter x:Key="BoolStateConverter" />
+    </ContentDialog.Resources>
+    <ContentDialog.Title>
+        <TextBlock Text="Edit Url Generator" Foreground="White" />
+    </ContentDialog.Title>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <CheckBox x:Name="IncomingCheck" Foreground="White"
+                      Unchecked="SetIncoming" Checked="SetIncoming" >
+                <TextBlock Text="Incoming" />
+            </CheckBox>
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox x:Name="EntryPoint" PlaceholderText="Entry Point"
+                         LostFocus="SetEntryPoint"
+                         Grid.Column="0" />
+
+                <Button Style="{StaticResource IconButton}"
+                        HorizontalAlignment="Left" VerticalAlignment="Center"
+                        Grid.Column="1"
+                        Click="PreviewProcess">
+                    <Grid Height="30">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ProgressRing x:Name="TestRunning" Width="30" Height="30" />
+                        <i:IconTestTube AutoScale="True" />
+                        <TextBlock Grid.Column="1" x:Uid="/libtaotu/Resources/Test"
+                                   Margin="5" Foreground="{StaticResource RelativeMajorBackgroundBrush}"
+                                   VerticalAlignment="Center" HorizontalAlignment="Center"
+                                   Text="Test" />
+                    </Grid>
+                </Button>
+
+            </Grid>
+        </StackPanel>
+
+        <Grid x:Name="RegexControl" Grid.Row="1" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Horizontal"
+                        VerticalAlignment="Center" HorizontalAlignment="Right">
+                <Button Style="{StaticResource IconButton}"
+                        Width="30" Height="30"
+                        Click="AddNexts">
+                    <i:IconPlusSign AutoScale="True" />
+                </Button>
+            </StackPanel>
+            <ListView Grid.Row="1" ItemsSource="{Binding NextIfs}"
+                      ItemContainerStyle="{StaticResource StretchListItem}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox Grid.Column="0"
+                                     PlaceholderText="Pattern" Margin="3"
+                                     Text="{Binding Pattern}"
+                                     FontFamily="Lucida Console"
+                                     LostFocus="SetPattern"/>
+
+                            <TextBox Grid.Column="1"
+                                     PlaceholderText="Format" Margin="3"
+                                     Text="{Binding Format}"
+                                     FontFamily="Lucida Console"
+                                     LostFocus="SetFormat"/>
+
+                            <Border Grid.Column="2"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    Width="30" Height="30" >
+                                    <i:IconTick AutoScale="True" Foreground="White"/>
+                            </Border>
+
+                            <Button Style="{StaticResource IconButton}"
+                                    Grid.Column="3"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    Width="30" Height="30"
+                                    Click="RemoveNextRegex">
+                                <i:IconCross AutoScale="True" />
+                            </Button>
+
+                            <p:StateControl Grid.Column="2"
+                                            State="{Binding Valid, Converter={StaticResource BoolStateConverter}, ConverterParameter=1}">
+                                <Border Width="30" Height="30" Background="OrangeRed">
+                                    <TextBlock Text="!" Foreground="White" FontWeight="Bold" FontSize="20"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                            </p:StateControl>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal"
+                        VerticalAlignment="Center" HorizontalAlignment="Right">
+                <Button Style="{StaticResource IconButton}"
+                        Width="30" Height="30"
+                        Click="FirstStopSkip">
+                    <Grid>
+                        <p:StateControl State="{Binding FirstStopSkip, Converter={StaticResource BoolStateConverter}}">
+                            <Rectangle Fill="DodgerBlue" Width="30" Height="30" />
+                        </p:StateControl>
+                        <TextBlock Foreground="White" FontFamily="Lucida Console"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Text="2" />
+                    </Grid>
+                </Button>
+                <Button Style="{StaticResource IconButton}"
+                        Width="30" Height="30"
+                        Click="AddStops">
+                    <i:IconPlusSign AutoScale="True" />
+                </Button>
+            </StackPanel>
+            <ListView Grid.Row="3" ItemsSource="{Binding StopIfs}"
+                      ItemContainerStyle="{StaticResource StretchListItem}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox Grid.Column="0"
+                                     PlaceholderText="Pattern" Margin="3"
+                                     Text="{Binding Pattern}"
+                                     FontFamily="Lucida Console"
+                                     LostFocus="SetPattern"/>
+
+                            <Border Grid.Column="1"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    Width="30" Height="30" >
+                                    <i:IconTick AutoScale="True" Foreground="White"/>
+                            </Border>
+
+                            <Button Style="{StaticResource IconButton}"
+                                    Grid.Column="2"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    Width="30" Height="30"
+                                    Click="RemoveStopRegex">
+                                <i:IconCross AutoScale="True" />
+                            </Button>
+
+                            <p:StateControl Grid.Column="2"
+                                            State="{Binding Valid, Converter={StaticResource BoolStateConverter}, ConverterParameter=1}">
+                                <Border Width="30" Height="30" Background="OrangeRed">
+                                    <TextBlock Text="!" Foreground="White" FontWeight="Bold" FontSize="20"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                            </p:StateControl>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+
+        <ListView x:Name="UrlList"
+                  Grid.Row="2" Margin="5">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Grid.Column="2" Foreground="White"
+                               Text="{Binding}" Margin="5"
+                               TextTrimming="WordEllipsis"
+                               VerticalAlignment="Center"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</ContentDialog>

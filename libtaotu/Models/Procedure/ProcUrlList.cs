@@ -103,9 +103,9 @@ namespace libtaotu.Models.Procedure
             }
         }
 
-        public override XParameter ToXParem()
+        public override XParameter ToXParam()
         {
-            XParameter Param = base.ToXParem();
+            XParameter Param = base.ToXParam();
             int i = 0;
 
             Param.SetValue( new XKey[] {

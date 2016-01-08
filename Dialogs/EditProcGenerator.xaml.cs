@@ -16,12 +16,12 @@ using Windows.UI.Xaml.Navigation;
 using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
 
-using libtaotu.Models.Procedure;
-using libtaotu.Resources;
-using libtaotu.Crawler;
-
 namespace libtaotu.Dialogs
 {
+    using Crawler;
+    using Controls;
+    using Models.Procedure;
+
     sealed partial class EditProcGenerator : ContentDialog
     {
         public static readonly string ID = typeof( EditProcFind ).Name;
@@ -56,7 +56,6 @@ namespace libtaotu.Dialogs
             }
 
             RegexControl.DataContext = EditTarget;
-            UrlList.ItemsSource = EditTarget.Urls;
 
             if ( !string.IsNullOrEmpty( EditTarget.EntryPoint ) )
             {
@@ -78,8 +77,7 @@ namespace libtaotu.Dialogs
             }
             catch( Exception ex )
             {
-                Logger.Log( ID, ex.Message, LogType.INFO );
-                return;
+                ProcManager.PanelMessage( ID, ex.Message, LogType.INFO );
             }
         }
 
@@ -121,6 +119,12 @@ namespace libtaotu.Dialogs
         {
             Button Input = sender as Button;
             EditTarget.FirstStopSkip = !EditTarget.FirstStopSkip;
+        }
+
+        private void DiscardUnmatched( object sender, RoutedEventArgs e )
+        {
+            Button Input = sender as Button;
+            EditTarget.DiscardUnmatched = !EditTarget.DiscardUnmatched;
         }
 
         private void RemoveNextRegex( object sender, RoutedEventArgs e )

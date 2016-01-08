@@ -63,7 +63,8 @@ namespace libtaotu.Models.Procedure
             ProcConvoy UsableConvoy = ProcManager.TracePackage(
                 Convoy, ( P, C ) =>
                 {
-                    return C.Payload is IEnumerable<IStorageFile>;
+                    return C.Payload is IEnumerable<IStorageFile>
+                    || C.Payload is string;
                 }
             );
 
@@ -75,11 +76,19 @@ namespace libtaotu.Models.Procedure
             }
 
             List<IStorageFile> TargetFiles = new List<IStorageFile>();
-            IEnumerable<IStorageFile> SrcFiles = UsableConvoy.Payload as IEnumerable<IStorageFile>;
-
-            foreach( IStorageFile ISF in SrcFiles )
+            if ( UsableConvoy.Payload is string )
             {
-                TargetFiles.Add( await FilterContent( ISF ) );
+                IStorageFile ISF = await AppStorage.MkTemp();
+                TargetFiles.Add( await FilterContent( ISF, UsableConvoy.Payload as string ) );
+            }
+            else
+            {
+                IEnumerable<IStorageFile> SrcFiles = UsableConvoy.Payload as IEnumerable<IStorageFile>;
+
+                foreach ( IStorageFile ISF in SrcFiles )
+                {
+                    TargetFiles.Add( await FilterContent( ISF ) );
+                }
             }
 
             return new ProcConvoy( this, TargetFiles );
@@ -92,9 +101,12 @@ namespace libtaotu.Models.Procedure
 
         public async Task<IStorageFile> FilterContent( IStorageFile Src )
         {
-            StorageFile SF = await AppStorage.MkTemp();
+            return await FilterContent( await AppStorage.MkTemp(), await Src.ReadString() );
+        }
 
-            IEnumerable<string> str = Parse( await Src.ReadString() );
+        public async Task<IStorageFile> FilterContent( IStorageFile SF, string Content )
+        {
+            IEnumerable<string> str = Parse( Content );
 
             if ( await SF.WriteString( string.Join( "\n", str ) ) )
             {
@@ -198,9 +210,9 @@ namespace libtaotu.Models.Procedure
             }
         }
 
-        public override XParameter ToXParem()
+        public override XParameter ToXParam()
         {
-            XParameter Param = base.ToXParem();
+            XParameter Param = base.ToXParam();
 
             Param.SetValue( new XKey[] {
                 new XKey( "TestLink", TestLink )
@@ -297,8 +309,7 @@ namespace libtaotu.Models.Procedure
                 return Valid;
             }
 
-
-            public XParameter ToXParam()
+            virtual public XParameter ToXParam()
             {
                 XParameter Param = new XParameter( "RegItem" );
                 Param.SetValue( new XKey[] {

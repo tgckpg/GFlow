@@ -23,6 +23,7 @@ namespace libtaotu.Controls
         public static readonly string ID = typeof( ProcManager ).Name;
 
         public ObservableCollection<Procedure> ProcList { get; private set; }
+        public bool HasProcedures { get { return 0 < ProcList.Count; } }
         public bool Async { get; set; }
 
         private Guid _Guid;
@@ -191,7 +192,7 @@ namespace libtaotu.Controls
             int i = 0;
             foreach ( Procedure P in ProcList )
             {
-                XParameter ProcParam = P.ToXParem();
+                XParameter ProcParam = P.ToXParam();
                 ProcParam.ID = "Proc" + ( i++ );
                 ProcParam.SetValue( new XKey( "ProcType", P.RawName ) );
                 Param.SetParameter( ProcParam );

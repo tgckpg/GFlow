@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Storage;
 
+using Net.Astropenguin.DataModel;
 using Net.Astropenguin.Helpers;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
@@ -17,11 +18,12 @@ namespace libtaotu.Models.Procedure
 {
     using Controls;
     using Crawler;
+
     class ProcGenerator : Procedure
     {
         public string EntryPoint { get; set; }
 
-        public HashSet<string> Urls { get; private set; }
+        public ObservableHashSet<string> Urls { get; private set; }
 
         public bool Incoming { get; set; }
         public string Prefix { get; set; }
@@ -40,6 +42,17 @@ namespace libtaotu.Models.Procedure
             }
         }
 
+        private bool _DiscardUnmatched = false;
+        public bool DiscardUnmatched
+        {
+            get { return _DiscardUnmatched; }
+            set
+            {
+                _DiscardUnmatched = value;
+                NotifyChanged( "DiscardUnmatched" );
+            }
+        }
+
         private bool FirstStopped = false;
 
         public ProcGenerator()
@@ -47,7 +60,7 @@ namespace libtaotu.Models.Procedure
         {
             NextIfs = new ObservableCollection<ProcFind.RegItem>();
             StopIfs = new ObservableCollection<ProcFind.RegItem>();
-            Urls = new HashSet<string>();
+            Urls = new ObservableHashSet<string>();
         }
 
         public override async Task<ProcConvoy> Run( ProcConvoy Convoy )
@@ -97,15 +110,22 @@ namespace libtaotu.Models.Procedure
             List<IStorageFile> ISFs = new List<IStorageFile>();
             bool Continue = true;
             Urls.Clear();
+            NotifyChanged( "Urls" );
 
             while ( Continue )
             {
+                if( string.IsNullOrEmpty( LoadUrl ) )
+                {
+                    ProcManager.PanelMessage( this, "Condition matched but no URL to carry on", LogType.ERROR );
+                    break;
+                }
+
                 IStorageFile ISF = await ProceduralSpider.DownloadSource( LoadUrl );
 
                 string Matchee = await ISF.ReadString();
                 Continue = NextUrl( Matchee, out LoadUrl ) && !WillStop( Matchee );
 
-                if( Continue )
+                if ( Continue || !DiscardUnmatched )
                 {
                     ISFs.Add( ISF );
                 }
@@ -117,6 +137,7 @@ namespace libtaotu.Models.Procedure
         private bool NextUrl( string v, out string loadUrl )
         {
             loadUrl = null;
+            bool Continue = false;
             foreach( ProcFind.RegItem R in NextIfs )
             {
                 if ( !R.Enabled ) continue;
@@ -135,15 +156,18 @@ namespace libtaotu.Models.Procedure
                     formatted = WebUtility.HtmlDecode( formatted );
                     if ( Urls.Contains( formatted ) ) continue;
 
+                    Continue = true;
+                    if ( string.IsNullOrEmpty( formatted ) ) continue;
+
                     Urls.Add( formatted );
+                    NotifyChanged( "Urls" );
 
                     loadUrl = formatted;
-                    return true;
                 }
 
             }
 
-            return false;
+            return Continue;
         }
 
         private bool WillStop( string v )
@@ -179,6 +203,7 @@ namespace libtaotu.Models.Procedure
             EntryPoint = Param.GetValue( "EntryPoint" );
             Incoming = Param.GetBool( "Incoming" );
             FirstStopSkip = Param.GetBool( "FirstStopSkip" );
+            DiscardUnmatched = Param.GetBool( "DiscardUnmatched" );
 
             XParameter NextParams = Param.GetParameter( "NextIfs" );
             XParameter[] RegParams = NextParams.GetParametersWithKey( "i" );
@@ -195,14 +220,15 @@ namespace libtaotu.Models.Procedure
             }
         }
 
-        public override XParameter ToXParem()
+        public override XParameter ToXParam()
         {
-            XParameter Param = base.ToXParem();
+            XParameter Param = base.ToXParam();
 
             Param.SetValue( new XKey[] {
                 new XKey( "EntryPoint", EntryPoint )
                 , new XKey( "Incoming", Incoming )
                 , new XKey( "FirstStopSkip", FirstStopSkip )
+                , new XKey( "DiscardUnmatched", DiscardUnmatched )
             } );
 
             int i = 0;

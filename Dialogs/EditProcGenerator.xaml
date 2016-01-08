@@ -17,13 +17,20 @@
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="Padding" Value="0" />
         </Style>
+
+        <Style x:Key="LogStyle" TargetType="ListViewItem">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="MinWidth" Value="0"/>
+            <Setter Property="MinHeight" Value="0"/>
+        </Style>
+
         <v:BoolStateConverter x:Key="BoolStateConverter" />
     </ContentDialog.Resources>
     <ContentDialog.Title>
         <TextBlock Text="Edit Url Generator" Foreground="White" />
     </ContentDialog.Title>
 
-    <Grid>
+    <Grid x:Name="RegexControl">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -66,13 +73,17 @@
             </Grid>
         </StackPanel>
 
-        <Grid x:Name="RegexControl" Grid.Row="1" Margin="5">
+        <Grid Grid.Row="1" Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Margin="3"
+                       Foreground="White"
+                       VerticalAlignment="Center"
+                       Text="Continue if match with url" />
             <StackPanel Grid.Row="0" Orientation="Horizontal"
                         VerticalAlignment="Center" HorizontalAlignment="Right">
                 <Button Style="{StaticResource IconButton}"
@@ -132,8 +143,24 @@
             </ListView>
 
 
+            <TextBlock Grid.Row="2" Margin="3"
+                       Foreground="White"
+                       VerticalAlignment="Center"
+                       Text="Stop if" />
             <StackPanel Grid.Row="2" Orientation="Horizontal"
                         VerticalAlignment="Center" HorizontalAlignment="Right">
+                <Button Style="{StaticResource IconButton}"
+                        Width="30" Height="30"
+                        Click="DiscardUnmatched">
+                    <Grid>
+                        <p:StateControl State="{Binding DiscardUnmatched, Converter={StaticResource BoolStateConverter}}">
+                            <Rectangle Fill="DodgerBlue" Width="30" Height="30" />
+                        </p:StateControl>
+                        <TextBlock Foreground="White" FontFamily="Lucida Console"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Text="2" />
+                    </Grid>
+                </Button>
                 <Button Style="{StaticResource IconButton}"
                         Width="30" Height="30"
                         Click="FirstStopSkip">
@@ -141,9 +168,7 @@
                         <p:StateControl State="{Binding FirstStopSkip, Converter={StaticResource BoolStateConverter}}">
                             <Rectangle Fill="DodgerBlue" Width="30" Height="30" />
                         </p:StateControl>
-                        <TextBlock Foreground="White" FontFamily="Lucida Console"
-                                   HorizontalAlignment="Center" VerticalAlignment="Center"
-                                   Text="2" />
+                        <i:IconCross AutoScale="True" Foreground="White" />
                     </Grid>
                 </Button>
                 <Button Style="{StaticResource IconButton}"
@@ -196,13 +221,14 @@
             </ListView>
         </Grid>
 
-        <ListView x:Name="UrlList"
+        <ListView ItemsSource="{Binding Urls}"
+                  ItemContainerStyle="{StaticResource LogStyle}"
                   Grid.Row="2" Margin="5">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Grid.Column="2" Foreground="White"
                                Text="{Binding}" Margin="5"
-                               TextTrimming="WordEllipsis"
+                               TextTrimming="CharacterEllipsis"
                                VerticalAlignment="Center"/>
                 </DataTemplate>
             </ListView.ItemTemplate>

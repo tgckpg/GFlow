@@ -17,8 +17,9 @@ namespace libtaotu.Models.Procedure
         FIND = 4,
         MARK = 8,
         EXTRACT = 16,
-        PAUSE = 32,
+        DUMMY = 32,
         INSTRUCTION = 64,
+        PASSTHRU = 128,
     }
 
     abstract class Procedure : ActiveData, INamable
@@ -71,7 +72,7 @@ namespace libtaotu.Models.Procedure
             if ( PName != null ) Name = PName;
         }
 
-        virtual public XParameter ToXParem()
+        virtual public XParameter ToXParam()
         {
             XParameter Param = new XParameter( RawName );
             if( Name != TypeName )

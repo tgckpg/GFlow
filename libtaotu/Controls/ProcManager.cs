@@ -164,7 +164,7 @@ namespace libtaotu.Controls
         {
             XParameter[] ProcParams = List.GetParametersWithKey( "ProcType" );
             Async = List.GetBool( "Async", false );
-            if( !Guid.TryParse( "NAN", out _Guid ) )
+            if( !Guid.TryParse( List.GetValue( "Guid" ), out _Guid ) )
             {
                 _Guid = Guid.NewGuid();
             }

@@ -255,7 +255,7 @@ namespace libtaotu.Models.Procedure
 
             private bool _enabled = false;
 
-            public bool Enabled
+            virtual public bool Enabled
             {
                 get
                 {

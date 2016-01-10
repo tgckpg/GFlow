@@ -27,7 +27,8 @@
         <v:BoolStateConverter x:Key="BoolStateConverter" />
     </ContentDialog.Resources>
     <ContentDialog.Title>
-        <TextBlock Text="Edit Url Generator" Foreground="White" />
+        <TextBlock x:Uid="/libtaotu/Resources/UrlGenerator"
+                   Text="Edit Url Generator" Foreground="White" />
     </ContentDialog.Title>
 
     <Grid x:Name="RegexControl">
@@ -40,7 +41,7 @@
         <StackPanel Grid.Row="0">
             <CheckBox x:Name="IncomingCheck" Foreground="White"
                       Unchecked="SetIncoming" Checked="SetIncoming" >
-                <TextBlock Text="Incoming" />
+                <TextBlock x:Uid="/libtaotu/Resources/Incoming" Text="Incoming" />
             </CheckBox>
             <Grid Margin="5">
                 <Grid.ColumnDefinitions>
@@ -48,7 +49,9 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <TextBox x:Name="EntryPoint" PlaceholderText="Entry Point"
+                <TextBox x:Name="EntryPoint"
+                         x:Uid="/libtaotu/Resources/EntryPoint"
+                         PlaceholderText="Entry Point"
                          LostFocus="SetEntryPoint"
                          Grid.Column="0" />
 
@@ -80,7 +83,10 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+
+            <!-- Continue If -->
             <TextBlock Grid.Row="0" Margin="3"
+                       x:Uid="/libtaotu/Resources/ContinueIf"
                        Foreground="White"
                        VerticalAlignment="Center"
                        Text="Continue if match with url" />
@@ -105,12 +111,14 @@
                             </Grid.ColumnDefinitions>
 
                             <TextBox Grid.Column="0"
+                                     x:Uid="/libtaotu/Resources/Pattern"
                                      PlaceholderText="Pattern" Margin="3"
                                      Text="{Binding Pattern}"
                                      FontFamily="Lucida Console"
                                      LostFocus="SetPattern"/>
 
                             <TextBox Grid.Column="1"
+                                     x:Uid="/libtaotu/Resources/Format"
                                      PlaceholderText="Format" Margin="3"
                                      Text="{Binding Format}"
                                      FontFamily="Lucida Console"
@@ -143,15 +151,20 @@
             </ListView>
 
 
+            <!-- Stop If -->
             <TextBlock Grid.Row="2" Margin="3"
+                       x:Uid="/libtaotu/Resources/StopIf"
                        Foreground="White"
                        VerticalAlignment="Center"
                        Text="Stop if" />
             <StackPanel Grid.Row="2" Orientation="Horizontal"
                         VerticalAlignment="Center" HorizontalAlignment="Right">
+                <!-- First Stop Skip -->
                 <Button Style="{StaticResource IconButton}"
+                        x:Uid="/libtaotu/Resources/FirstStopSkip"
+                        ToolTipService.ToolTip="First stop skip"
                         Width="30" Height="30"
-                        Click="DiscardUnmatched">
+                        Click="FirstStopSkip">
                     <Grid>
                         <p:StateControl State="{Binding DiscardUnmatched, Converter={StaticResource BoolStateConverter}}">
                             <Rectangle Fill="DodgerBlue" Width="30" Height="30" />
@@ -161,9 +174,12 @@
                                    Text="2" />
                     </Grid>
                 </Button>
+                <!-- Discard Unmatched -->
                 <Button Style="{StaticResource IconButton}"
                         Width="30" Height="30"
-                        Click="FirstStopSkip">
+                        x:Uid="/libtaotu/Resources/DiscardUnmatched"
+                        ToolTipService.ToolTip="Discard unmatched"
+                        Click="DiscardUnmatched">
                     <Grid>
                         <p:StateControl State="{Binding FirstStopSkip, Converter={StaticResource BoolStateConverter}}">
                             <Rectangle Fill="DodgerBlue" Width="30" Height="30" />
@@ -189,6 +205,7 @@
                             </Grid.ColumnDefinitions>
 
                             <TextBox Grid.Column="0"
+                                     x:Uid="/libtaotu/Resources/Pattern"
                                      PlaceholderText="Pattern" Margin="3"
                                      Text="{Binding Pattern}"
                                      FontFamily="Lucida Console"

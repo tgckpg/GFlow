@@ -20,7 +20,8 @@
         <v:BoolStateConverter x:Key="BoolStateConverter" />
     </ContentDialog.Resources>
     <ContentDialog.Title>
-        <TextBlock Text="Edit Find Conditions" Foreground="White" />
+        <TextBlock x:Uid="/libtaotu/Resources/FindConditions"
+                   Text="Edit Find Conditions" Foreground="White" />
     </ContentDialog.Title>
     <Grid>
         <Grid.RowDefinitions>
@@ -61,12 +62,14 @@
                             </Grid.ColumnDefinitions>
 
                             <TextBox Grid.Column="0"
+                                     x:Uid="/libtaotu/Resources/Pattern"
                                      PlaceholderText="Pattern" Margin="3"
                                      Text="{Binding Pattern}"
                                      FontFamily="Lucida Console"
                                      LostFocus="SetPattern"/>
 
                             <TextBox Grid.Column="1"
+                                     x:Uid="/libtaotu/Resources/Format"
                                      PlaceholderText="Format" Margin="3"
                                      Text="{Binding Format}"
                                      FontFamily="Lucida Console"

@@ -16,6 +16,7 @@ using Net.Astropenguin.Logging;
 namespace libtaotu.Models.Procedure
 {
     using Controls;
+    using Pages;
 
     enum FindMode
     {
@@ -70,7 +71,7 @@ namespace libtaotu.Models.Procedure
 
             if( UsableConvoy == null )
             {
-                ProcManager.PanelMessage( this, "Unable to find a usable payload, skipping this step", LogType.WARNING );
+                ProcManager.PanelMessage( this, ProceduresPanel.RSTR( "NoUsablePayload" ), LogType.WARNING );
                 Faulted = true;
                 return Convoy;
             }

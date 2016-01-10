@@ -117,61 +117,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Async.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>異步進程</value>
+  <data name="Download" xml:space="preserve">
+    <value>ダウンロード</value>
   </data>
-  <data name="ContinueIf.Text" xml:space="preserve">
-    <value>當符合指定 URL 時繼續</value>
+  <data name="EmptyCrawling" xml:space="preserve">
+    <value>手順リストは空です -&gt; 何もしない。</value>
   </data>
-  <data name="DiscardUnmatched.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>取消不符合的項目</value>
+  <data name="EmptyUrlList" xml:space="preserve">
+    <value>リストは空です。URLを追加することを忘れたのか？</value>
   </data>
-  <data name="EntryPoint.PlaceholderText" xml:space="preserve">
-    <value>進入點</value>
+  <data name="IncomingCheck" xml:space="preserve">
+    <value>着信のパラメータを確認</value>
   </data>
-  <data name="Extractor.Text" xml:space="preserve">
-    <value>提取信息</value>
+  <data name="InvalidXML" xml:space="preserve">
+    <value>無効なXML？</value>
   </data>
-  <data name="FindConditions.Text" xml:space="preserve">
-    <value>搜索條件</value>
+  <data name="NoUsablePayload" xml:space="preserve">
+    <value>使用可能なペイロードを見つけることができません。このステップをスキップします。</value>
   </data>
-  <data name="FirstStopSkip.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>撇除首次吻合</value>
+  <data name="ParseOK" xml:space="preserve">
+    <value>パースOK</value>
   </data>
-  <data name="Format.PlaceholderText" xml:space="preserve">
-    <value>格式</value>
+  <data name="ProceduralSpider" xml:space="preserve">
+    <value>蜘蛛</value>
   </data>
-  <data name="Incoming.Text" xml:space="preserve">
-    <value>傳入的參數</value>
+  <data name="Reading" xml:space="preserve">
+    <value>読み取り</value>
   </data>
-  <data name="Marker.Text" xml:space="preserve">
-    <value>標籤對應</value>
+  <data name="RunComplete" xml:space="preserve">
+    <value>実行完了</value>
   </data>
-  <data name="Param.PlaceholderText" xml:space="preserve">
-    <value>參數 &gt;</value>
+  <data name="Running" xml:space="preserve">
+    <value>実行</value>
   </data>
-  <data name="Pattern.PlaceholderText" xml:space="preserve">
-    <value>正規表示式</value>
+  <data name="Saved" xml:space="preserve">
+    <value>保存されました</value>
   </data>
-  <data name="Prefix.PlaceholderText" xml:space="preserve">
-    <value>前綴</value>
+  <data name="SaveFailed" xml:space="preserve">
+    <value>保存失敗しました</value>
   </data>
-  <data name="StopIf.Text" xml:space="preserve">
-    <value>停止條件</value>
-  </data>
-  <data name="SubProcs.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>子程序</value>
-  </data>
-  <data name="Sync.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>同步進程</value>
-  </data>
-  <data name="Test.Text" xml:space="preserve">
-    <value>測試</value>
-  </data>
-  <data name="UrlGenerator.Text" xml:space="preserve">
-    <value>生成網址</value>
-  </data>
-  <data name="UrlList.Text" xml:space="preserve">
-    <value>網址列表</value>
+  <data name="Welcome" xml:space="preserve">
+    <value>ようこそ、手続きクモのコントロールパネル</value>
   </data>
 </root>

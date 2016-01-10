@@ -106,6 +106,10 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <None Include="libtaotu.pfx" />
     <None Include="project.json" />
+    <PRIResource Include="Strings\zh-TW\PanelMessage.resw" />
+    <PRIResource Include="Strings\zh-CN\PanelMessage.resw" />
+    <PRIResource Include="Strings\ja\PanelMessage.resw" />
+    <PRIResource Include="Strings\en-US\PanelMessage.resw" />
     <PRIResource Include="Strings\zh-TW\Resources.resw" />
     <PRIResource Include="Strings\zh-CN\Resources.resw" />
     <PRIResource Include="Strings\ja\Resources.resw" />

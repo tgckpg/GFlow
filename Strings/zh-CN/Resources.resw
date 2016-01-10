@@ -117,7 +117,61 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Async.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>异步进程</value>
+  </data>
+  <data name="ContinueIf.Text" xml:space="preserve">
+    <value>当符合指定 URL 时继续</value>
+  </data>
+  <data name="DiscardUnmatched.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>撤销未匹配项目</value>
+  </data>
+  <data name="EntryPoint.PlaceholderText" xml:space="preserve">
+    <value>进入点</value>
+  </data>
+  <data name="Extractor.Text" xml:space="preserve">
+    <value>提取信息</value>
+  </data>
+  <data name="FindConditions.Text" xml:space="preserve">
+    <value>搜索条件</value>
+  </data>
+  <data name="FirstStopSkip.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>撇除首次吻合</value>
+  </data>
+  <data name="Format.PlaceholderText" xml:space="preserve">
+    <value>格式</value>
+  </data>
+  <data name="Incoming.Text" xml:space="preserve">
+    <value>传入的参数</value>
+  </data>
+  <data name="Marker.Text" xml:space="preserve">
+    <value>标签对应</value>
+  </data>
+  <data name="Param.PlaceholderText" xml:space="preserve">
+    <value>参数 &gt;</value>
+  </data>
+  <data name="Pattern.PlaceholderText" xml:space="preserve">
+    <value>正则表达式</value>
+  </data>
+  <data name="Prefix.PlaceholderText" xml:space="preserve">
+    <value>前缀</value>
+  </data>
+  <data name="StopIf.Text" xml:space="preserve">
+    <value>停止条件</value>
+  </data>
+  <data name="SubProcs.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>子程序</value>
+  </data>
+  <data name="Sync.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>同步进程</value>
+  </data>
   <data name="Test.Text" xml:space="preserve">
     <value>测试</value>
+  </data>
+  <data name="UrlGenerator.Text" xml:space="preserve">
+    <value>生成网址</value>
+  </data>
+  <data name="UrlList.Text" xml:space="preserve">
+    <value>网址列表</value>
   </data>
 </root>

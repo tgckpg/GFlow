@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -27,7 +28,6 @@ using libtaotu.Controls;
 using libtaotu.Models.Interfaces;
 using libtaotu.Models.Procedure;
 using libtaotu.Resources;
-using Windows.UI.Popups;
 
 namespace libtaotu.Pages
 {
@@ -47,6 +47,14 @@ namespace libtaotu.Pages
         private List<Procedure> ProcChains;
 
         private ObservableCollection<LogArgs> Logs = new ObservableCollection<LogArgs>();
+        private static StringResources stp;
+
+        public static string RSTR( string key )
+        {
+            if( stp == null ) stp = new StringResources( "/libtaotu/PanelMessage" );
+            string str = stp.Str( key );
+            return string.IsNullOrEmpty( key ) ? key : str;
+        }
 
         public ProceduresPanel()
         {
@@ -86,7 +94,7 @@ namespace libtaotu.Pages
             ProcComboBox.ItemsSource = ProcChoices;
             RunLog.ItemsSource = Logs;
 
-            ProcManager.PanelMessage( ID, "Welcome to Procedural Spider's Control", LogType.INFO );
+            ProcManager.PanelMessage( ID, RSTR( "Welcome" ), LogType.INFO );
 
             Logs.CollectionChanged += ( s, e ) => ScrollToBottom();
 
@@ -176,16 +184,16 @@ namespace libtaotu.Pages
                 IStorageFile ISF = await AppStorage.OpenFileAsync( ".xml" );
                 if ( ISF == null ) return;
 
-                ProcManager.PanelMessage( ID, "Openning " + ISF.Name, LogType.INFO );
+                ProcManager.PanelMessage( ID, RSTR( "Reading" ) + ": " + ISF.Name, LogType.INFO );
                 ReadXReg( new XRegistry( await ISF.ReadString(), LocalFile ) );
-                ProcManager.PanelMessage( ID, "Parse Success", LogType.INFO );
+                ProcManager.PanelMessage( ID, RSTR( "ParseOK" ), LogType.INFO );
 
                 UpdateVisualData();
             }
             catch( Exception ex )
             {
                 ProcManager.PanelMessage( ID, ex.Message, LogType.ERROR );
-                ProcManager.PanelMessage( ID, "Invalid XML?", LogType.ERROR );
+                ProcManager.PanelMessage( ID, RSTR( "InvalidXML" ), LogType.ERROR );
             }
         }
 
@@ -205,6 +213,7 @@ namespace libtaotu.Pages
             XRegistry XReg = new XRegistry( "<ProcSpider />", LocalFile );
             XReg.SetParameter( RootManager.ToXParam() );
             XReg.Save();
+            ProcManager.PanelMessage( ID, RSTR( "Saved" ), LogType.INFO );
         }
 
         private async void SaveAs( object sender, RoutedEventArgs e )
@@ -215,15 +224,14 @@ namespace libtaotu.Pages
             try
             {
                 XRegistry XReg = new XRegistry( "<ProcSpider />", null );
-                ProcManager.PanelMessage( ID, "Output settings", LogType.INFO );
                 XReg.SetParameter( RootManager.ToXParam() );
                 await ISF.WriteString( XReg.ToString() );
-                ProcManager.PanelMessage( ID, "Save Success", LogType.INFO );
+                ProcManager.PanelMessage( ID, RSTR( "Saved" ) + ": " + ISF.Name, LogType.INFO );
             }
             catch( Exception ex )
             {
                 ProcManager.PanelMessage( ID, ex.Message, LogType.ERROR );
-                ProcManager.PanelMessage( ID, "Save Failed", LogType.ERROR );
+                ProcManager.PanelMessage( ID, RSTR( "SaveFailed" ), LogType.ERROR );
             }
         }
 

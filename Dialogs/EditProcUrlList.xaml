@@ -12,7 +12,8 @@
     PrimaryButtonText="Button1"
     IsSecondaryButtonEnabled="False">
     <ContentDialog.Title>
-        <TextBlock Text="Edit UrlList" Foreground="White" />
+        <TextBlock x:Uid="/libtaotu/Resources/UrlList"
+                   Text="Edit UrlList" Foreground="White" />
     </ContentDialog.Title>
 
     <Grid>
@@ -23,9 +24,10 @@
         <StackPanel>
             <CheckBox x:Name="IncomingCheck" Foreground="White"
                       Unchecked="SetIncoming" Checked="SetIncoming" >
-                <TextBlock Text="Incoming" />
+                <TextBlock x:Uid="/libtaotu/Resources/Incoming" Text="Incoming" />
             </CheckBox>
-            <TextBox x:Name="PrefixInput" PlaceholderText="Prefix" LostFocus="SetPrefix" />
+            <TextBox x:Name="PrefixInput" x:Uid="/libtaotu/Resources/Prefix"
+                     PlaceholderText="Prefix" LostFocus="SetPrefix" />
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />

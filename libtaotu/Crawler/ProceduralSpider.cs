@@ -15,7 +15,7 @@ namespace libtaotu.Crawler
 {
     using Controls;
     using Models.Procedure;
-
+    using Pages;
     class ProceduralSpider
     {
         public static readonly string ID = typeof( ProceduralSpider ).Name;
@@ -29,9 +29,9 @@ namespace libtaotu.Crawler
 
         public async Task<ProcConvoy> Crawl( ProcConvoy Convoy = null )
         {
-            if( ProcList.Count() == 0 )
+            if ( ProcList.Count() == 0 )
             {
-                ProcManager.PanelMessage( ID, "Proc list is empty, Crawling nothing.", LogType.INFO );
+                ProcManager.PanelMessage( ID, ProceduresPanel.RSTR( "EmptyCrawling" ), LogType.INFO );
                 return Convoy;
             }
 
@@ -39,7 +39,7 @@ namespace libtaotu.Crawler
 
             foreach ( Procedure Proc in ProcList )
             {
-                ProcManager.PanelMessage( ID, "Running " + Proc.Name, LogType.INFO );
+                ProcManager.PanelMessage( ID, ProceduresPanel.RSTR( "Running" ) + ": " + Proc.Name, LogType.INFO );
 
                 try
                 {
@@ -57,13 +57,13 @@ namespace libtaotu.Crawler
                 }
             }
 
-            ProcManager.PanelMessage( ID, "Cycle Completed", LogType.INFO );
+            ProcManager.PanelMessage( ID, ProceduresPanel.RSTR( "RunComplete" ), LogType.INFO );
             return Conveying;
         }
 
         public static async Task<IStorageFile> DownloadSource( string url )
         {
-            ProcManager.PanelMessage( ID, "Downloading: " + url, LogType.INFO );
+            ProcManager.PanelMessage( ID, ProceduresPanel.RSTR( "Download" ) + ": " + url, LogType.INFO );
 
             TaskCompletionSource<IStorageFile> TCS = new TaskCompletionSource<IStorageFile>();
 

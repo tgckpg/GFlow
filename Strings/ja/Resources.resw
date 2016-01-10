@@ -117,7 +117,61 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Async.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>非同期処理</value>
+  </data>
+  <data name="ContinueIf.Text" xml:space="preserve">
+    <value>指定されたURLに準拠し続けた場合</value>
+  </data>
+  <data name="DiscardUnmatched.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>不一致の項目を破棄</value>
+  </data>
+  <data name="EntryPoint.PlaceholderText" xml:space="preserve">
+    <value>エントリーポイント</value>
+  </data>
+  <data name="Extractor.Text" xml:space="preserve">
+    <value>情報を抽出</value>
+  </data>
+  <data name="FindConditions.Text" xml:space="preserve">
+    <value>検索条件</value>
+  </data>
+  <data name="FirstStopSkip.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>最初の一致を除いて</value>
+  </data>
+  <data name="Format.PlaceholderText" xml:space="preserve">
+    <value>形式</value>
+  </data>
+  <data name="Incoming.Text" xml:space="preserve">
+    <value>着信パラメータ</value>
+  </data>
+  <data name="Marker.Text" xml:space="preserve">
+    <value>ラベル対応</value>
+  </data>
+  <data name="Param.PlaceholderText" xml:space="preserve">
+    <value>パラメーター &gt;</value>
+  </data>
+  <data name="Pattern.PlaceholderText" xml:space="preserve">
+    <value>正規表現パターン</value>
+  </data>
+  <data name="Prefix.PlaceholderText" xml:space="preserve">
+    <value>プレフィックス</value>
+  </data>
+  <data name="StopIf.Text" xml:space="preserve">
+    <value>ストップ条件</value>
+  </data>
+  <data name="SubProcs.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>サブプロシージャー</value>
+  </data>
+  <data name="Sync.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>同期処理</value>
+  </data>
   <data name="Test.Text" xml:space="preserve">
     <value>テスト</value>
+  </data>
+  <data name="UrlGenerator.Text" xml:space="preserve">
+    <value>URLを生成</value>
+  </data>
+  <data name="UrlList.Text" xml:space="preserve">
+    <value>URLリスト</value>
   </data>
 </root>

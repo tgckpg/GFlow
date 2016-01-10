@@ -14,6 +14,7 @@ namespace libtaotu.Models.Procedure
 {
     using Controls;
     using Crawler;
+    using Pages;
 
     class ProcUrlList : Procedure
     {
@@ -38,7 +39,7 @@ namespace libtaotu.Models.Procedure
 
             if ( Incoming )
             {
-                ProcManager.PanelMessage( this, "Checking Incoming Urls", LogType.INFO );
+                ProcManager.PanelMessage( this, ProceduresPanel.RSTR( "IncomingCheck" ), LogType.INFO );
 
                 ProcConvoy UsableConvoy = ProcManager.TracePackage(
                     Convoy, ( P, C ) =>
@@ -63,7 +64,7 @@ namespace libtaotu.Models.Procedure
 
             if ( ConvoyUrls == null && Urls.Count == 0 )
             {
-                ProcManager.PanelMessage( this, "Empty list, did you forget to add urls?", LogType.WARNING );
+                ProcManager.PanelMessage( this, ProceduresPanel.RSTR( "EmptyUrlLIst" ), LogType.WARNING );
             }
 
             List<IStorageFile> ISF = new List<IStorageFile>();

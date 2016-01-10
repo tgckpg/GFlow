@@ -117,7 +117,61 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Async.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Asnychronous</value>
+  </data>
+  <data name="ContinueIf.Text" xml:space="preserve">
+    <value>Continue if match with url</value>
+  </data>
+  <data name="DiscardUnmatched.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Discard unmatched</value>
+  </data>
+  <data name="EntryPoint.PlaceholderText" xml:space="preserve">
+    <value>Entry Point</value>
+  </data>
+  <data name="Extractor.Text" xml:space="preserve">
+    <value>Extract Info</value>
+  </data>
+  <data name="FindConditions.Text" xml:space="preserve">
+    <value>Find Conditions</value>
+  </data>
+  <data name="FirstStopSkip.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>First stop skip</value>
+  </data>
+  <data name="Format.PlaceholderText" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="Incoming.Text" xml:space="preserve">
+    <value>Incoming</value>
+  </data>
+  <data name="Marker.Text" xml:space="preserve">
+    <value>Marker</value>
+  </data>
+  <data name="Param.PlaceholderText" xml:space="preserve">
+    <value>Param &gt;</value>
+  </data>
+  <data name="Pattern.PlaceholderText" xml:space="preserve">
+    <value>Pattern</value>
+  </data>
+  <data name="Prefix.PlaceholderText" xml:space="preserve">
+    <value>Prefix</value>
+  </data>
+  <data name="StopIf.Text" xml:space="preserve">
+    <value>Stop if</value>
+  </data>
+  <data name="SubProcs.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Sub procedures</value>
+  </data>
+  <data name="Sync.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+    <value>Synchronous</value>
+  </data>
   <data name="Test.Text" xml:space="preserve">
     <value>Test</value>
+  </data>
+  <data name="UrlGenerator.Text" xml:space="preserve">
+    <value>Generato Url</value>
+  </data>
+  <data name="UrlList.Text" xml:space="preserve">
+    <value>Url List</value>
   </data>
 </root>

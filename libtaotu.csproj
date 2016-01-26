@@ -157,12 +157,6 @@
     <EmbeddedResource Include="Properties\libtaotu.rd.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\libpenguin\Net.Astropenguin\Net.Astropenguin.csproj">
-      <Project>{5a6b4589-8c63-40d5-946f-759a9282a176}</Project>
-      <Name>Net.Astropenguin</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Page Include="Dialogs\EditProcFind.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -187,6 +181,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\libpenguin\Net.Astropenguin\Net.Astropenguin.csproj">
+      <Project>{5a6b4589-8c63-40d5-946f-759a9282a176}</Project>
+      <Name>Net.Astropenguin</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

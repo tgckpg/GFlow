@@ -156,6 +156,12 @@
   <data name="Prefix.PlaceholderText" xml:space="preserve">
     <value>前綴</value>
   </data>
+  <data name="Result.Text" xml:space="preserve">
+    <value>輸出結果</value>
+  </data>
+  <data name="Script.Text" xml:space="preserve">
+    <value>腳本</value>
+  </data>
   <data name="StopIf.Text" xml:space="preserve">
     <value>停止條件</value>
   </data>

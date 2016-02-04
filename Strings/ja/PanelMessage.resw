@@ -159,4 +159,16 @@
   <data name="Welcome" xml:space="preserve">
     <value>ようこそ、手続きクモのコントロールパネル</value>
   </data>
+  <data name="SCRIPT_LIVE" xml:space="preserve">
+    <value>スクリプトの生存時間は {0} 秒です</value>
+  </data>
+  <data name="SCRIPT_LIVE_D" xml:space="preserve">
+    <value>残り {0} 秒</value>
+  </data>
+  <data name="SCRIPT_NAV_FALIED" xml:space="preserve">
+    <value>ナビゲーションに失敗しました</value>
+  </data>
+  <data name="SCRIPT_TIMED_OUT" xml:space="preserve">
+    <value>スクリプトがタイムアウトしました</value>
+  </data>
 </root>

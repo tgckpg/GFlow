@@ -159,4 +159,16 @@
   <data name="Welcome" xml:space="preserve">
     <value>Welcome to Procedural Spider's Control Panel</value>
   </data>
+  <data name="SCRIPT_LIVE" xml:space="preserve">
+    <value>Script has {0} second(s) to live</value>
+  </data>
+  <data name="SCRIPT_LIVE_D" xml:space="preserve">
+    <value>{0} seconds(s) left</value>
+  </data>
+  <data name="SCRIPT_NAV_FALIED" xml:space="preserve">
+    <value>Navigation failure</value>
+  </data>
+  <data name="SCRIPT_TIMED_OUT" xml:space="preserve">
+    <value>Script has timed out</value>
+  </data>
 </root>

@@ -7,12 +7,12 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI;
 
 using Net.Astropenguin.DataModel;
 using Net.Astropenguin.Helpers;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
-
 
 namespace libtaotu.Models.Procedure
 {
@@ -54,6 +54,8 @@ namespace libtaotu.Models.Procedure
         }
 
         private bool FirstStopped = false;
+
+        protected override Color BgColor { get { return Colors.OrangeRed; } }
 
         public ProcGenerator()
             :base( ProcType.GENERATOR )

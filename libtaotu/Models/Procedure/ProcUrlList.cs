@@ -5,16 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.Xaml.Controls;
+using Windows.UI;
 
 using Net.Astropenguin.Helpers;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
+using Net.Astropenguin.UI.Icons;
 
 namespace libtaotu.Models.Procedure
 {
     using Controls;
     using Crawler;
-    using Pages;
 
     class ProcUrlList : Procedure
     {
@@ -23,6 +24,9 @@ namespace libtaotu.Models.Procedure
         public HashSet<string> Urls { get; private set; }
         public bool Incoming { get; set; }
         public string Prefix { get; set; }
+
+        protected override IconBase Icon { get { return new IconTOC() { AutoScale = true }; } }
+        protected override Color BgColor { get { return Colors.Brown; } }
 
         public ProcUrlList()
             : base( ProcType.URLLIST )
@@ -39,7 +43,7 @@ namespace libtaotu.Models.Procedure
 
             if ( Incoming )
             {
-                ProcManager.PanelMessage( this, ProceduresPanel.RSTR( "IncomingCheck" ), LogType.INFO );
+                ProcManager.PanelMessage( this, Res.RSTR( "IncomingCheck" ), LogType.INFO );
 
                 ProcConvoy UsableConvoy = ProcManager.TracePackage(
                     Convoy, ( P, C ) =>
@@ -64,7 +68,7 @@ namespace libtaotu.Models.Procedure
 
             if ( ConvoyUrls == null && Urls.Count == 0 )
             {
-                ProcManager.PanelMessage( this, ProceduresPanel.RSTR( "EmptyUrlLIst" ), LogType.WARNING );
+                ProcManager.PanelMessage( this, Res.RSTR( "EmptyUrlLIst" ), LogType.WARNING );
             }
 
             List<IStorageFile> ISF = new List<IStorageFile>();

@@ -7,16 +7,17 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.Xaml.Controls;
+using Windows.UI;
 
 using Net.Astropenguin.DataModel;
 using Net.Astropenguin.Helpers;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
+using Net.Astropenguin.UI.Icons;
 
 namespace libtaotu.Models.Procedure
 {
     using Controls;
-    using Pages;
 
     enum FindMode
     {
@@ -36,6 +37,9 @@ namespace libtaotu.Models.Procedure
 
         public string RawModeName { get; private set; }
         public string ModeName { get; private set; }
+
+        protected override IconBase Icon { get { return new IconSearch() { AutoScale = true }; } }
+        protected override Color BgColor { get { return Colors.Purple; } }
 
         public ProcFind()
             : base( ProcType.FIND )
@@ -61,20 +65,13 @@ namespace libtaotu.Models.Procedure
         {
             await base.Run( Convoy );
 
-            ProcConvoy UsableConvoy = ProcManager.TracePackage(
-                Convoy, ( P, C ) =>
-                {
-                    return C.Payload is IEnumerable<IStorageFile>
-                    || C.Payload is string;
-                }
-            );
-
-            if( UsableConvoy == null )
+            ProcConvoy UsableConvoy;
+            if ( !TryGetConvoy( out UsableConvoy, ( P, C ) =>
             {
-                ProcManager.PanelMessage( this, ProceduresPanel.RSTR( "NoUsablePayload" ), LogType.WARNING );
-                Faulted = true;
-                return Convoy;
+                return C.Payload is IEnumerable<IStorageFile>
+                || C.Payload is string;
             }
+            ) ) return Convoy;
 
             List<IStorageFile> TargetFiles = new List<IStorageFile>();
             if ( UsableConvoy.Payload is string )
@@ -132,7 +129,15 @@ namespace libtaotu.Models.Procedure
 
                     if( Mode == FindMode.REPLACE )
                     {
-                        v = R.RegExObj.Replace( v, R.Format.Unescape() );
+                        v = R.RegExObj.Replace(
+                            v, x => string.Format(
+                                R.Format.Unescape()
+                                , x.Groups
+                                .Cast<Group>()
+                                .Select( g => g.Value )
+                                .ToArray()
+                            )
+                        );
                         continue;
                     }
 
@@ -240,7 +245,14 @@ namespace libtaotu.Models.Procedure
 
             public Regex RegExObj
             {
-                get { return new Regex( Pattern, RegexOptions.Multiline ); }
+                get
+                {
+                    if( string.IsNullOrEmpty( Pattern ) )
+                    {
+                        return new Regex( @"[^\s\S]", RegexOptions.Multiline );
+                    }
+                    return new Regex( Pattern, RegexOptions.Multiline );
+                }
             }
 
             private bool _valid = true;

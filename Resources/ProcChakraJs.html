@@ -1,0 +1,34 @@
+﻿<head>
+<script type='text/javascript'>
+    var ScriptStart = function () {
+        var output = null;
+        if (window.CustomScript) {
+            try {
+                output = CustomScript();
+            }
+            catch (ex) {
+                setTimeout(function () {
+                    SetResult(ex.name + "\n\t" + ex.message + "\n\t" + ex.stack);
+                }, 1);
+                return 'ERROR';
+            }
+        }
+
+        switch (output) {
+            case 'WAIT': return output;
+            default: return JSON.stringify(output);
+        }
+    };
+
+    var SetResult = function (r) {
+        window.external.notify(JSON.stringify(r));
+    };
+</script>
+<script type='text/javascript'>
+    // Separate the custom script to another tag to
+    // ensure the main script runnable
+    window.CustomScript = function () {
+        CUSTOM_SCRIPT_TOKEN;
+    };
+</script>
+</head>

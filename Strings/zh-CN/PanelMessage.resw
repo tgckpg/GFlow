@@ -159,4 +159,16 @@
   <data name="Welcome" xml:space="preserve">
     <value>欢迎来到蜘蛛程序的控制面板</value>
   </data>
+  <data name="SCRIPT_LIVE" xml:space="preserve">
+    <value>脚本的存活时间为 {0} 秒</value>
+  </data>
+  <data name="SCRIPT_LIVE_D" xml:space="preserve">
+    <value>还剩 {0} 秒</value>
+  </data>
+  <data name="SCRIPT_NAV_FALIED" xml:space="preserve">
+    <value>导航失败</value>
+  </data>
+  <data name="SCRIPT_TIMED_OUT" xml:space="preserve">
+    <value>脚本已超时</value>
+  </data>
 </root>

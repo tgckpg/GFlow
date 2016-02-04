@@ -134,12 +134,20 @@
     <Compile Include="Dialogs\EditProcGenerator.xaml.cs">
       <DependentUpon>EditProcGenerator.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\EditProcResult.xaml.cs">
+      <DependentUpon>EditProcResult.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\EditProcUrlList.xaml.cs">
       <DependentUpon>EditProcUrlList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\EditProcChakra.xaml.cs">
+      <DependentUpon>EditProcChakra.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="libtaotu\Controls\Res.cs" />
     <Compile Include="libtaotu\Controls\ProcManager.cs" />
     <Compile Include="libtaotu\Crawler\ProceduralSpider.cs" />
     <Compile Include="libtaotu\Models\Interfaces\ISubProcedure.cs" />
+    <Compile Include="libtaotu\Models\Procedure\ProcChakra.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcDummy.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcExtract.cs" />
     <Compile Include="libtaotu\Models\Procedure\Procedure.cs" />
@@ -148,6 +156,7 @@
     <Compile Include="libtaotu\Models\Procedure\ProcGenerator.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcMark.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcPassThru.cs" />
+    <Compile Include="libtaotu\Models\Procedure\ProcResult.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcUrlList.cs" />
     <Compile Include="Pages\ProceduresPanel.xaml.cs">
       <DependentUpon>ProceduresPanel.xaml</DependentUpon>
@@ -165,7 +174,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Dialogs\EditProcResult.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\EditProcUrlList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\EditProcChakra.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -187,6 +204,9 @@
       <Project>{5a6b4589-8c63-40d5-946f-759a9282a176}</Project>
       <Name>Net.Astropenguin</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\ProcChakraJs.html" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

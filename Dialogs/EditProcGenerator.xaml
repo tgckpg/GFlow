@@ -67,7 +67,7 @@
                         <ProgressRing x:Name="TestRunning" Width="30" Height="30" />
                         <i:IconTestTube AutoScale="True" />
                         <TextBlock Grid.Column="1" x:Uid="/libtaotu/Resources/Test"
-                                   Margin="5" Foreground="{StaticResource RelativeMajorBackgroundBrush}"
+                                   Margin="5" Foreground="White"
                                    VerticalAlignment="Center" HorizontalAlignment="Center"
                                    Text="Test" />
                     </Grid>

@@ -139,7 +139,7 @@
     <value>Parse Success</value>
   </data>
   <data name="ProceduralSpider" xml:space="preserve">
-    <value>蜘蛛</value>
+    <value>Spider</value>
   </data>
   <data name="Reading" xml:space="preserve">
     <value>Reading</value>

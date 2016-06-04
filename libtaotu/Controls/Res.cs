@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Net.Astropenguin.Loaders;
+using Net.Astropenguin.Helpers;
 
 namespace libtaotu.Controls
 {
@@ -17,7 +18,15 @@ namespace libtaotu.Controls
         /// </summary>
         public static string RSTR( string key, params object[] args )
         {
-            if( stp == null ) stp = new StringResources( "/libtaotu/PanelMessage" );
+            if ( stp == null )
+            {
+                Worker.UIInvoke( () =>
+                {
+                    stp = new StringResources( "/libtaotu/PanelMessage" );
+                } );
+
+                return key;
+            }
             string s = stp.Str( key );
 
             try { s = string.Format( s, args ); }

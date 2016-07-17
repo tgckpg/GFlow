@@ -24,7 +24,7 @@
             <Setter Property="MinHeight" Value="0"/>
         </Style>
 
-        <v:BoolStateConverter x:Key="BoolStateConverter" />
+        <v:DataStateConverter x:Key="DataStateConverter" />
     </ContentDialog.Resources>
     <ContentDialog.Title>
         <TextBlock x:Uid="/libtaotu/Resources/UrlGenerator"
@@ -139,7 +139,7 @@
                             </Button>
 
                             <p:StateControl Grid.Column="2"
-                                            State="{Binding Valid, Converter={StaticResource BoolStateConverter}, ConverterParameter=1}">
+                                            State="{Binding Valid, Converter={StaticResource DataStateConverter}, ConverterParameter=1}">
                                 <Border Width="30" Height="30" Background="OrangeRed">
                                     <TextBlock Text="!" Foreground="White" FontWeight="Bold" FontSize="20"
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -166,7 +166,7 @@
                         Width="30" Height="30"
                         Click="FirstStopSkip">
                     <Grid>
-                        <p:StateControl State="{Binding FirstStopSkip, Converter={StaticResource BoolStateConverter}}">
+                        <p:StateControl State="{Binding FirstStopSkip, Converter={StaticResource DataStateConverter}}">
                             <Rectangle Fill="DodgerBlue" Width="30" Height="30" />
                         </p:StateControl>
                         <TextBlock Foreground="White" FontFamily="Lucida Console"
@@ -181,7 +181,7 @@
                         ToolTipService.ToolTip="Discard unmatched"
                         Click="DiscardUnmatched">
                     <Grid>
-                        <p:StateControl State="{Binding DiscardUnmatched, Converter={StaticResource BoolStateConverter}}">
+                        <p:StateControl State="{Binding DiscardUnmatched, Converter={StaticResource DataStateConverter}}">
                             <Rectangle Fill="DodgerBlue" Width="30" Height="30" />
                         </p:StateControl>
                         <i:IconCross AutoScale="True" Foreground="White" />
@@ -226,7 +226,7 @@
                             </Button>
 
                             <p:StateControl Grid.Column="2"
-                                            State="{Binding Valid, Converter={StaticResource BoolStateConverter}, ConverterParameter=1}">
+                                            State="{Binding Valid, Converter={StaticResource DataStateConverter}, ConverterParameter=1}">
                                 <Border Width="30" Height="30" Background="OrangeRed">
                                     <TextBlock Text="!" Foreground="White" FontWeight="Bold" FontSize="20"
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />

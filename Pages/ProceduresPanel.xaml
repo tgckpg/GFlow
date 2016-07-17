@@ -53,7 +53,7 @@
             <Setter Property="MinHeight" Value="0"/>
         </Style>
 
-        <v:BoolStateConverter x:Key="BoolStateConverter" />
+        <v:DataStateConverter x:Key="DataStateConverter" />
 
         <MenuFlyout x:Key="ProcedureContext">
             <MenuFlyoutItem x:Uid="/libtaotu/ContextMenu/Rename" Text="Rename" Click="RenameProcedure" />

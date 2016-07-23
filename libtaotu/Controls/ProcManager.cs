@@ -27,8 +27,19 @@ namespace libtaotu.Controls
         public bool Async { get; set; }
 
         private Guid _Guid;
-        public Guid GUID { get { return _Guid; } }
+        public string GUID
+        {
+            get { return _Guid.ToString(); }
+            set
+            {
+                if ( !Guid.TryParse( value, out _Guid ) )
+                {
+                    _Guid = Guid.NewGuid();
+                }
+            }
+        }
 
+        // Used to locate specific procedure in chain
         private int From = 0;
         private int To = 0;
 
@@ -170,10 +181,7 @@ namespace libtaotu.Controls
         {
             XParameter[] ProcParams = List.GetParametersWithKey( "ProcType" );
             Async = List.GetBool( "Async", false );
-            if( !Guid.TryParse( List.GetValue( "Guid" ), out _Guid ) )
-            {
-                _Guid = Guid.NewGuid();
-            }
+            GUID = List.GetValue( "Guid" );
 
             Type PType = typeof( ProcType );
             IEnumerable<ProcType> P = Enum.GetValues( PType ).Cast<ProcType>();

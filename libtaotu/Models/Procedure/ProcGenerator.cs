@@ -239,7 +239,7 @@ namespace libtaotu.Models.Procedure
             foreach( ProcFind.RegItem R in NextIfs )
             {
                 XParameter RegParam = R.ToXParam();
-                RegParam.ID += i;
+                RegParam.Id += i;
                 RegParam.SetValue( new XKey( "i", i++ ) );
 
                 NextParams.SetParameter( RegParam );
@@ -249,7 +249,7 @@ namespace libtaotu.Models.Procedure
             foreach( ProcFind.RegItem R in StopIfs )
             {
                 XParameter RegParam = R.ToXParam();
-                RegParam.ID += i;
+                RegParam.Id += i;
                 RegParam.SetValue( new XKey( "i", i++ ) );
 
                 StopParams.SetParameter( RegParam );

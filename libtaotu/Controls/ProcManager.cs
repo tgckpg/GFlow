@@ -207,7 +207,7 @@ namespace libtaotu.Controls
             foreach ( Procedure P in ProcList )
             {
                 XParameter ProcParam = P.ToXParam();
-                ProcParam.ID = "Proc" + ( i++ );
+                ProcParam.Id = "Proc" + ( i++ );
                 ProcParam.SetValue( new XKey( "ProcType", P.RawName ) );
                 Param.SetParameter( ProcParam );
             }

@@ -229,7 +229,7 @@ namespace libtaotu.Models.Procedure
             foreach( RegItem R in RegexPairs )
             {
                 XParameter RegParam = R.ToXParam();
-                RegParam.ID += i;
+                RegParam.Id += i;
                 RegParam.SetValue( new XKey( "i", i++ ) );
 
                 Param.SetParameter( RegParam );

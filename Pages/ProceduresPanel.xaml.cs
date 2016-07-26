@@ -198,7 +198,7 @@ namespace libtaotu.Pages
 
         private void ReadXReg( XRegistry XReg )
         {
-            XParameter Param = XReg.GetParameters().FirstOrDefault();
+            XParameter Param = XReg.Parameters().FirstOrDefault();
             if ( Param != null ) PM.ReadParam( Param );
         }
 

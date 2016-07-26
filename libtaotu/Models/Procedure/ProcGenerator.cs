@@ -207,15 +207,15 @@ namespace libtaotu.Models.Procedure
             FirstStopSkip = Param.GetBool( "FirstStopSkip" );
             DiscardUnmatched = Param.GetBool( "DiscardUnmatched" );
 
-            XParameter NextParams = Param.GetParameter( "NextIfs" );
-            XParameter[] RegParams = NextParams.GetParametersWithKey( "i" );
+            XParameter NextParams = Param.Parameter( "NextIfs" );
+            XParameter[] RegParams = NextParams.Parameters( "i" );
             foreach ( XParameter RegParam in RegParams )
             {
                 NextIfs.Add( new ProcFind.RegItem( RegParam ) );
             }
 
-            XParameter StopParams = Param.GetParameter( "StopIfs" );
-            RegParams = StopParams.GetParametersWithKey( "i" );
+            XParameter StopParams = Param.Parameter( "StopIfs" );
+            RegParams = StopParams.Parameters( "i" );
             foreach ( XParameter RegParam in RegParams )
             {
                 StopIfs.Add( new ProcFind.RegItem( RegParam ) );

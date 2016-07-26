@@ -179,7 +179,7 @@ namespace libtaotu.Controls
 
         public void ReadParam( XParameter List )
         {
-            XParameter[] ProcParams = List.GetParametersWithKey( "ProcType" );
+            XParameter[] ProcParams = List.Parameters( "ProcType" );
             Async = List.GetBool( "Async", false );
             GUID = List.GetValue( "Guid" );
 

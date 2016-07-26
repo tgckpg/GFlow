@@ -206,7 +206,7 @@ namespace libtaotu.Models.Procedure
         {
             base.ReadParam( Param );
 
-            XParameter[] RegParams = Param.GetParametersWithKey( "i" );
+            XParameter[] RegParams = Param.Parameters( "i" );
             TestLink = Param.GetValue( "TestLink" );
             SetMode( Param.GetValue( "Mode" ) );
 

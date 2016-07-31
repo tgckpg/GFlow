@@ -38,8 +38,7 @@ namespace libtaotu.Pages
         private bool Running = false;
 
         // XXX: Use a proper location
-        private const string LocalFile = "Setting/Test.xml";
-
+        private string TargetFile = "Settings/Test.xml";
 
         private ProcManager RootManager;
         private ProcManager PM;
@@ -69,6 +68,34 @@ namespace libtaotu.Pages
             MessageBus.OnDelivery -= MessageBus_OnDelivery;
         }
 
+        protected override void OnNavigatedTo( NavigationEventArgs e )
+        {
+            base.OnNavigatedTo( e );
+            if ( e.Parameter != null )
+            {
+                string OpeningFile = ( string ) e.Parameter;
+
+                RootManager = PM = new ProcManager();
+                ProcChains.Clear();
+                SelectedItem = null;
+                UpdateVisualData();
+                try
+                {
+                    ProcManager.PanelMessage( ID, Res.RSTR( "Reading" ) + ": " + OpeningFile, LogType.INFO );
+                    ReadProcedures( OpeningFile );
+                    ProcManager.PanelMessage( ID, Res.RSTR( "ParseOK" ), LogType.INFO );
+
+                    UpdateVisualData();
+                    TargetFile = OpeningFile;
+                }
+                catch ( Exception ex )
+                {
+                    ProcManager.PanelMessage( ID, ex.Message, LogType.ERROR );
+                    ProcManager.PanelMessage( ID, Res.RSTR( "InvalidXML" ), LogType.ERROR );
+                }
+            }
+        }
+
         private void SetTemplate()
         {
             StringResources stx = new StringResources( "/libtaotu/ProcItems" );
@@ -94,7 +121,7 @@ namespace libtaotu.Pages
 
             PM = RootManager;
 
-            ReadProcedures();
+            ReadProcedures( TargetFile );
             UpdateVisualData();
         }
 
@@ -157,8 +184,8 @@ namespace libtaotu.Pages
         {
             bool Yes = false;
 
-            StringResources stx = new StringResources( "Message" );
-            MessageDialog Msg = new MessageDialog( "Do you want to discard the current document?" );
+            StringResources stx = new StringResources( "/libtaotu/Message" );
+            MessageDialog Msg = new MessageDialog( stx.Str( "ConfirmDiscard" ) );
             Msg.Commands.Add( new UICommand( stx.Str( "Yes" ), x => Yes = true ) );
             Msg.Commands.Add( new UICommand( stx.Str( "No" ) ) );
 
@@ -173,13 +200,13 @@ namespace libtaotu.Pages
             try
             {
                 // Remove the file
-                new AppStorage().DeleteFile( LocalFile );
+                new AppStorage().DeleteFile( TargetFile );
 
                 IStorageFile ISF = await AppStorage.OpenFileAsync( ".xml" );
                 if ( ISF == null ) return;
 
                 ProcManager.PanelMessage( ID, Res.RSTR( "Reading" ) + ": " + ISF.Name, LogType.INFO );
-                ReadXReg( new XRegistry( await ISF.ReadString(), LocalFile ) );
+                ReadXReg( new XRegistry( await ISF.ReadString(), TargetFile ) );
                 ProcManager.PanelMessage( ID, Res.RSTR( "ParseOK" ), LogType.INFO );
 
                 UpdateVisualData();
@@ -191,9 +218,9 @@ namespace libtaotu.Pages
             }
         }
 
-        private void ReadProcedures()
+        private void ReadProcedures( string FileLocation )
         {
-            ReadXReg( new XRegistry( "<ProcSpider />", LocalFile ) );
+            ReadXReg( new XRegistry( "<ProcSpider />", FileLocation ) );
         }
 
         private void ReadXReg( XRegistry XReg )
@@ -204,7 +231,7 @@ namespace libtaotu.Pages
 
         private void ExportProcedures( object sender, RoutedEventArgs e )
         {
-            XRegistry XReg = new XRegistry( "<ProcSpider />", LocalFile );
+            XRegistry XReg = new XRegistry( "<ProcSpider />", TargetFile );
             XReg.SetParameter( RootManager.ToXParam() );
             XReg.Save();
             ProcManager.PanelMessage( ID, Res.RSTR( "Saved" ), LogType.INFO );

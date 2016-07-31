@@ -23,7 +23,7 @@
         <TextBlock x:Uid="/libtaotu/Resources/FindConditions"
                    Text="Edit Find Conditions" Foreground="White" />
     </ContentDialog.Title>
-    <Grid>
+    <Grid MinWidth="400">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

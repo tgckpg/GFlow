@@ -31,7 +31,7 @@
                    Text="Edit Url Generator" Foreground="White" />
     </ContentDialog.Title>
 
-    <Grid x:Name="RegexControl">
+    <Grid x:Name="RegexControl" MinWidth="400">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI;
 
 using Net.Astropenguin.DataModel;
+using Net.Astropenguin.Helpers;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
@@ -68,11 +69,16 @@ namespace libtaotu.Models.Procedure
         public Procedure( ProcType P )
         {
             Type = P;
-
-            if ( ProcStrRes == null ) ProcStrRes = new StringResources( "/libtaotu/ProcItems" );
             RawName = Enum.GetName( typeof( ProcType ), P );
-            TypeName = ProcStrRes.Str( RawName );
-            Name = TypeName;
+
+            // FIXME: This is bad. Need to find a way to get string resources without intercepting the UI thread
+            Worker.UIInvoke( () =>
+            {
+                if ( ProcStrRes == null )
+                    ProcStrRes = new StringResources( "/libtaotu/ProcItems" );
+                TypeName = ProcStrRes.Str( RawName );
+                Name = TypeName;
+            } );
         }
 
         protected bool TryGetConvoy( out ProcConvoy Con, Func<Procedure, ProcConvoy, bool> Tester )

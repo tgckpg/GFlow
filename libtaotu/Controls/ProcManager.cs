@@ -117,14 +117,17 @@ namespace libtaotu.Controls
                 case ProcType.GENERATOR:
                     Proc = new ProcGenerator();
                     break;
-                case ProcType.EXTRACT:
-                    Proc = ProcExtract.Create();
-                    break;
                 case ProcType.RESULT:
                     Proc = new ProcResult();
                     break;
                 case ProcType.CHAKRA:
                     Proc = new ProcChakra();
+                    break;
+                case ProcType.ENCODING:
+                    Proc = new ProcEncoding();
+                    break;
+                case ProcType.EXTRACT:
+                    Proc = ProcExtract.Create();
                     break;
                 case ProcType.MARK:
                     Proc = ProcMark.Create();

@@ -71,6 +71,9 @@ namespace libtaotu.Pages
         protected override void OnNavigatedTo( NavigationEventArgs e )
         {
             base.OnNavigatedTo( e );
+            NavigationHandler.InsertHandlerOnNavigatedBack( StepSubProcedures );
+            MessageBus.OnDelivery += MessageBus_OnDelivery;
+
             if ( e.Parameter != null )
             {
                 string OpeningFile = ( string ) e.Parameter;

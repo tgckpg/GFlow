@@ -29,6 +29,7 @@ namespace libtaotu.Models.Procedure
         PASSTHRU = 128,
         RESULT = 256,
         CHAKRA = 512,
+        ENCODING = 1024,
     }
 
     abstract class Procedure : ActiveData, INamable

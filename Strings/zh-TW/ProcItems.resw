@@ -120,6 +120,9 @@
   <data name="CHAKRA" xml:space="preserve">
     <value>腳本</value>
   </data>
+  <data name="ENCODING" xml:space="preserve">
+    <value>編碼</value>
+  </data>
   <data name="EXTRACT" xml:space="preserve">
     <value>提取</value>
   </data>

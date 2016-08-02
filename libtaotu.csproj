@@ -128,6 +128,9 @@
     <PRIResource Include="Strings\en-US\Message.resw" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dialogs\EditProcEncoding.xaml.cs">
+      <DependentUpon>EditProcEncoding.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\EditProcFind.xaml.cs">
       <DependentUpon>EditProcFind.xaml</DependentUpon>
     </Compile>
@@ -152,6 +155,7 @@
     <Compile Include="libtaotu\Models\Procedure\ProcExtract.cs" />
     <Compile Include="libtaotu\Models\Procedure\Procedure.cs" />
     <Compile Include="libtaotu\Models\ProcConvoy.cs" />
+    <Compile Include="libtaotu\Models\Procedure\ProcEncoding.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcFind.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcGenerator.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcMark.cs" />
@@ -166,6 +170,10 @@
     <EmbeddedResource Include="Properties\libtaotu.rd.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Dialogs\EditProcEncoding.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\EditProcFind.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

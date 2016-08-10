@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 using Windows.UI.Xaml.Controls;
 
-using libtaotu.Models.Procedure;
-using System.Reflection;
+using Net.Astropenguin.Loaders;
 
 namespace libtaotu.Resources
 {
+    using Models.Procedure;
     class Shared
     {
         public static Type SourceView;
@@ -17,6 +18,8 @@ namespace libtaotu.Resources
 
         public static Type ProcExtractor { get; private set; }
         public static Type ProcMarker { get; private set; }
+
+        public static Func<Uri, HttpRequest> CreateRequest = x => new HttpRequest( x );
 
         public static void SetExtractor( Type T )
         {

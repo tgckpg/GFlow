@@ -275,7 +275,7 @@ namespace libtaotu.Pages
             ProcConvoy Convoy = await PM.CreateSpider().Crawl();
             Running = false;
 
-            MessageBus.SendUI( new Message( GetType(), "RUN_RESULT", Convoy ) );
+            MessageBus.SendUI( GetType(), "RUN_RESULT", Convoy );
         }
 
         private void SubEdit( Procedure Proc )

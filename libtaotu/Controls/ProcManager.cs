@@ -70,11 +70,9 @@ namespace libtaotu.Controls
         public static void PanelMessage( string ID, string Mesg, LogType LogLevel )
         {
             MessageBus.SendUI(
-                new Message(
-                    typeof( ProceduresPanel )
-                    , Mesg
-                    , new ProceduresPanel.PanelLog() { LogType = LogLevel, ID = ID }
-                )
+                typeof( ProceduresPanel )
+                , Mesg
+                , new ProceduresPanel.PanelLog() { LogType = LogLevel, ID = ID }
             );
         }
 

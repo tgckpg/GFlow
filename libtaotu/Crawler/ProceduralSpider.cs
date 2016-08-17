@@ -15,8 +15,9 @@ namespace libtaotu.Crawler
 {
     using Controls;
     using Models.Procedure;
+    using Resources;
 
-    class ProceduralSpider
+    sealed class ProceduralSpider
     {
         public static readonly string ID = typeof( ProceduralSpider ).Name;
 
@@ -69,7 +70,7 @@ namespace libtaotu.Crawler
 
             try
             {
-                HttpRequest Request = new HttpRequest( new Uri( url ) );
+                HttpRequest Request = Shared.CreateRequest( new Uri( url ) );
 
                 StorageFile SF = await AppStorage.MkTemp();
                 Request.OnRequestComplete += async ( DRequestCompletedEventArgs DArgs ) =>

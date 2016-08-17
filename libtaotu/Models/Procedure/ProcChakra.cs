@@ -71,7 +71,6 @@ namespace libtaotu.Models.Procedure
             }
             ) ) return Convoy;
 
-
             if ( UsableConvoy.Payload is IEnumerable<IStorageFile> )
             {
                 IEnumerable<IStorageFile> ISFs = UsableConvoy.Payload as IEnumerable<IStorageFile>;

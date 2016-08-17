@@ -126,6 +126,9 @@
   <data name="DiscardUnmatched.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>不一致の項目を破棄</value>
   </data>
+  <data name="Encoding.Text" xml:space="preserve">
+    <value>文字コード変換</value>
+  </data>
   <data name="EntryPoint.PlaceholderText" xml:space="preserve">
     <value>エントリーポイント</value>
   </data>

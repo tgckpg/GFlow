@@ -101,7 +101,7 @@ namespace libtaotu.Models.Procedure
             Incoming = Param.GetBool( "Incoming" );
             Prefix = Param.GetValue( "Prefix" );
 
-            XParameter[] Params = Param.GetParametersWithKey( "url" );
+            XParameter[] Params = Param.Parameters( "url" );
             foreach( XParameter P in Params )
             {
                 Urls.Add( P.GetValue( "url" ) );

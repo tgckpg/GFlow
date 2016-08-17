@@ -126,6 +126,9 @@
   <data name="DiscardUnmatched.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>取消不符合的項目</value>
   </data>
+  <data name="Encoding.Text" xml:space="preserve">
+    <value>編碼轉換</value>
+  </data>
   <data name="EntryPoint.PlaceholderText" xml:space="preserve">
     <value>進入點</value>
   </data>

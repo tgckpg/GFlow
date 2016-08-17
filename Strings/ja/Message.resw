@@ -120,15 +120,16 @@
   <data name="Cancel" xml:space="preserve">
     <value>取消</value>
   </data>
+  <data name="ConfirmDiscard" xml:space="preserve">
+    <value>現在の文書を廃棄しますか？</value>
+  </data>
   <data name="No" xml:space="preserve">
     <value>いいえ</value>
-    <comment>#</comment>
   </data>
   <data name="OK" xml:space="preserve">
     <value>決定</value>
   </data>
   <data name="Yes" xml:space="preserve">
     <value>はい</value>
-    <comment>#</comment>
   </data>
 </root>

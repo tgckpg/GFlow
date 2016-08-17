@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI;
 
 using Net.Astropenguin.DataModel;
+using Net.Astropenguin.Helpers;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
@@ -28,13 +29,13 @@ namespace libtaotu.Models.Procedure
         PASSTHRU = 128,
         RESULT = 256,
         CHAKRA = 512,
+        ENCODING = 1024,
     }
 
     abstract class Procedure : ActiveData, INamable
     {
         public ProcType Type { get; protected set; }
         public string RawName { get; protected set; }
-        public string TypeName { get; protected set; }
 
         public ProcConvoy Convoy { get; protected set; }
         public bool Faulted { get; set; }
@@ -52,27 +53,45 @@ namespace libtaotu.Models.Procedure
             set { _running = value; NotifyChanged( "Running" ); }
         }
 
-        private string _name;
+        private string _TypeName;
+        public string TypeName
+        {
+            get
+            {
+                if( string.IsNullOrEmpty( _TypeName ) )
+                    _TypeName = ProcStrRes.Str( RawName );
+
+                return _TypeName;
+            }
+            set { _TypeName = value; }
+        }
+
+        private string _Name;
         public string Name
         {
-            get { return _name; }
+            get
+            {
+                if( string.IsNullOrEmpty( _Name ) )
+                    _Name = ProcStrRes.Str( RawName );
+
+                return _Name;
+            }
             set
             {
-                _name = value;
+                _Name = value;
                 NotifyChanged( "Name" );
             }
         }
 
-        protected static StringResources ProcStrRes;
+        protected StringResources ProcStrRes
+        {
+            get { return new StringResources( "/libtaotu/ProcItems" ); }
+        }
 
         public Procedure( ProcType P )
         {
             Type = P;
-
-            if ( ProcStrRes == null ) ProcStrRes = new StringResources( "/libtaotu/ProcItems" );
             RawName = Enum.GetName( typeof( ProcType ), P );
-            TypeName = ProcStrRes.Str( RawName );
-            Name = TypeName;
         }
 
         protected bool TryGetConvoy( out ProcConvoy Con, Func<Procedure, ProcConvoy, bool> Tester )

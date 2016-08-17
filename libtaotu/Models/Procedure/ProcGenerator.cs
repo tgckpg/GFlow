@@ -207,15 +207,15 @@ namespace libtaotu.Models.Procedure
             FirstStopSkip = Param.GetBool( "FirstStopSkip" );
             DiscardUnmatched = Param.GetBool( "DiscardUnmatched" );
 
-            XParameter NextParams = Param.GetParameter( "NextIfs" );
-            XParameter[] RegParams = NextParams.GetParametersWithKey( "i" );
+            XParameter NextParams = Param.Parameter( "NextIfs" );
+            XParameter[] RegParams = NextParams.Parameters( "i" );
             foreach ( XParameter RegParam in RegParams )
             {
                 NextIfs.Add( new ProcFind.RegItem( RegParam ) );
             }
 
-            XParameter StopParams = Param.GetParameter( "StopIfs" );
-            RegParams = StopParams.GetParametersWithKey( "i" );
+            XParameter StopParams = Param.Parameter( "StopIfs" );
+            RegParams = StopParams.Parameters( "i" );
             foreach ( XParameter RegParam in RegParams )
             {
                 StopIfs.Add( new ProcFind.RegItem( RegParam ) );
@@ -239,7 +239,7 @@ namespace libtaotu.Models.Procedure
             foreach( ProcFind.RegItem R in NextIfs )
             {
                 XParameter RegParam = R.ToXParam();
-                RegParam.ID += i;
+                RegParam.Id += i;
                 RegParam.SetValue( new XKey( "i", i++ ) );
 
                 NextParams.SetParameter( RegParam );
@@ -249,7 +249,7 @@ namespace libtaotu.Models.Procedure
             foreach( ProcFind.RegItem R in StopIfs )
             {
                 XParameter RegParam = R.ToXParam();
-                RegParam.ID += i;
+                RegParam.Id += i;
                 RegParam.SetValue( new XKey( "i", i++ ) );
 
                 StopParams.SetParameter( RegParam );

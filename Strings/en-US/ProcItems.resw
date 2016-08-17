@@ -120,6 +120,9 @@
   <data name="CHAKRA" xml:space="preserve">
     <value>Script</value>
   </data>
+  <data name="ENCODING" xml:space="preserve">
+    <value>Encoding</value>
+  </data>
   <data name="EXTRACT" xml:space="preserve">
     <value>Extractor</value>
   </data>

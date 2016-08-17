@@ -27,8 +27,19 @@ namespace libtaotu.Controls
         public bool Async { get; set; }
 
         private Guid _Guid;
-        public Guid GUID { get { return _Guid; } }
+        public string GUID
+        {
+            get { return _Guid.ToString(); }
+            set
+            {
+                if ( !Guid.TryParse( value, out _Guid ) )
+                {
+                    _Guid = Guid.NewGuid();
+                }
+            }
+        }
 
+        // Used to locate specific procedure in chain
         private int From = 0;
         private int To = 0;
 
@@ -59,11 +70,9 @@ namespace libtaotu.Controls
         public static void PanelMessage( string ID, string Mesg, LogType LogLevel )
         {
             MessageBus.SendUI(
-                new Message(
-                    typeof( ProceduresPanel )
-                    , Mesg
-                    , new ProceduresPanel.PanelLog() { LogType = LogLevel, ID = ID }
-                )
+                typeof( ProceduresPanel )
+                , Mesg
+                , new ProceduresPanel.PanelLog() { LogType = LogLevel, ID = ID }
             );
         }
 
@@ -106,14 +115,17 @@ namespace libtaotu.Controls
                 case ProcType.GENERATOR:
                     Proc = new ProcGenerator();
                     break;
-                case ProcType.EXTRACT:
-                    Proc = ProcExtract.Create();
-                    break;
                 case ProcType.RESULT:
                     Proc = new ProcResult();
                     break;
                 case ProcType.CHAKRA:
                     Proc = new ProcChakra();
+                    break;
+                case ProcType.ENCODING:
+                    Proc = new ProcEncoding();
+                    break;
+                case ProcType.EXTRACT:
+                    Proc = ProcExtract.Create();
                     break;
                 case ProcType.MARK:
                     Proc = ProcMark.Create();
@@ -168,12 +180,9 @@ namespace libtaotu.Controls
 
         public void ReadParam( XParameter List )
         {
-            XParameter[] ProcParams = List.GetParametersWithKey( "ProcType" );
+            XParameter[] ProcParams = List.Parameters( "ProcType" );
             Async = List.GetBool( "Async", false );
-            if( !Guid.TryParse( List.GetValue( "Guid" ), out _Guid ) )
-            {
-                _Guid = Guid.NewGuid();
-            }
+            GUID = List.GetValue( "Guid" );
 
             Type PType = typeof( ProcType );
             IEnumerable<ProcType> P = Enum.GetValues( PType ).Cast<ProcType>();
@@ -199,7 +208,7 @@ namespace libtaotu.Controls
             foreach ( Procedure P in ProcList )
             {
                 XParameter ProcParam = P.ToXParam();
-                ProcParam.ID = "Proc" + ( i++ );
+                ProcParam.Id = "Proc" + ( i++ );
                 ProcParam.SetValue( new XKey( "ProcType", P.RawName ) );
                 Param.SetParameter( ProcParam );
             }

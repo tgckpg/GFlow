@@ -120,6 +120,9 @@
   <data name="Cancel" xml:space="preserve">
     <value>取消</value>
   </data>
+  <data name="ConfirmDiscard" xml:space="preserve">
+    <value>要廢棄現在的文件嗎？</value>
+  </data>
   <data name="No" xml:space="preserve">
     <value>否</value>
     <comment>#</comment>

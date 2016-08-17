@@ -126,6 +126,9 @@
   <data name="DiscardUnmatched.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Discard unmatched</value>
   </data>
+  <data name="Encoding.Text" xml:space="preserve">
+    <value>Encoding Translation</value>
+  </data>
   <data name="EntryPoint.PlaceholderText" xml:space="preserve">
     <value>Entry Point</value>
   </data>

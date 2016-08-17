@@ -36,7 +36,7 @@ namespace libtaotu.Models.Procedure
         public ObservableCollection<RegItem> RegexPairs { get; private set; }
 
         public string RawModeName { get; private set; }
-        public string ModeName { get; private set; }
+        public string ModeName { get { return ProcStrRes.Str( RawModeName ); } }
 
         protected override IconBase Icon { get { return new IconSearch() { AutoScale = true }; } }
         protected override Color BgColor { get { return Colors.Purple; } }
@@ -195,7 +195,6 @@ namespace libtaotu.Models.Procedure
         {
             this.Mode = Mode;
             RawModeName = Enum.GetName( typeof( FindMode ), Mode );
-            ModeName = ProcStrRes.Str( RawModeName );
 
             foreach ( RegItem R in RegexPairs ) R.Validate( Mode );
 
@@ -206,7 +205,7 @@ namespace libtaotu.Models.Procedure
         {
             base.ReadParam( Param );
 
-            XParameter[] RegParams = Param.GetParametersWithKey( "i" );
+            XParameter[] RegParams = Param.Parameters( "i" );
             TestLink = Param.GetValue( "TestLink" );
             SetMode( Param.GetValue( "Mode" ) );
 
@@ -229,7 +228,7 @@ namespace libtaotu.Models.Procedure
             foreach( RegItem R in RegexPairs )
             {
                 XParameter RegParam = R.ToXParam();
-                RegParam.ID += i;
+                RegParam.Id += i;
                 RegParam.SetValue( new XKey( "i", i++ ) );
 
                 Param.SetParameter( RegParam );

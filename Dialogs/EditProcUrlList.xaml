@@ -16,7 +16,7 @@
                    Text="Edit UrlList" Foreground="White" />
     </ContentDialog.Title>
 
-    <Grid>
+    <Grid MinWidth="400">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

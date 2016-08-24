@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -57,9 +58,17 @@ namespace libtaotu.Dialogs
             }
         }
 
-        private void AddUrl( object sender, RoutedEventArgs e )
+        private void AddUrl( object sender, RoutedEventArgs e ) { TryAddUrl(); }
+
+        private async void AddRemainingUrl( ContentDialog sender, ContentDialogButtonClickEventArgs args )
         {
-            TryAddUrl();
+            if ( TryAddUrl() )
+            {
+                args.Cancel = true;
+
+                await Task.Delay( 300 );
+                this.Hide();
+            }
         }
 
         private void RemoveUrl( object sender, RoutedEventArgs e )
@@ -67,6 +76,9 @@ namespace libtaotu.Dialogs
             Button B = sender as Button;
             string s = B.DataContext as string;
             EditTarget.Urls.Remove( s );
+
+            // Restore input
+            UrlInput.Text = s;
 
             UrlList.ItemsSource = null;
             UrlList.ItemsSource = EditTarget.Urls;
@@ -85,16 +97,18 @@ namespace libtaotu.Dialogs
             FrameContainer.Visibility = Visibility.Collapsed;
         }
 
-        private void TryAddUrl()
+        private bool TryAddUrl()
         {
             string url = UrlInput.Text.Trim();
-            if ( string.IsNullOrEmpty( url ) ) return;
+            if ( string.IsNullOrEmpty( url ) ) return false;
 
             EditTarget.Urls.Add( url );
 
             UrlInput.Text = "";
             UrlList.ItemsSource = null;
             UrlList.ItemsSource = EditTarget.Urls;
+
+            return true;
         }
 
         private void SetPrefix( object sender, RoutedEventArgs e )

@@ -10,6 +10,7 @@
     Style="{StaticResource ScrollContentDialog}"
     Background="#111"
     PrimaryButtonText="Button1"
+    PrimaryButtonClick="AddRemainingUrl"
     IsSecondaryButtonEnabled="False">
     <ContentDialog.Title>
         <TextBlock x:Uid="/libtaotu/Resources/UrlList"

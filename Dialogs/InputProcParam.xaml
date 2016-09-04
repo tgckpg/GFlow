@@ -21,7 +21,7 @@
         </Style>
     </ContentDialog.Resources>
 
-    <Grid x:Name="LayoutRoot" MinWidth="400">
+    <Grid x:Name="LayoutRoot">
         <ListView ItemsSource="{Binding ParamDefs}"
                   ItemContainerStyle="{StaticResource StretchListItem}">
             <ListView.ItemTemplate>

@@ -91,22 +91,28 @@ namespace libtaotu.Controls
 
         public static void PanelMessage( Procedure P, string Mesg, LogType LogLevel )
         {
-            string Tag = P.Name == P.TypeName
-                ? P.Name
-                : string.Format( "[{0}({1})]", P.Name, P.RawName )
-                ;
+            Worker.UIInvoke( () =>
+            {
+                string Tag = P.Name == P.TypeName
+                    ? P.Name
+                    : string.Format( "[{0}({1})]", P.Name, P.RawName )
+                    ;
 
-            PanelMessage( Tag, Mesg, LogLevel );
+                PanelMessage( Tag, Mesg, LogLevel );
+            } );
         }
 
         public static void PanelMessage( Procedure P, Func<string> Mesg, LogType LogLevel )
         {
-            string Tag = P.Name == P.TypeName
-                ? P.Name
-                : string.Format( "[{0}({1})]", P.Name, P.RawName )
-                ;
+            Worker.UIInvoke( () =>
+            {
+                string Tag = P.Name == P.TypeName
+                    ? P.Name
+                    : string.Format( "[{0}({1})]", P.Name, P.RawName )
+                    ;
 
-            PanelMessage( Tag, Mesg, LogLevel );
+                PanelMessage( Tag, Mesg(), LogLevel );
+            } );
         }
 
         public ProcManager()
@@ -122,7 +128,6 @@ namespace libtaotu.Controls
             if ( Param == null ) return;
             ReadParam( Param );
         }
-
 
         public Procedure NewProcedure( ProcType P )
         {

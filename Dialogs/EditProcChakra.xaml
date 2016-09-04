@@ -15,7 +15,7 @@
                    Foreground="White" />
     </ContentDialog.Title>
 
-    <Grid x:Name="LayoutRoot" MinWidth="400">
+    <Grid x:Name="LayoutRoot">
         <Grid.RowDefinitions>
             <!-- Control Buttons -->
             <RowDefinition Height="Auto" />
@@ -47,14 +47,14 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="{Binding ShortScript}"
-                       TextTrimming="CharacterEllipsis"
-                       TextWrapping="NoWrap"
-                       Foreground="White"/>
+            <TextBox Text="{Binding ShortScript}"
+                     ScrollViewer.VerticalScrollMode="Enabled"
+                     IsReadOnly="True" TextWrapping="Wrap"
+                     Foreground="White"/>
             <Button Style="{StaticResource IconButton}"
                     Grid.Column="1"
                     Width="30" Height="30"
-                    HorizontalAlignment="Left" VerticalAlignment="Center"
+                    HorizontalAlignment="Left" VerticalAlignment="Top"
                     Click="OpenScript">
                     <i:IconLogin AutoScale="True" Direction="Rotate270" />
             </Button>

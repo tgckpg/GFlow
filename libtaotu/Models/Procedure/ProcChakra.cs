@@ -31,8 +31,8 @@ namespace libtaotu.Models.Procedure
         {
             get
             {
-                if ( 60 < Script.Length )
-                    return Script.Substring( 0, 60 );
+                if ( 512 < Script.Length )
+                    return Script.Substring( 0, 512 ) + "...";
                 return Script;
             }
         }

@@ -40,7 +40,7 @@ namespace libtaotu.Crawler
 
             foreach ( Procedure Proc in ProcList )
             {
-                ProcManager.PanelMessage( ID, Res.SSTR( "Running", Proc.Name ), LogType.INFO );
+                ProcManager.PanelMessage( ID, () => Res.RSTR( "Running" ) + ": " + Proc.Name, LogType.INFO );
 
                 try
                 {

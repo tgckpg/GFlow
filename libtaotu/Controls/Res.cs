@@ -5,13 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Net.Astropenguin.Loaders;
-using Net.Astropenguin.Helpers;
+using Net.Astropenguin.Logging;
 
 namespace libtaotu.Controls
 {
     static class Res
     {
         private static StringResources stp;
+
+
+        public static Func<string> SSTR( string key, string ColonAfter )
+        {
+            return () => RSTR( key ) + ": " + ColonAfter;
+        }
 
         /// <summary>
         /// An alias ProcPanel.RSTR
@@ -20,21 +26,21 @@ namespace libtaotu.Controls
         {
             if ( stp == null )
             {
-                Worker.UIInvoke( () =>
-                {
-                    stp = new StringResources( "/libtaotu/PanelMessage" );
-                } );
-
+                stp = new StringResources( "/libtaotu/PanelMessage" );
                 return key;
             }
-            string s = stp.Str( key );
 
-            try { s = string.Format( s, args ); }
-            catch( Exception ) { }
+            try
+            {
+                string s = string.Format( stp.Str( key ), args );
+                return s;
+            }
+            catch ( Exception ex )
+            {
+                Logger.Log( "RSTR", ex.Message, LogType.WARNING );
+            }
 
-            if ( string.IsNullOrEmpty( s ) ) return key;
-
-            return s;
+            return key;
         }
     }
 }

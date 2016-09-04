@@ -120,18 +120,18 @@ namespace libtaotu.Models.Procedure
             } );
 
             int i = 0;
-            ProcManager.PanelMessage( this, Res.RSTR( "SCRIPT_LIVE", STimeout ), LogType.INFO );
+            ProcManager.PanelMessage( this, () => Res.RSTR( "SCRIPT_LIVE", STimeout ), LogType.INFO );
             // Give 10 seconds for the script to run
             Timer Tmr = new Timer( x =>
             {
                 if ( STimeout <= ++i )
                 {
                     TCS.TrySetResult( null );
-                    ProcManager.PanelMessage( this, Res.RSTR( "SCRIPT_TIMED_OUT" ), LogType.INFO );
+                    ProcManager.PanelMessage( this, () => Res.RSTR( "SCRIPT_TIMED_OUT" ), LogType.INFO );
                     return;
                 }
 
-                ProcManager.PanelMessage( this, Res.RSTR( "SCRIPT_LIVE_D", STimeout - i ), LogType.INFO );
+                ProcManager.PanelMessage( this, () => Res.RSTR( "SCRIPT_LIVE_D", STimeout - i ), LogType.INFO );
             }, null, 1000, 1000 );
 
             Html = JsonDecode<string>( await TCS.Task );
@@ -175,7 +175,7 @@ namespace libtaotu.Models.Procedure
                         case "WAIT": break;
                         case "ERROR":
                             Errored = true;
-                            ProcManager.PanelMessage( this, Res.RSTR( "SCRIPT_ERROR" ), LogType.ERROR );
+                            ProcManager.PanelMessage( this, () => Res.RSTR( "SCRIPT_ERROR" ), LogType.ERROR );
                             TCS.TrySetResult( null );
                             break;
                         default:
@@ -185,7 +185,7 @@ namespace libtaotu.Models.Procedure
                 }
                 catch ( Exception ex )
                 {
-                    ProcManager.PanelMessage( this, Res.RSTR( "SCRIPT_ERROR", ex.Message ), LogType.ERROR );
+                    ProcManager.PanelMessage( this, () => Res.RSTR( "SCRIPT_ERROR", ex.Message ), LogType.ERROR );
                     TCS.TrySetResult( null );
                 }
             };
@@ -204,7 +204,7 @@ namespace libtaotu.Models.Procedure
             {
                 w.NavigationFailed -= Failed;
                 TCS.TrySetResult( null );
-                ProcManager.PanelMessage( this, Res.RSTR( "SCRIPT_NAV_FALIED" ), LogType.INFO );
+                ProcManager.PanelMessage( this, () => Res.RSTR( "SCRIPT_NAV_FALIED" ), LogType.INFO );
             };
 
             LongScript = ( sender, e ) =>

@@ -133,7 +133,7 @@
     <value>無効なXML？</value>
   </data>
   <data name="NoUsablePayload" xml:space="preserve">
-    <value>使用可能なペイロードを見つけることができません。このステップをスキップします。</value>
+    <value>使用可能なペイロードを見つけることができません。</value>
   </data>
   <data name="ParseOK" xml:space="preserve">
     <value>パースOK</value>
@@ -170,5 +170,32 @@
   </data>
   <data name="SCRIPT_TIMED_OUT" xml:space="preserve">
     <value>スクリプトがタイムアウトしました</value>
+  </data>
+  <data name="ConvertEncoding" xml:space="preserve">
+    <value>エンコーディングを変換します…</value>
+  </data>
+  <data name="CannotCarryOn" xml:space="preserve">
+    <value>条件が一致したが、続けていくために何のURLはありませんでした。</value>
+  </data>
+  <data name="Faulted" xml:space="preserve">
+    <value>ステップ"{0}"に失敗しました：{1}</value>
+  </data>
+  <data name="InvalidParam" xml:space="preserve">
+    <value>無効なパラメータ：{0}</value>
+  </data>
+  <data name="InvalidPattern" xml:space="preserve">
+    <value>無効なパターン</value>
+  </data>
+  <data name="InvalidURL" xml:space="preserve">
+    <value>無効なURL</value>
+  </data>
+  <data name="MatchedStop" xml:space="preserve">
+    <value>条件一致した：{0}、停止しています…</value>
+  </data>
+  <data name="NoEntryPoint" xml:space="preserve">
+    <value>エントリポイントが見つかりません、このステップをスキップします。</value>
+  </data>
+  <data name="SubProcRun" xml:space="preserve">
+    <value>サブプロシージャーを実行します</value>
   </data>
 </root>

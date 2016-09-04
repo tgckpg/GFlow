@@ -32,7 +32,7 @@ namespace libtaotu.Crawler
         {
             if ( ProcList.Count() == 0 )
             {
-                ProcManager.PanelMessage( ID, Res.RSTR( "EmptyCrawling" ), LogType.INFO );
+                ProcManager.PanelMessage( ID, () => Res.RSTR( "EmptyCrawling" ), LogType.INFO );
                 return Convoy;
             }
 
@@ -40,7 +40,7 @@ namespace libtaotu.Crawler
 
             foreach ( Procedure Proc in ProcList )
             {
-                ProcManager.PanelMessage( ID, Res.RSTR( "Running" ) + ": " + Proc.Name, LogType.INFO );
+                ProcManager.PanelMessage( ID, Res.SSTR( "Running", Proc.Name ), LogType.INFO );
 
                 try
                 {
@@ -51,20 +51,21 @@ namespace libtaotu.Crawler
                 }
                 catch ( Exception ex )
                 {
-                    ProcManager.PanelMessage( ID, ex.Message, LogType.ERROR );
+                    ProcManager.PanelMessage( ID, () => Res.RSTR( "Faulted", Proc.Name, ex.Message ), LogType.ERROR );
                     Proc.Running = false;
                     Proc.Faulted = true;
-                    return null;
+                    Conveying = null;
+                    break;
                 }
             }
 
-            ProcManager.PanelMessage( ID, Res.RSTR( "RunComplete" ), LogType.INFO );
+            ProcManager.PanelMessage( ID, () => Res.RSTR( "RunComplete" ), LogType.INFO );
             return Conveying;
         }
 
         public static async Task<IStorageFile> DownloadSource( string url )
         {
-            ProcManager.PanelMessage( ID, Res.RSTR( "Download" ) + ": " + url, LogType.INFO );
+            ProcManager.PanelMessage( ID, Res.SSTR( "Download", url ), LogType.INFO );
 
             TaskCompletionSource<IStorageFile> TCS = new TaskCompletionSource<IStorageFile>();
 
@@ -100,6 +101,11 @@ namespace libtaotu.Crawler
                 };
 
                 Request.OpenAsync();
+            }
+            catch( UriFormatException )
+            {
+                ProcManager.PanelMessage( ID, Res.SSTR( "InvalidURL", url ), LogType.ERROR );
+                TCS.TrySetResult( null );
             }
             catch ( Exception ex )
             {

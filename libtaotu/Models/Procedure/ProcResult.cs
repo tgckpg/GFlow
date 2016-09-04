@@ -27,20 +27,13 @@ namespace libtaotu.Models.Procedure
         {
             await base.Run( Convoy );
 
-            ProcConvoy UsableConvoy = ProcManager.TracePackage(
-                Convoy, ( P, C ) =>
-                {
-                    return C.Payload is IEnumerable<IStorageFile>
-                    || C.Payload is string;
-                }
-            );
+            ProcConvoy UsableConvoy;
 
-            if( UsableConvoy == null )
+            if ( !TryGetConvoy( out UsableConvoy, ( P, C ) =>
             {
-                ProcManager.PanelMessage( this, Res.RSTR( "NoUsablePayload" ), LogType.WARNING );
-                Faulted = true;
-                return Convoy;
-            }
+                return C.Payload is IEnumerable<IStorageFile>
+                || C.Payload is string;
+            } ) ) return Convoy;
 
             string s = "";
             if ( UsableConvoy.Payload is string )

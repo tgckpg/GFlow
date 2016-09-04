@@ -19,10 +19,7 @@ namespace libtaotu.Models.Procedure
 {
     using Controls;
 
-    enum FindMode
-    {
-        MATCH = 1, REPLACE = 2
-    }
+    enum FindMode { MATCH = 1, REPLACE = 2 }
 
     class ProcFind : Procedure
     {

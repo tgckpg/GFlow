@@ -43,7 +43,7 @@ namespace libtaotu.Models.Procedure
 
             if ( Incoming )
             {
-                ProcManager.PanelMessage( this, Res.RSTR( "IncomingCheck" ), LogType.INFO );
+                ProcManager.PanelMessage( this, () => Res.RSTR( "IncomingCheck" ), LogType.INFO );
 
                 ProcConvoy UsableConvoy = ProcManager.TracePackage(
                     Convoy, ( P, C ) =>
@@ -57,36 +57,38 @@ namespace libtaotu.Models.Procedure
                     if ( UsableConvoy.Payload is string )
                     {
                         ConvoyUrls = new HashSet<string>();
-                        ConvoyUrls.Add( UsableConvoy.Payload as string );
+                        ConvoyUrls.Add( ( string ) UsableConvoy.Payload );
                     }
                     else
                     {
-                        ConvoyUrls = new HashSet<string>( UsableConvoy.Payload as IEnumerable<string> );
+                        ConvoyUrls = new HashSet<string>( ( IEnumerable<string> ) UsableConvoy.Payload );
                     }
                 }
             }
 
             if ( ConvoyUrls == null && Urls.Count == 0 )
             {
-                ProcManager.PanelMessage( this, Res.RSTR( "EmptyUrlLIst" ), LogType.WARNING );
+                ProcManager.PanelMessage( this, () => Res.RSTR( "EmptyUrlLIst" ), LogType.WARNING );
             }
 
-            List<IStorageFile> ISF = new List<IStorageFile>();
+            List<IStorageFile> ISFs = new List<IStorageFile>();
 
             foreach ( string u in Urls )
             {
-                ISF.Add( await ProceduralSpider.DownloadSource( Prefix + u ) );
+                IStorageFile ISF = await ProceduralSpider.DownloadSource( Prefix + u );
+                if ( ISF != null ) ISFs.Add( ISF );
             }
 
             if ( ConvoyUrls != null )
             {
                 foreach ( string u in ConvoyUrls )
                 {
-                    ISF.Add( await ProceduralSpider.DownloadSource( Prefix + u ) );
+                    IStorageFile ISF = await ProceduralSpider.DownloadSource( Prefix + u );
+                    if ( ISF != null ) ISFs.Add( ISF );
                 }
             }
 
-            return new ProcConvoy( this, ISF );
+            return new ProcConvoy( this, ISFs );
         }
 
         public override async Task Edit()

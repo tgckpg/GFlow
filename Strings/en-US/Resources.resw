@@ -123,6 +123,9 @@
   <data name="ContinueIf.Text" xml:space="preserve">
     <value>Continue if match with url</value>
   </data>
+  <data name="Default.PlaceholderText" xml:space="preserve">
+    <value>Default value</value>
+  </data>
   <data name="DiscardUnmatched.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Discard unmatched</value>
   </data>
@@ -147,11 +150,17 @@
   <data name="Incoming.Text" xml:space="preserve">
     <value>Incoming</value>
   </data>
+  <data name="Label.PlaceholderText" xml:space="preserve">
+    <value>Label</value>
+  </data>
   <data name="Marker.Text" xml:space="preserve">
     <value>Marker</value>
   </data>
   <data name="Param.PlaceholderText" xml:space="preserve">
     <value>Param &gt;</value>
+  </data>
+  <data name="ParamDefinitions.Text" xml:space="preserve">
+    <value>Param Definitions</value>
   </data>
   <data name="Pattern.PlaceholderText" xml:space="preserve">
     <value>Pattern</value>

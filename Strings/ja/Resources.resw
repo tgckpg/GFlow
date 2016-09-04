@@ -123,6 +123,9 @@
   <data name="ContinueIf.Text" xml:space="preserve">
     <value>指定されたURLに準拠し続けた場合</value>
   </data>
+  <data name="Default.PlaceholderText" xml:space="preserve">
+    <value>既定値</value>
+  </data>
   <data name="DiscardUnmatched.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>不一致の項目を破棄</value>
   </data>
@@ -147,11 +150,17 @@
   <data name="Incoming.Text" xml:space="preserve">
     <value>着信パラメータ</value>
   </data>
+  <data name="Label.PlaceholderText" xml:space="preserve">
+    <value>ラベル</value>
+  </data>
   <data name="Marker.Text" xml:space="preserve">
     <value>ラベル対応</value>
   </data>
   <data name="Param.PlaceholderText" xml:space="preserve">
     <value>パラメーター &gt;</value>
+  </data>
+  <data name="ParamDefinitions.Text" xml:space="preserve">
+    <value>パラメータの定義</value>
   </data>
   <data name="Pattern.PlaceholderText" xml:space="preserve">
     <value>正規表現パターン</value>

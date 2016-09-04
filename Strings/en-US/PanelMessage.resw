@@ -171,4 +171,31 @@
   <data name="SCRIPT_TIMED_OUT" xml:space="preserve">
     <value>Script has timed out</value>
   </data>
+  <data name="ConvertEncoding" xml:space="preserve">
+    <value>Converting Encodings</value>
+  </data>
+  <data name="CannotCarryOn" xml:space="preserve">
+    <value>Condition matched but no URL to carry on.</value>
+  </data>
+  <data name="Faulted" xml:space="preserve">
+    <value>Faulted at "{0}": {1}</value>
+  </data>
+  <data name="InvalidParam" xml:space="preserve">
+    <value>Invalid param: {0}</value>
+  </data>
+  <data name="InvalidPattern" xml:space="preserve">
+    <value>Invalid pattern</value>
+  </data>
+  <data name="InvalidURL" xml:space="preserve">
+    <value>Invalid Url</value>
+  </data>
+  <data name="MatchedStop" xml:space="preserve">
+    <value>Condition Matched: {0}, Stopping ...</value>
+  </data>
+  <data name="NoEntryPoint" xml:space="preserve">
+    <value>Entry point not found, skipping this step.</value>
+  </data>
+  <data name="SubProcRun" xml:space="preserve">
+    <value>Running subprocedures</value>
+  </data>
 </root>

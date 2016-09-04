@@ -1,0 +1,51 @@
+﻿<ContentDialog
+    x:Class="libtaotu.Dialogs.InputProcParam"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:libtaotu.Dialogs"
+    xmlns:i="using:Net.Astropenguin.UI.Icons"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Style="{StaticResource ScrollContentDialog}"
+    Background="#111"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick" >
+    <ContentDialog.Title>
+        <TextBlock x:Name="InputTitle" Text="Input Param"
+                   Foreground="White" />
+    </ContentDialog.Title>
+    <ContentDialog.Resources>
+        <Style x:Key="StretchListItem" TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+    </ContentDialog.Resources>
+
+    <Grid x:Name="LayoutRoot" MinWidth="400">
+        <ListView ItemsSource="{Binding ParamDefs}"
+                  ItemContainerStyle="{StaticResource StretchListItem}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="{Binding Label}"
+                                   VerticalAlignment="Center" HorizontalAlignment="Center"
+                                   Foreground="White"
+                                   FontFamily="Lucida Console"
+                                   Margin="3"/>
+
+                        <TextBox Grid.Column="1" Margin="3"
+                                 Tag="{Binding RIndex}"
+                                 Text="{Binding Default}"
+                                 Loaded="RegisterInput"
+                                 FontFamily="Lucida Console" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</ContentDialog>

@@ -171,4 +171,31 @@
   <data name="SCRIPT_TIMED_OUT" xml:space="preserve">
     <value>腳本已超時</value>
   </data>
+  <data name="ConvertEncoding" xml:space="preserve">
+    <value>編碼轉換</value>
+  </data>
+  <data name="CannotCarryOn" xml:space="preserve">
+    <value>條件匹配，但沒有網址輸出。</value>
+  </data>
+  <data name="Faulted" xml:space="preserve">
+    <value>步驟「{0}」發生故障：{1}</value>
+  </data>
+  <data name="InvalidParam" xml:space="preserve">
+    <value>無效的參數：{0}</value>
+  </data>
+  <data name="InvalidPattern" xml:space="preserve">
+    <value>無效的表達式</value>
+  </data>
+  <data name="InvalidURL" xml:space="preserve">
+    <value>無效的網址</value>
+  </data>
+  <data name="MatchedStop" xml:space="preserve">
+    <value>條件匹配：{0}，正在停止…</value>
+  </data>
+  <data name="NoEntryPoint" xml:space="preserve">
+    <value>找不到起點，跳過此步驟。</value>
+  </data>
+  <data name="SubProcRun" xml:space="preserve">
+    <value>執行子程序</value>
+  </data>
 </root>

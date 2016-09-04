@@ -95,89 +95,47 @@ namespace libtaotu.Models.Procedure
             switch ( Mode )
             {
                 case RunMode.FEEDBACK:
-                    if ( !TryGetConvoy( out UsableConvoy, ( P, C ) =>
+                    ProcConvoy Con = ProcManager.TracePackage( Convoy, ( P, C ) => ( P.Type ^ ProcType.FEED_RUN ) == 0 );
+                    if ( Con == null )
+                    {
+                        ProcManager.PanelMessage( this, () => Res.RSTR( "NotAFeedRun" ), LogType.INFO );
+                        return Convoy;
+                    }
+
+                    goto case RunMode.DEFINE;
+
+                case RunMode.DEFINE:
+                    UsableConvoy = ProcManager.TracePackage( Convoy, ( P, C ) =>
                     {
                         return C.Payload is IEnumerable<string>
                         || C.Payload is string
                         || C.Payload is IEnumerable<IStorageFile>
                         || C.Payload is IStorageFile;
-                    } ) ) return Convoy;
+                    } );
 
-                    // Incoming are templates
                     if ( Incoming )
                     {
-                        if ( UsableConvoy.Payload is string )
+                        if ( UsableConvoy == null )
                         {
-                            return new ProcConvoy( this, FormatParams( ( string ) UsableConvoy.Payload ) );
+                            ProcManager.PanelMessage( this, () => Res.RSTR( "NoUsableConvoy" ), LogType.WARNING );
+                            return Convoy;
                         }
-                        else if ( UsableConvoy.Payload is IStorageFile )
-                        {
-                            IStorageFile tmp = await AppStorage.MkTemp();
-                            await tmp.WriteString( FormatParams( await ( ( IStorageFile ) UsableConvoy.Payload ).ReadString() ) );
-                            return new ProcConvoy( this, tmp );
-                        }
-                        else if ( UsableConvoy.Payload is IEnumerable<IStorageFile> )
-                        {
-                            IEnumerable<IStorageFile> Templates = ( IEnumerable<IStorageFile> ) UsableConvoy.Payload;
-                            List<IStorageFile> TemplatedStrs = new List<IStorageFile>();
-
-                            foreach ( IStorageFile Template in Templates )
-                            {
-                                IStorageFile tmp = await AppStorage.MkTemp();
-                                await tmp.WriteString( FormatParams( await Template.ReadString() ) );
-                                TemplatedStrs.Add( tmp );
-                            }
-
-                            return new ProcConvoy( this, TemplatedStrs );
-                        }
-                        else
-                        {
-                            IEnumerable<string> Templates = ( IEnumerable<string> ) UsableConvoy.Payload;
-                            return new ProcConvoy( this, Templates.Remap( x => FormatParams( x ) ) );
-                        }
+                        return await IncomingTemplates( UsableConvoy );
                     }
-                    // Icoming are arguments
-                    else
+                    else if ( UsableConvoy != null )
                     {
-                        if ( UsableConvoy.Payload is string )
-                        {
-                            return new ProcConvoy( this, ApplyParams( ( string ) UsableConvoy.Payload ) );
-                        }
-                        else if ( UsableConvoy.Payload is IStorageFile )
-                        {
-                            IStorageFile tmp = await AppStorage.MkTemp();
-                            await tmp.WriteString( ApplyParams( await ( ( IStorageFile ) UsableConvoy.Payload ).ReadLines( ParamDefs.Count ) ) );
-                            return new ProcConvoy( this, tmp );
-                        }
-                        else if ( UsableConvoy.Payload is IEnumerable<IStorageFile> )
-                        {
-                            IEnumerable<IStorageFile> Args = ( IEnumerable<IStorageFile> ) UsableConvoy.Payload;
-                            List<IStorageFile> TemplatedStrs = new List<IStorageFile>();
-
-                            foreach ( IStorageFile Arg in Args )
-                            {
-                                IStorageFile tmp = await AppStorage.MkTemp();
-                                await tmp.WriteString( ApplyParams( await Arg.ReadLines( ParamDefs.Count ) ) );
-                                TemplatedStrs.Add( tmp );
-                            }
-
-                            return new ProcConvoy( this, TemplatedStrs );
-                        }
-                        else
-                        {
-                            IEnumerable<string> Args = ( IEnumerable<string> ) UsableConvoy.Payload;
-                            return new ProcConvoy( this, Args.Remap( x => ApplyParams( x ) ) );
-                        }
+                        return await IncomingArguments( UsableConvoy );
                     }
-                    // Unreachable break;
 
+                    goto DEFAULT_PARAMS;
+
+                /*** Belows only accepts incoming templates ***/
                 case RunMode.INPUT:
-
-                    ProcConvoy Con = ProcManager.TracePackage( Convoy, ( P, C ) => ( P.Type ^ ProcType.TEST_RUN ) == 0 ); 
+                    Con = ProcManager.TracePackage( Convoy, ( P, C ) => ( P.Type ^ ProcType.TEST_RUN ) == 0 );
                     if ( Con != null )
                     {
                         ProcManager.PanelMessage( this, () => Res.RSTR( "TestRun_UseDefault" ), LogType.INFO );
-                        goto case RunMode.DEFINE;
+                        break;
                     }
 
                     Dialogs.InputProcParam InputDialog = new Dialogs.InputProcParam( this );
@@ -199,10 +157,22 @@ namespace libtaotu.Models.Procedure
                     ParamDefs = Proc.ParamDefs;
                     break;
 
-                case RunMode.DEFINE:
-                    break;
             }
 
+            if ( !TryGetConvoy( out UsableConvoy, ( P, C ) =>
+            {
+                return C.Payload is IEnumerable<string>
+                || C.Payload is string
+                || C.Payload is IEnumerable<IStorageFile>
+                || C.Payload is IStorageFile;
+            } ) ) return Convoy;
+
+            if ( Incoming )
+            {
+                return await IncomingTemplates( UsableConvoy );
+            }
+
+            DEFAULT_PARAMS:
             return new ProcConvoy( this, ApplyParams() );
         }
 
@@ -230,6 +200,72 @@ namespace libtaotu.Models.Procedure
         public override async Task Edit()
         {
             await Popups.ShowDialog( new Dialogs.EditProcParam( this ) );
+        }
+
+        private async Task<ProcConvoy> IncomingTemplates( ProcConvoy UsableConvoy )
+        {
+            if ( UsableConvoy.Payload is string )
+            {
+                return new ProcConvoy( this, FormatParams( ( string ) UsableConvoy.Payload ) );
+            }
+            else if ( UsableConvoy.Payload is IStorageFile )
+            {
+                IStorageFile tmp = await AppStorage.MkTemp();
+                await tmp.WriteString( FormatParams( await ( ( IStorageFile ) UsableConvoy.Payload ).ReadString() ) );
+                return new ProcConvoy( this, tmp );
+            }
+            else if ( UsableConvoy.Payload is IEnumerable<IStorageFile> )
+            {
+                IEnumerable<IStorageFile> Templates = ( IEnumerable<IStorageFile> ) UsableConvoy.Payload;
+                List<IStorageFile> TemplatedStrs = new List<IStorageFile>();
+
+                foreach ( IStorageFile Template in Templates )
+                {
+                    IStorageFile tmp = await AppStorage.MkTemp();
+                    await tmp.WriteString( FormatParams( await Template.ReadString() ) );
+                    TemplatedStrs.Add( tmp );
+                }
+
+                return new ProcConvoy( this, TemplatedStrs );
+            }
+            else
+            {
+                IEnumerable<string> Templates = ( IEnumerable<string> ) UsableConvoy.Payload;
+                return new ProcConvoy( this, Templates.Remap( x => FormatParams( x ) ) );
+            }
+        }
+
+        private async Task<ProcConvoy> IncomingArguments( ProcConvoy UsableConvoy )
+        {
+            if ( UsableConvoy.Payload is string )
+            {
+                return new ProcConvoy( this, ApplyParams( ( ( string ) UsableConvoy.Payload ).Split( new char[] { '\n' }, ParamDefs.Count ) ) );
+            }
+            else if ( UsableConvoy.Payload is IStorageFile )
+            {
+                IStorageFile tmp = await AppStorage.MkTemp();
+                await tmp.WriteString( ApplyParams( await ( ( IStorageFile ) UsableConvoy.Payload ).ReadLines( ParamDefs.Count ) ) );
+                return new ProcConvoy( this, tmp );
+            }
+            else if ( UsableConvoy.Payload is IEnumerable<IStorageFile> )
+            {
+                IEnumerable<IStorageFile> Args = ( IEnumerable<IStorageFile> ) UsableConvoy.Payload;
+                List<IStorageFile> TemplatedStrs = new List<IStorageFile>();
+
+                foreach ( IStorageFile Arg in Args )
+                {
+                    IStorageFile tmp = await AppStorage.MkTemp();
+                    await tmp.WriteString( ApplyParams( await Arg.ReadLines( ParamDefs.Count ) ) );
+                    TemplatedStrs.Add( tmp );
+                }
+
+                return new ProcConvoy( this, TemplatedStrs );
+            }
+            else
+            {
+                IEnumerable<string> Args = ( IEnumerable<string> ) UsableConvoy.Payload;
+                return new ProcConvoy( this, Args.Remap( x => ApplyParams( x ) ) );
+            }
         }
 
         private void SetMode( string name )
@@ -314,7 +350,7 @@ namespace libtaotu.Models.Procedure
                     Values[ i ] = i < m ? Args[ i ] : ParamDefs[ i ].Default;
                 }
 
-                return string.Format( Template, Values );
+                return string.Format( Template.Unescape(), Values );
             }
             catch ( Exception ex )
             {

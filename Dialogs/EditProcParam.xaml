@@ -45,7 +45,8 @@
 
         <TextBlock x:Name="FormattedOutput"
                    Grid.Row="1" Margin="5"
-                   TextWrapping="Wrap"
+                   TextWrapping="Wrap" MaxLines="3"
+                   TextTrimming="CharacterEllipsis"
                    Foreground="White"
                    FontFamily="Lucida Console"/>
 

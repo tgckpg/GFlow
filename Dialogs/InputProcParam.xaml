@@ -28,13 +28,13 @@
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="25*" />
+                            <ColumnDefinition Width="75*" />
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Column="0" Text="{Binding Label}"
-                                   VerticalAlignment="Center" HorizontalAlignment="Center"
-                                   Foreground="White"
+                                   VerticalAlignment="Center" HorizontalAlignment="Left"
+                                   Foreground="White" TextWrapping="Wrap"
                                    FontFamily="Lucida Console"
                                    Margin="3"/>
 

@@ -195,6 +195,12 @@
   <data name="NoEntryPoint" xml:space="preserve">
     <value>Entry point not found, skipping this step.</value>
   </data>
+  <data name="NotAFeedRun" xml:space="preserve">
+    <value>Not a feedback operation, skipping this step</value>
+  </data>
+  <data name="RunMode" xml:space="preserve">
+    <value>Run mode</value>
+  </data>
   <data name="SubProcRun" xml:space="preserve">
     <value>Running subprocedures</value>
   </data>

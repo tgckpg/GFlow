@@ -195,6 +195,12 @@
   <data name="NoEntryPoint" xml:space="preserve">
     <value>找不到起點，跳過此步驟。</value>
   </data>
+  <data name="NotAFeedRun" xml:space="preserve">
+    <value>不是一個反饋操作，跳過此步驟。</value>
+  </data>
+  <data name="RunMode" xml:space="preserve">
+    <value>運作模式</value>
+  </data>
   <data name="SubProcRun" xml:space="preserve">
     <value>執行子程序</value>
   </data>

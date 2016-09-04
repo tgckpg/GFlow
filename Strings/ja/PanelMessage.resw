@@ -195,6 +195,12 @@
   <data name="NoEntryPoint" xml:space="preserve">
     <value>エントリポイントが見つかりません、このステップをスキップします。</value>
   </data>
+  <data name="NotAFeedRun" xml:space="preserve">
+    <value>フィードバック動作ではありません、このステップをスキップします</value>
+  </data>
+  <data name="RunMode" xml:space="preserve">
+    <value>動作モード</value>
+  </data>
   <data name="SubProcRun" xml:space="preserve">
     <value>サブプロシージャーを実行します</value>
   </data>

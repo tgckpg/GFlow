@@ -32,6 +32,7 @@ namespace libtaotu.Models.Procedure
         ENCODING = 1024,
         PARAMETER = 2048,
         TEST_RUN = 4096,
+        FEED_RUN = 8192,
     }
 
     abstract class Procedure : ActiveData, INamable

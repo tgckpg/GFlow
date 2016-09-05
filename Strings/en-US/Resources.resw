@@ -156,6 +156,9 @@
   <data name="Label.PlaceholderText" xml:space="preserve">
     <value>Label</value>
   </data>
+  <data name="ListBuilder.Text" xml:space="preserve">
+    <value>List Builder</value>
+  </data>
   <data name="Marker.Text" xml:space="preserve">
     <value>Marker</value>
   </data>

@@ -156,6 +156,9 @@
   <data name="Label.PlaceholderText" xml:space="preserve">
     <value>標籤</value>
   </data>
+  <data name="ListBuilder.Text" xml:space="preserve">
+    <value>列表生成</value>
+  </data>
   <data name="Marker.Text" xml:space="preserve">
     <value>標籤對應</value>
   </data>

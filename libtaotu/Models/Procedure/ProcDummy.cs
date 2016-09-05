@@ -12,7 +12,7 @@ namespace libtaotu.Models.Procedure
     class ProcDummy : Procedure
     {
         public ProcDummy() :base( ProcType.DUMMY ) { }
-        public ProcDummy( ProcType PType ) : base( PType ) { }
+        public ProcDummy( ProcType PType ) : base( ProcType.DUMMY | PType ) { }
 
         public override Task Edit()
         {

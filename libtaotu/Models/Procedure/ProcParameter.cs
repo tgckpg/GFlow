@@ -91,12 +91,14 @@ namespace libtaotu.Models.Procedure
 
             ProcConvoy UsableConvoy;
 
+            bool IsFeedRun = ( ProcManager.TracePackage( Convoy, ( P, C ) => ( P.Type & ProcType.FEED_RUN ) != 0 ) != null );
+
             ProcManager.PanelMessage( this, Res.SSTR( "RunMode", ModeName ), LogType.INFO );
+
             switch ( Mode )
             {
                 case RunMode.FEEDBACK:
-                    ProcConvoy Con = ProcManager.TracePackage( Convoy, ( P, C ) => ( P.Type ^ ProcType.FEED_RUN ) == 0 );
-                    if ( Con == null )
+                    if ( !IsFeedRun )
                     {
                         ProcManager.PanelMessage( this, () => Res.RSTR( "NotAFeedRun" ), LogType.INFO );
                         return Convoy;
@@ -130,7 +132,13 @@ namespace libtaotu.Models.Procedure
 
                 /*** Belows only accepts incoming templates ***/
                 case RunMode.INPUT:
-                    Con = ProcManager.TracePackage( Convoy, ( P, C ) => ( P.Type ^ ProcType.TEST_RUN ) == 0 );
+                    if ( IsFeedRun )
+                    {
+                        ProcManager.PanelMessage( this, () => Res.RSTR( "FeedRunning" ), LogType.INFO );
+                        return Convoy;
+                    }
+
+                    ProcConvoy Con = ProcManager.TracePackage( Convoy, ( P, C ) => ( P.Type & ProcType.TEST_RUN ) != 0 );
                     if ( Con != null )
                     {
                         ProcManager.PanelMessage( this, () => Res.RSTR( "TestRun_UseDefault" ), LogType.INFO );

@@ -13,7 +13,13 @@ namespace libtaotu.Models.Procedure
     class ProcPassThru : Procedure
     {
         public ProcPassThru( ProcConvoy Convoy )
-            :base( ProcType.PASSTHRU )
+            : base( ProcType.PASSTHRU )
+        {
+            this.Convoy = Convoy;
+        }
+
+        public ProcPassThru( ProcConvoy Convoy, ProcType PType )
+            : base( ProcType.PASSTHRU | PType )
         {
             this.Convoy = Convoy;
         }
@@ -22,5 +28,6 @@ namespace libtaotu.Models.Procedure
         {
             throw new InvalidOperationException();
         }
+
     }
 }

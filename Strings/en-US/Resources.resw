@@ -120,6 +120,9 @@
   <data name="Async.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Asnychronous</value>
   </data>
+  <data name="Caption.PlaceholderText" xml:space="preserve">
+    <value>Caption</value>
+  </data>
   <data name="ContinueIf.Text" xml:space="preserve">
     <value>Continue if match with url</value>
   </data>

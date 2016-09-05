@@ -33,6 +33,7 @@ namespace libtaotu.Models.Procedure
         PARAMETER = 2048,
         TEST_RUN = 4096,
         FEED_RUN = 8192,
+        LIST = 16384,
     }
 
     abstract class Procedure : ActiveData, INamable

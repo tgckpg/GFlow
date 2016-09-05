@@ -141,6 +141,9 @@
   <data name="INPUT" xml:space="preserve">
     <value>输入</value>
   </data>
+  <data name="LIST" xml:space="preserve">
+    <value>列表生成</value>
+  </data>
   <data name="MARK" xml:space="preserve">
     <value>标记</value>
   </data>

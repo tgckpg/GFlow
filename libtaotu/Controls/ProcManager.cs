@@ -161,6 +161,9 @@ namespace libtaotu.Controls
                 case ProcType.MARK:
                     Proc = ProcMark.Create();
                     break;
+                case ProcType.LIST:
+                    Proc = ProcListLoader.Create();
+                    break;
             }
 
             ProcList.Add( Proc );

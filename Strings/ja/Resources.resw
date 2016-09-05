@@ -120,6 +120,9 @@
   <data name="Async.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>非同期処理</value>
   </data>
+  <data name="Caption.PlaceholderText" xml:space="preserve">
+    <value>見出し</value>
+  </data>
   <data name="ContinueIf.Text" xml:space="preserve">
     <value>指定されたURLに準拠し続けた場合</value>
   </data>

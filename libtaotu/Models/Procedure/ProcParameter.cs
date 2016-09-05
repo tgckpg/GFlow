@@ -106,12 +106,11 @@ namespace libtaotu.Models.Procedure
 
                 case RunMode.DEFINE:
                     UsableConvoy = ProcManager.TracePackage( Convoy, ( P, C ) =>
-                    {
-                        return C.Payload is IEnumerable<string>
+                        C.Payload is IEnumerable<IStorageFile>
+                        || C.Payload is IEnumerable<string>
+                        || C.Payload is IStorageFile
                         || C.Payload is string
-                        || C.Payload is IEnumerable<IStorageFile>
-                        || C.Payload is IStorageFile;
-                    } );
+                    );
 
                     if ( Incoming )
                     {
@@ -159,16 +158,15 @@ namespace libtaotu.Models.Procedure
 
             }
 
-            if ( !TryGetConvoy( out UsableConvoy, ( P, C ) =>
-            {
-                return C.Payload is IEnumerable<string>
-                || C.Payload is string
-                || C.Payload is IEnumerable<IStorageFile>
-                || C.Payload is IStorageFile;
-            } ) ) return Convoy;
-
             if ( Incoming )
             {
+                if ( !TryGetConvoy( out UsableConvoy, ( P, C ) =>
+                    C.Payload is IEnumerable<IStorageFile>
+                    || C.Payload is IEnumerable<string>
+                    || C.Payload is IStorageFile
+                    || C.Payload is string
+                ) ) return Convoy;
+
                 return await IncomingTemplates( UsableConvoy );
             }
 

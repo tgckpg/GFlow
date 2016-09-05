@@ -201,7 +201,13 @@
   <data name="RunMode" xml:space="preserve">
     <value>運作模式</value>
   </data>
+  <data name="ScriptError" xml:space="preserve">
+    <value>腳本發生錯誤：{0}</value>
+  </data>
   <data name="SubProcRun" xml:space="preserve">
     <value>執行子程序</value>
+  </data>
+  <data name="TestRun_UseDefault" xml:space="preserve">
+    <value>運作測試，使用預設值。</value>
   </data>
 </root>

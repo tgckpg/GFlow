@@ -162,6 +162,7 @@
     <Compile Include="libtaotu\Models\Procedure\Procedure.cs" />
     <Compile Include="libtaotu\Models\ProcConvoy.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcEncoding.cs" />
+    <Compile Include="libtaotu\Models\Procedure\ProcListLoader.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcParameter.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcFind.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcGenerator.cs" />

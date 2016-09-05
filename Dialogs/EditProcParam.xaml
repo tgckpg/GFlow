@@ -63,7 +63,8 @@
 
             <TextBox Grid.Row="0" Grid.Column="0"
                      Margin="3"
-                     x:Name="Caption" PlaceholderText="Caption"
+                     x:Name="Caption" x:Uid="/libtaotu/Resources/Caption"
+                     PlaceholderText="Caption"
                      LostFocus="SetCaption" />
 
             <StackPanel Grid.Row="0" Grid.Column="1"

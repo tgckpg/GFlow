@@ -201,7 +201,13 @@
   <data name="RunMode" xml:space="preserve">
     <value>Run mode</value>
   </data>
+  <data name="ScriptError" xml:space="preserve">
+    <value>Script error: {0}</value>
+  </data>
   <data name="SubProcRun" xml:space="preserve">
     <value>Running subprocedures</value>
+  </data>
+  <data name="TestRun_UseDefault" xml:space="preserve">
+    <value>Test running, using default values</value>
   </data>
 </root>

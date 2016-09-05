@@ -120,6 +120,9 @@
   <data name="Async.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>异步进程</value>
   </data>
+  <data name="Caption.PlaceholderText" xml:space="preserve">
+    <value>标题</value>
+  </data>
   <data name="ContinueIf.Text" xml:space="preserve">
     <value>当符合指定 URL 时继续</value>
   </data>

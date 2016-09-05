@@ -175,7 +175,7 @@ namespace libtaotu.Models.Procedure
                         case "WAIT": break;
                         case "ERROR":
                             Errored = true;
-                            ProcManager.PanelMessage( this, () => Res.RSTR( "SCRIPT_ERROR" ), LogType.ERROR );
+                            ProcManager.PanelMessage( this, () => Res.RSTR( "ScriptError" ), LogType.ERROR );
                             TCS.TrySetResult( null );
                             break;
                         default:
@@ -185,7 +185,7 @@ namespace libtaotu.Models.Procedure
                 }
                 catch ( Exception ex )
                 {
-                    ProcManager.PanelMessage( this, () => Res.RSTR( "SCRIPT_ERROR", ex.Message ), LogType.ERROR );
+                    ProcManager.PanelMessage( this, () => Res.RSTR( "ScriptError", ex.Message ), LogType.ERROR );
                     TCS.TrySetResult( null );
                 }
             };

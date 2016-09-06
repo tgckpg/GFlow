@@ -139,7 +139,7 @@
     <value>網址生成</value>
   </data>
   <data name="INPUT" xml:space="preserve">
-    <value>輸入</value>
+    <value>用戶輸入</value>
   </data>
   <data name="LIST" xml:space="preserve">
     <value>列表生成</value>

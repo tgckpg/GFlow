@@ -27,17 +27,11 @@ namespace libtaotu.Controls
         public bool HasProcedures { get { return 0 < ProcList.Count; } }
         public bool Async { get; set; }
 
-        private Guid _Guid;
+        private string _Id;
         public string GUID
         {
-            get { return _Guid.ToString(); }
-            set
-            {
-                if ( !Guid.TryParse( value, out _Guid ) )
-                {
-                    _Guid = Guid.NewGuid();
-                }
-            }
+            get { return _Id; }
+            set { _Id = value; }
         }
 
         // Used to locate specific procedure in chain
@@ -118,7 +112,7 @@ namespace libtaotu.Controls
         public ProcManager()
         {
             ProcList = new ObservableCollection<Procedure>();
-            _Guid = Guid.NewGuid();
+            _Id = Guid.NewGuid().ToString();
             Async = false;
         }
 
@@ -230,12 +224,12 @@ namespace libtaotu.Controls
             }
         }
 
-        public XParameter ToXParam()
+        public XParameter ToXParam( string ProcId = null )
         {
             XParameter Param = new XParameter( "Procedures" );
             Param.SetValue( new XKey[] {
                 new XKey( "Async", Async )
-                , new XKey( "Guid", GUID )
+                , new XKey( "Guid", ProcId == null ? GUID : ProcId )
             } );
 
             int i = 0;

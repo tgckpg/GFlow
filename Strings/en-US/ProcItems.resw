@@ -139,7 +139,7 @@
     <value>Url Generator</value>
   </data>
   <data name="INPUT" xml:space="preserve">
-    <value>Input</value>
+    <value>User Input</value>
   </data>
   <data name="LIST" xml:space="preserve">
     <value>List Builder</value>

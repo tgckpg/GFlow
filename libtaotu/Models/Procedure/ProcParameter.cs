@@ -163,7 +163,6 @@ namespace libtaotu.Models.Procedure
                     ProcParameter Proc = ( ProcParameter ) UsableConvoy.Dispatcher;
                     ParamDefs = Proc.ParamDefs;
                     break;
-
             }
 
             if ( Incoming )
@@ -305,19 +304,12 @@ namespace libtaotu.Models.Procedure
         {
             base.ReadParam( Param );
 
-            XParameter[] PParams = Param.Parameters( "i" );
             Incoming = Param.GetBool( "Incoming" );
             Caption = Param.GetValue( "Caption" );
             TemplateStr = Param.GetValue( "TemplateStr" );
             SetMode( Param.GetValue( "Mode" ) );
 
-            foreach ( XParameter P in PParams )
-            {
-                AddDef( new ParamDef( P.GetValue( "label" ), P.GetValue( "default" ) )
-                {
-                    Indexer = this.Indexer
-                } );
-            }
+            SetParamDefs( Param );
         }
 
         public override XParameter ToXParam()
@@ -331,15 +323,7 @@ namespace libtaotu.Models.Procedure
                 , new XKey( "Mode", RawModeName )
             } );
 
-            int i = 0;
-            foreach ( ParamDef P in ParamDefs )
-            {
-                XParameter Def = P.ToXParam();
-                Def.Id += i;
-                Def.SetValue( new XKey( "i", i++ ) );
-                Param.SetParameter( Def );
-            }
-
+            AssignParamDefs( Param );
             return Param;
         }
 
@@ -369,6 +353,53 @@ namespace libtaotu.Models.Procedure
         {
             return ParamDefs.IndexOf( P );
         }
+
+        public static void StoreParams( ProcConvoy Convoy, XRegistry Settings )
+        {
+            ProcParameter Defs = ( ProcParameter ) ProcManager.TracePackage( Convoy, ( P, C ) => P is ProcParameter )?.Dispatcher;
+            if ( Defs == null ) return;
+
+            XParameter PDefs = new XParameter( "PPValues" );
+            Defs.AssignParamDefs( PDefs );
+
+            Settings.SetParameter( PDefs );
+        }
+
+        public static ProcConvoy RestoreParams( XRegistry Settings )
+        {
+            XParameter PPParams = Settings.Parameter( "PPValues" );
+            if ( PPParams == null ) return new ProcConvoy( new ProcPassThru(), null );
+
+            ProcParameter Proc = new ProcParameter();
+            Proc.SetParamDefs( Settings.Parameter( "PPValues" ) );
+
+            return new ProcConvoy( Proc, null );
+        }
+
+        private void SetParamDefs( XParameter Param )
+        {
+            XParameter[] Params = Param.Parameters( "i" );
+            foreach ( XParameter P in Params )
+            {
+                AddDef( new ParamDef( P.GetValue( "label" ), P.GetValue( "default" ) )
+                {
+                    Indexer = this.Indexer
+                } );
+            }
+        }
+
+        private void AssignParamDefs( XParameter Param )
+        {
+            int i = 0;
+            foreach ( ParamDef P in ParamDefs )
+            {
+                XParameter Def = P.ToXParam();
+                Def.Id += i;
+                Def.SetValue( new XKey( "i", i++ ) );
+                Param.SetParameter( Def );
+            }
+        }
+
 
         public class ParamDef : ActiveData
         {

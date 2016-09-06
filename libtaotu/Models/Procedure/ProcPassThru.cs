@@ -12,6 +12,12 @@ namespace libtaotu.Models.Procedure
     /// </summary>
     class ProcPassThru : Procedure
     {
+        public ProcPassThru()
+            : base( ProcType.PASSTHRU ) { }
+
+        public ProcPassThru( ProcType PType )
+            : base( ProcType.PASSTHRU | PType ) { }
+
         public ProcPassThru( ProcConvoy Convoy )
             : base( ProcType.PASSTHRU )
         {

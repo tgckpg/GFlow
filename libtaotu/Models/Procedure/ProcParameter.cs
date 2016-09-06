@@ -349,14 +349,13 @@ namespace libtaotu.Models.Procedure
             {
                 int l = ParamDefs.Count;
                 int m = Args.Length;
-                string[] Values = new string[ l ];
 
-                for ( int i = 0; i < l; i++ )
+                for ( int i = 0; i < l && i < m; i++ )
                 {
-                    Values[ i ] = i < m ? Args[ i ] : ParamDefs[ i ].Default;
+                    ParamDefs[ i ].Default = Args[ i ];
                 }
 
-                return string.Format( Template.Unescape(), Values );
+                return string.Format( Template.Unescape(), ( string[] ) ParamDefs.Remap( x => x.Default ) );
             }
             catch ( Exception ex )
             {

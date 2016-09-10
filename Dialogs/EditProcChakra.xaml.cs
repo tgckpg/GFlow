@@ -62,6 +62,13 @@ namespace libtaotu.Dialogs
             EditTarget.Script = await ISF.ReadString();
         }
 
+        private async void ExportScript( object sender, RoutedEventArgs e )
+        {
+            IStorageFile ISF = await AppStorage.SaveFileAsync( "script", new string[] { ".js" } );
+            if ( ISF == null ) return;
+            await ISF.WriteString( EditTarget.Script );
+        }
+
         private void MessageBus_OnDelivery( Message Mesg )
         {
             ProcConvoy Convoy = Mesg.Payload as ProcConvoy;

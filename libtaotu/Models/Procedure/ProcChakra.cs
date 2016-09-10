@@ -65,15 +65,13 @@ namespace libtaotu.Models.Procedure
             // Search for usable convoy
             ProcConvoy UsableConvoy;
             if ( !TryGetConvoy( out UsableConvoy, ( P, C ) =>
-            {
-                return C.Payload is IEnumerable<IStorageFile>
-                || C.Payload is string;
-            }
+                C.Payload is IEnumerable<IStorageFile>
+                || C.Payload is string
             ) ) return Convoy;
 
             if ( UsableConvoy.Payload is IEnumerable<IStorageFile> )
             {
-                IEnumerable<IStorageFile> ISFs = UsableConvoy.Payload as IEnumerable<IStorageFile>;
+                IEnumerable<IStorageFile> ISFs = ( IEnumerable<IStorageFile> ) UsableConvoy.Payload;
                 foreach ( IStorageFile ISF in ISFs )
                 {
                     await ParseHtml( ISF );
@@ -82,7 +80,7 @@ namespace libtaotu.Models.Procedure
             }
 
             // This is a string
-            return new ProcConvoy( this, await ParseHtml( UsableConvoy.Payload as string ) );
+            return new ProcConvoy( this, await ParseHtml( ( string ) UsableConvoy.Payload ) );
         }
 
         protected async Task ParseHtml( IStorageFile ISF )

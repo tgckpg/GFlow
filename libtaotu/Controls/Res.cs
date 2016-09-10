@@ -27,7 +27,6 @@ namespace libtaotu.Controls
             if ( stp == null )
             {
                 stp = new StringResources( "/libtaotu/PanelMessage" );
-                return key;
             }
 
             try

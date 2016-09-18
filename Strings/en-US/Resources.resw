@@ -192,6 +192,9 @@
   <data name="Test.Text" xml:space="preserve">
     <value>Test</value>
   </data>
+  <data name="TrustWarning.Text" xml:space="preserve">
+    <value>Unless you trust this script, please don't enter any account password or personal informations.</value>
+  </data>
   <data name="UrlGenerator.Text" xml:space="preserve">
     <value>Generato Url</value>
   </data>

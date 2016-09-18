@@ -192,6 +192,9 @@
   <data name="Test.Text" xml:space="preserve">
     <value>测试</value>
   </data>
+  <data name="TrustWarning.Text" xml:space="preserve">
+    <value>除非您信任此脚本，请不要在此输入任何账号密码或个人信息。</value>
+  </data>
   <data name="UrlGenerator.Text" xml:space="preserve">
     <value>生成网址</value>
   </data>

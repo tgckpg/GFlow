@@ -192,6 +192,9 @@
   <data name="Test.Text" xml:space="preserve">
     <value>テスト</value>
   </data>
+  <data name="TrustWarning.Text" xml:space="preserve">
+    <value>このスクリプトを信頼していない限り、ここで任意のアカウントのパスワードや個人的な情報を入力しないでください。</value>
+  </data>
   <data name="UrlGenerator.Text" xml:space="preserve">
     <value>URLを生成</value>
   </data>

@@ -75,6 +75,9 @@ namespace libtaotu.Controls
         {
             Worker.UIInvoke( () =>
             {
+#if DEBUG
+                Logger.Log( ID, Mesg(), LogLevel );
+#endif
                 MessageBus.SendUI(
                     typeof( ProceduresPanel )
                     , Mesg()

@@ -120,11 +120,17 @@
   <data name="CHAKRA" xml:space="preserve">
     <value>Script</value>
   </data>
+  <data name="DEFINE" xml:space="preserve">
+    <value>Define</value>
+  </data>
   <data name="ENCODING" xml:space="preserve">
     <value>Encoding</value>
   </data>
   <data name="EXTRACT" xml:space="preserve">
     <value>Extractor</value>
+  </data>
+  <data name="FEEDBACK" xml:space="preserve">
+    <value>Feedback</value>
   </data>
   <data name="FIND" xml:space="preserve">
     <value>Finder</value>
@@ -132,17 +138,29 @@
   <data name="GENERATOR" xml:space="preserve">
     <value>Url Generator</value>
   </data>
+  <data name="INPUT" xml:space="preserve">
+    <value>User Input</value>
+  </data>
+  <data name="LIST" xml:space="preserve">
+    <value>List Builder</value>
+  </data>
   <data name="MARK" xml:space="preserve">
     <value>Marker</value>
   </data>
   <data name="MATCH" xml:space="preserve">
     <value>Match</value>
   </data>
+  <data name="PARAMETER" xml:space="preserve">
+    <value>Parameter</value>
+  </data>
   <data name="REPLACE" xml:space="preserve">
     <value>Replace</value>
   </data>
   <data name="RESULT" xml:space="preserve">
     <value>Result View</value>
+  </data>
+  <data name="SOURCE_AVAIL" xml:space="preserve">
+    <value>Source</value>
   </data>
   <data name="URLLIST" xml:space="preserve">
     <value>Url List</value>

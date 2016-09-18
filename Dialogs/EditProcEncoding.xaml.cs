@@ -118,7 +118,7 @@ namespace libtaotu.Dialogs
                 TestRunning.IsActive = false;
 
                 IEnumerable<IStorageFile> ISF = Convoy.Payload as IEnumerable<IStorageFile>;
-                if( ISF != null )
+                if ( ISF != null && 0 < ISF.Count() )
                 {
                     Preview.Navigate( Shared.SourceView, ISF.First() );
                 }

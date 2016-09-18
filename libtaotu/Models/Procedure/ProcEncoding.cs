@@ -9,7 +9,6 @@ using Windows.Storage;
 using Windows.UI.Xaml.Controls;
 using Windows.UI;
 
-using Net.Astropenguin.DataModel;
 using Net.Astropenguin.Helpers;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
@@ -53,17 +52,17 @@ namespace libtaotu.Models.Procedure
 
                 Encoding.RegisterProvider( CodePagesEncodingProvider.Instance );
                 Encoding Enc = Encoding.GetEncoding( CodePage );
-                ProcManager.PanelMessage( ID, Res.RSTR( "ReadEncoding" ) + ": " + Enc.EncodingName, LogType.INFO );
+                ProcManager.PanelMessage( this, Res.SSTR( "ReadEncoding", Enc.EncodingName ), LogType.INFO );
 
                 foreach ( IStorageFile ISF in ISFs )
                 {
-                    ProcManager.PanelMessage( ID, Res.RSTR( "Converting Encoding" ), LogType.INFO );
+                    ProcManager.PanelMessage( this, Res.SSTR( "ConvertEncoding", ISF.Name ), LogType.INFO );
                     await ISF.WriteString( await ISF.ReadString( Enc ) );
                 }
             }
             catch ( Exception ex )
             {
-                ProcManager.PanelMessage( ID, Res.RSTR( "EncodingFalied" ) + ": " + ex.Message, LogType.INFO );
+                ProcManager.PanelMessage( this, Res.SSTR( "EncodingFalied", ex.Message ), LogType.INFO );
             }
 
             return new ProcConvoy( this, Convoy.Payload );

@@ -18,6 +18,7 @@ namespace libtaotu.Resources
 
         public static Type ProcExtractor { get; private set; }
         public static Type ProcMarker { get; private set; }
+        public static Type ProcListLoader { get; private set; }
 
         public static Func<Uri, HttpRequest> CreateRequest = x => new HttpRequest( x );
 
@@ -38,6 +39,18 @@ namespace libtaotu.Resources
             if( T.GetTypeInfo().IsSubclassOf( typeof( Procedure ) ) )
             {
                 ProcMarker = T;
+            }
+            else
+            {
+                throw new InvalidCastException();
+            }
+        }
+
+        public static void SetListLoader( Type T )
+        {
+            if( T.GetTypeInfo().IsSubclassOf( typeof( Procedure ) ) )
+            {
+                ProcListLoader = T;
             }
             else
             {

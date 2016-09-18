@@ -84,9 +84,9 @@ namespace libtaotu.Pages
                 UpdateVisualData();
                 try
                 {
-                    ProcManager.PanelMessage( ID, Res.RSTR( "Reading" ) + ": " + OpeningFile, LogType.INFO );
+                    ProcManager.PanelMessage( ID, Res.SSTR( "Reading", OpeningFile ), LogType.INFO );
                     ReadProcedures( OpeningFile );
-                    ProcManager.PanelMessage( ID, Res.RSTR( "ParseOK" ), LogType.INFO );
+                    ProcManager.PanelMessage( ID, () => Res.RSTR( "ParseOK" ), LogType.INFO );
 
                     UpdateVisualData();
                     TargetFile = OpeningFile;
@@ -94,7 +94,7 @@ namespace libtaotu.Pages
                 catch ( Exception ex )
                 {
                     ProcManager.PanelMessage( ID, ex.Message, LogType.ERROR );
-                    ProcManager.PanelMessage( ID, Res.RSTR( "InvalidXML" ), LogType.ERROR );
+                    ProcManager.PanelMessage( ID, () => Res.RSTR( "InvalidXML" ), LogType.ERROR );
                 }
             }
         }
@@ -118,7 +118,7 @@ namespace libtaotu.Pages
             ProcComboBox.ItemsSource = ProcChoices;
             RunLog.ItemsSource = Logs;
 
-            ProcManager.PanelMessage( ID, Res.RSTR( "Welcome" ), LogType.INFO );
+            ProcManager.PanelMessage( ID, () => Res.RSTR( "Welcome" ), LogType.INFO );
 
             Logs.CollectionChanged += ( s, e ) => ScrollToBottom();
 
@@ -208,16 +208,16 @@ namespace libtaotu.Pages
                 IStorageFile ISF = await AppStorage.OpenFileAsync( ".xml" );
                 if ( ISF == null ) return;
 
-                ProcManager.PanelMessage( ID, Res.RSTR( "Reading" ) + ": " + ISF.Name, LogType.INFO );
+                ProcManager.PanelMessage( ID, Res.RSTR( "Reading", ISF.Name ), LogType.INFO );
                 ReadXReg( new XRegistry( await ISF.ReadString(), TargetFile ) );
-                ProcManager.PanelMessage( ID, Res.RSTR( "ParseOK" ), LogType.INFO );
+                ProcManager.PanelMessage( ID, () => Res.RSTR( "ParseOK" ), LogType.INFO );
 
                 UpdateVisualData();
             }
             catch( Exception ex )
             {
                 ProcManager.PanelMessage( ID, ex.Message, LogType.ERROR );
-                ProcManager.PanelMessage( ID, Res.RSTR( "InvalidXML" ), LogType.ERROR );
+                ProcManager.PanelMessage( ID, () => Res.RSTR( "InvalidXML" ), LogType.ERROR );
             }
         }
 
@@ -237,7 +237,7 @@ namespace libtaotu.Pages
             XRegistry XReg = new XRegistry( "<ProcSpider />", TargetFile );
             XReg.SetParameter( RootManager.ToXParam() );
             XReg.Save();
-            ProcManager.PanelMessage( ID, Res.RSTR( "Saved" ), LogType.INFO );
+            ProcManager.PanelMessage( ID, () => Res.RSTR( "Saved" ), LogType.INFO );
         }
 
         private async void SaveAs( object sender, RoutedEventArgs e )
@@ -250,12 +250,12 @@ namespace libtaotu.Pages
                 XRegistry XReg = new XRegistry( "<ProcSpider />", null );
                 XReg.SetParameter( RootManager.ToXParam() );
                 await ISF.WriteString( XReg.ToString() );
-                ProcManager.PanelMessage( ID, Res.RSTR( "Saved" ) + ": " + ISF.Name, LogType.INFO );
+                ProcManager.PanelMessage( ID, Res.RSTR( "Saved", ISF.Name ), LogType.INFO );
             }
             catch( Exception ex )
             {
                 ProcManager.PanelMessage( ID, ex.Message, LogType.ERROR );
-                ProcManager.PanelMessage( ID, Res.RSTR( "SaveFailed" ), LogType.ERROR );
+                ProcManager.PanelMessage( ID, () => Res.RSTR( "SaveFailed" ), LogType.ERROR );
             }
         }
 
@@ -263,16 +263,27 @@ namespace libtaotu.Pages
         {
             if ( Running ) return;
             PM.ActiveRange( 0, 0 );
-            ProcRun();
+            ProcRun( false );
         }
         #endregion
 
         // Run from Message
-        private async void ProcRun()
+        private async void ProcRun( bool TestRun )
         {
             if ( Running ) return;
             Running = true;
-            ProcConvoy Convoy = await PM.CreateSpider().Crawl();
+            ProcConvoy Convoy;
+            if ( TestRun )
+            {
+                Convoy = await PM.CreateSpider().Crawl(
+                    new ProcConvoy( new ProcDummy( ProcType.TEST_RUN ), null )
+                );
+            }
+            else
+            {
+                Convoy = await PM.CreateSpider().Crawl();
+            }
+
             Running = false;
 
             MessageBus.SendUI( GetType(), "RUN_RESULT", Convoy );
@@ -347,7 +358,7 @@ namespace libtaotu.Pages
             {
                 if ( Running ) return;
                 PM.ActiveRange( 0, PM.ProcList.IndexOf( Mesg.Payload as Procedure ) + 1 );
-                ProcRun();
+                ProcRun( true );
             }
 
             // Goto SubProcedures Edit

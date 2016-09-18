@@ -120,8 +120,14 @@
   <data name="Async.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Asnychronous</value>
   </data>
+  <data name="Caption.PlaceholderText" xml:space="preserve">
+    <value>Caption</value>
+  </data>
   <data name="ContinueIf.Text" xml:space="preserve">
     <value>Continue if match with url</value>
+  </data>
+  <data name="Default.PlaceholderText" xml:space="preserve">
+    <value>Default value</value>
   </data>
   <data name="DiscardUnmatched.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Discard unmatched</value>
@@ -147,11 +153,20 @@
   <data name="Incoming.Text" xml:space="preserve">
     <value>Incoming</value>
   </data>
+  <data name="Label.PlaceholderText" xml:space="preserve">
+    <value>Label</value>
+  </data>
+  <data name="ListBuilder.Text" xml:space="preserve">
+    <value>List Builder</value>
+  </data>
   <data name="Marker.Text" xml:space="preserve">
     <value>Marker</value>
   </data>
   <data name="Param.PlaceholderText" xml:space="preserve">
     <value>Param &gt;</value>
+  </data>
+  <data name="ParamDefinitions.Text" xml:space="preserve">
+    <value>Param Definitions</value>
   </data>
   <data name="Pattern.PlaceholderText" xml:space="preserve">
     <value>Pattern</value>
@@ -176,6 +191,9 @@
   </data>
   <data name="Test.Text" xml:space="preserve">
     <value>Test</value>
+  </data>
+  <data name="TrustWarning.Text" xml:space="preserve">
+    <value>Unless you trust this script, please don't enter any account password or personal informations.</value>
   </data>
   <data name="UrlGenerator.Text" xml:space="preserve">
     <value>Generato Url</value>

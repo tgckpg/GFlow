@@ -171,4 +171,43 @@
   <data name="SCRIPT_TIMED_OUT" xml:space="preserve">
     <value>脚本已超时</value>
   </data>
+  <data name="ConvertEncoding" xml:space="preserve">
+    <value>编码转换</value>
+  </data>
+  <data name="CannotCarryOn" xml:space="preserve">
+    <value>条件匹配，但没有网址输出。</value>
+  </data>
+  <data name="Faulted" xml:space="preserve">
+    <value>步骤"{0}"发生故障：{1}</value>
+  </data>
+  <data name="InvalidParam" xml:space="preserve">
+    <value>无效的参数：{0}</value>
+  </data>
+  <data name="InvalidPattern" xml:space="preserve">
+    <value>无效的表达式</value>
+  </data>
+  <data name="InvalidURL" xml:space="preserve">
+    <value>无效的网址</value>
+  </data>
+  <data name="MatchedStop" xml:space="preserve">
+    <value>条件匹配：{0}，正在停止…</value>
+  </data>
+  <data name="NoEntryPoint" xml:space="preserve">
+    <value>找不到起点，跳过此步骤。</value>
+  </data>
+  <data name="NotAFeedRun" xml:space="preserve">
+    <value>不是一个反馈操作，跳过此步骤。</value>
+  </data>
+  <data name="RunMode" xml:space="preserve">
+    <value>运行模式</value>
+  </data>
+  <data name="ScriptError" xml:space="preserve">
+    <value>脚本发生错误：{0}</value>
+  </data>
+  <data name="SubProcRun" xml:space="preserve">
+    <value>运行子程序</value>
+  </data>
+  <data name="TestRun_UseDefault" xml:space="preserve">
+    <value>运行测试，使用默认值。</value>
+  </data>
 </root>

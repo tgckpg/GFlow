@@ -1,5 +1,5 @@
 ﻿<ContentDialog
-    x:Class="libtaotu.Dialogs.EditProcFind"
+    x:Class="libtaotu.Dialogs.EditProcParam"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:libtaotu.Dialogs"
@@ -20,8 +20,8 @@
         <v:DataStateConverter x:Key="DataStateConverter" />
     </ContentDialog.Resources>
     <ContentDialog.Title>
-        <TextBlock x:Uid="/libtaotu/Resources/FindConditions"
-                   Text="Edit Find Conditions" Foreground="White" />
+        <TextBlock x:Uid="/libtaotu/Resources/ParamDefinitions"
+                   Text="Param Definitions" Foreground="White" />
     </ContentDialog.Title>
 
     <Grid>
@@ -31,68 +31,96 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid x:Name="RegexControl" Grid.Row="0" Margin="5">
+        <Grid Grid.Row="0" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <CheckBox Grid.Row="0" x:Name="IncomingCheck" Foreground="White"
+                      Unchecked="SetIncoming" Checked="SetIncoming" >
+                <TextBlock x:Uid="/libtaotu/Resources/Incoming" Text="Incoming" />
+            </CheckBox>
+            <TextBox Grid.Row="1" x:Name="TemplateStr" PlaceholderText="Template String"
+                     LostFocus="SetTemplateStr" />
+        </Grid>
+
+        <TextBlock x:Name="FormattedOutput"
+                   Grid.Row="1" Margin="5"
+                   TextWrapping="Wrap" MaxLines="3"
+                   TextTrimming="CharacterEllipsis"
+                   Foreground="White"
+                   FontFamily="Lucida Console"/>
+
+        <Grid x:Name="ParamControl" Grid.Row="2" Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Orientation="Horizontal"
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox Grid.Row="0" Grid.Column="0"
+                     Margin="3"
+                     x:Name="Caption" x:Uid="/libtaotu/Resources/Caption"
+                     PlaceholderText="Caption"
+                     LostFocus="SetCaption" />
+
+            <StackPanel Grid.Row="0" Grid.Column="1"
+                        Orientation="Horizontal"
                         VerticalAlignment="Center" HorizontalAlignment="Right">
                 <Button Style="{StaticResource IconButton}"
-                        Height="30"
+                        Height="30" Margin="3"
                         Click="ToggleMode">
                     <TextBlock Text="{Binding ModeName}"
                                Foreground="White" />
                 </Button>
                 <Button Style="{StaticResource IconButton}"
                         Width="30" Height="30"
-                        Click="AddRegex">
+                        Click="AddDef">
                     <i:IconPlusSign AutoScale="True" />
                 </Button>
             </StackPanel>
-            <ListView Grid.Row="1" ItemsSource="{Binding RegexPairs}"
+
+            <ListView Grid.Row="1" Grid.ColumnSpan="2"
+                      ItemsSource="{Binding ParamDefs}"
                       ItemContainerStyle="{StaticResource StretchListItem}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <TextBox Grid.Column="0"
-                                     x:Uid="/libtaotu/Resources/Pattern"
-                                     PlaceholderText="Pattern" Margin="3"
-                                     Text="{Binding Pattern}"
-                                     FontFamily="Lucida Console"
-                                     LostFocus="SetPattern"/>
+                            <TextBlock Grid.Column="0" Text="{Binding Index}"
+                                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                                       Foreground="White"
+                                       FontFamily="Lucida Console"
+                                       Margin="3"/>
 
                             <TextBox Grid.Column="1"
-                                     x:Uid="/libtaotu/Resources/Format"
-                                     PlaceholderText="Format" Margin="3"
-                                     Text="{Binding Format}"
+                                     x:Uid="/libtaotu/Resources/Label"
+                                     PlaceholderText="Label" Margin="3"
+                                     Text="{Binding Label}"
                                      FontFamily="Lucida Console"
-                                     LostFocus="SetFormat"/>
+                                     LostFocus="SetLabel"/>
 
-                            <Button Style="{StaticResource IconButton}"
-                                    Grid.Column="2"
-                                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                                    Width="30" Height="30"
-                                    Click="ApplyRegex">
-                                <Grid>
-                                    <i:IconLogin AutoScale="True" Direction="Rotate270"/>
-                                    <p:StateControl State="{Binding Enabled, Converter={StaticResource DataStateConverter}}">
-                                        <i:IconLogin AutoScale="True" Foreground="DodgerBlue" Direction="Rotate270"/>
-                                    </p:StateControl>
-                                </Grid>
-                            </Button>
+                            <TextBox Grid.Column="2"
+                                     x:Uid="/libtaotu/Resources/Default"
+                                     PlaceholderText="Default" Margin="3"
+                                     Text="{Binding Default}"
+                                     FontFamily="Lucida Console"
+                                     LostFocus="SetDefault"/>
+
                             <Button Style="{StaticResource IconButton}"
                                     Grid.Column="3"
                                     HorizontalAlignment="Center" VerticalAlignment="Center"
                                     Width="30" Height="30"
-                                    Click="RemoveRegex">
+                                    Click="RemoveDef">
                                 <i:IconCross AutoScale="True" />
                             </Button>
 
@@ -109,29 +137,5 @@
             </ListView>
         </Grid>
 
-        <Grid Grid.Row="1" Margin="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <TextBox x:Name="TestLink" PlaceholderText="Test Link"
-                     LostFocus="SetTestLink"
-                     Grid.Column="0" />
-            <Button Style="{StaticResource IconButton}"
-                    Grid.Column="1"
-                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                    Width="30" Height="30"
-                    Click="PreviewProcess">
-                <i:IconSearch AutoScale="True"/>
-            </Button>
-
-        </Grid>
-
-        <Border x:Name="FrameContainer"
-                Grid.Row="2" Margin="5">
-            <Frame x:Name="Frame"/>
-        </Border>
     </Grid>
 </ContentDialog>

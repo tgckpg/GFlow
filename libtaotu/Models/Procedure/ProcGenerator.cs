@@ -74,7 +74,7 @@ namespace libtaotu.Models.Procedure
 
             if ( Incoming )
             {
-                ProcManager.PanelMessage( this, "Checking Incoming EntryPoint", LogType.INFO );
+                ProcManager.PanelMessage( this, () => Res.RSTR( "IncomingCheck" ), LogType.INFO );
 
                 ProcConvoy UsableConvoy = ProcManager.TracePackage(
                     Convoy, ( P, C ) =>
@@ -105,7 +105,7 @@ namespace libtaotu.Models.Procedure
 
             if( string.IsNullOrEmpty( LoadUrl ) )
             {
-                ProcManager.PanelMessage( this, "No entry point found, did you forget to add one?", LogType.WARNING );
+                ProcManager.PanelMessage( this, () => Res.RSTR( "NoEntryPoint" ), LogType.WARNING );
                 return Convoy;
             }
 
@@ -118,7 +118,7 @@ namespace libtaotu.Models.Procedure
             {
                 if( string.IsNullOrEmpty( LoadUrl ) )
                 {
-                    ProcManager.PanelMessage( this, "Condition matched but no URL to carry on", LogType.ERROR );
+                    ProcManager.PanelMessage( this, () => Res.RSTR( "CannotCarrieOn" ), LogType.ERROR );
                     break;
                 }
 
@@ -186,11 +186,7 @@ namespace libtaotu.Models.Procedure
                         return false;
                     }
 
-                    ProcManager.PanelMessage(
-                        this
-                        , string.Format( "Condition Matched: {0}, Stopping ...", Reg.Pattern )
-                        , LogType.INFO
-                    );
+                    ProcManager.PanelMessage( this, () => Res.RSTR( "MatchedStop", Reg.Pattern ), LogType.INFO );
                     return true;
                 }
             }

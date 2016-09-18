@@ -57,6 +57,8 @@ namespace libtaotu.Dialogs
 
             RegexControl.DataContext = EditTarget;
 
+            IncomingCheck.IsChecked = EditTarget.Incoming;
+
             if ( !string.IsNullOrEmpty( EditTarget.EntryPoint ) )
             {
                 EntryPoint.Text = EditTarget.EntryPoint;

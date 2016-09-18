@@ -120,11 +120,17 @@
   <data name="CHAKRA" xml:space="preserve">
     <value>腳本</value>
   </data>
+  <data name="DEFINE" xml:space="preserve">
+    <value>定義</value>
+  </data>
   <data name="ENCODING" xml:space="preserve">
     <value>編碼</value>
   </data>
   <data name="EXTRACT" xml:space="preserve">
     <value>提取</value>
+  </data>
+  <data name="FEEDBACK" xml:space="preserve">
+    <value>反饋</value>
   </data>
   <data name="FIND" xml:space="preserve">
     <value>過濾</value>
@@ -132,17 +138,29 @@
   <data name="GENERATOR" xml:space="preserve">
     <value>網址生成</value>
   </data>
+  <data name="INPUT" xml:space="preserve">
+    <value>用戶輸入</value>
+  </data>
+  <data name="LIST" xml:space="preserve">
+    <value>列表生成</value>
+  </data>
   <data name="MARK" xml:space="preserve">
     <value>標籤</value>
   </data>
   <data name="MATCH" xml:space="preserve">
     <value>匹配</value>
   </data>
+  <data name="PARAMETER" xml:space="preserve">
+    <value>參數</value>
+  </data>
   <data name="REPLACE" xml:space="preserve">
     <value>取代</value>
   </data>
   <data name="RESULT" xml:space="preserve">
     <value>檢視結果</value>
+  </data>
+  <data name="SOURCE_AVAIL" xml:space="preserve">
+    <value>沿用</value>
   </data>
   <data name="URLLIST" xml:space="preserve">
     <value>網址列表</value>

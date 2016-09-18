@@ -30,6 +30,10 @@ namespace libtaotu.Models.Procedure
         RESULT = 256,
         CHAKRA = 512,
         ENCODING = 1024,
+        PARAMETER = 2048,
+        TEST_RUN = 4096,
+        FEED_RUN = 8192,
+        LIST = 16384,
     }
 
     abstract class Procedure : ActiveData, INamable
@@ -101,7 +105,7 @@ namespace libtaotu.Models.Procedure
 
             if( Con == null )
             {
-                ProcManager.PanelMessage( this, Res.RSTR( "NoUsablePayload" ), LogType.WARNING );
+                ProcManager.PanelMessage( this, () => Res.RSTR( "NoUsablePayload" ), LogType.WARNING );
                 Faulted = true;
                 return false;
             }
@@ -134,4 +138,3 @@ namespace libtaotu.Models.Procedure
         abstract public Task Edit();
     }
 }
-

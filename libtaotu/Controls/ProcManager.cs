@@ -8,6 +8,7 @@ using System.Reflection;
 using Windows.UI.Xaml.Controls;
 
 using Net.Astropenguin.DataModel;
+using Net.Astropenguin.Helpers;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
 using Net.Astropenguin.Messaging;
@@ -26,17 +27,11 @@ namespace libtaotu.Controls
         public bool HasProcedures { get { return 0 < ProcList.Count; } }
         public bool Async { get; set; }
 
-        private Guid _Guid;
+        private string _Id;
         public string GUID
         {
-            get { return _Guid.ToString(); }
-            set
-            {
-                if ( !Guid.TryParse( value, out _Guid ) )
-                {
-                    _Guid = Guid.NewGuid();
-                }
-            }
+            get { return _Id; }
+            set { _Id = value; }
         }
 
         // Used to locate specific procedure in chain
@@ -76,20 +71,51 @@ namespace libtaotu.Controls
             );
         }
 
+        public static void PanelMessage( string ID, Func<string> Mesg, LogType LogLevel )
+        {
+            Worker.UIInvoke( () =>
+            {
+#if DEBUG
+                Logger.Log( ID, Mesg(), LogLevel );
+#endif
+                MessageBus.SendUI(
+                    typeof( ProceduresPanel )
+                    , Mesg()
+                    , new ProceduresPanel.PanelLog() { LogType = LogLevel, ID = ID }
+                );
+            } );
+        }
+
         public static void PanelMessage( Procedure P, string Mesg, LogType LogLevel )
         {
-            string Tag = P.Name == P.TypeName
-                ? P.Name
-                : string.Format( "[{0}({1})]", P.Name, P.RawName )
-                ;
+            Worker.UIInvoke( () =>
+            {
+                string Tag = P.Name == P.TypeName
+                    ? P.Name
+                    : string.Format( "[{0}({1})]", P.Name, P.RawName )
+                    ;
 
-            PanelMessage( Tag, Mesg, LogLevel );
+                PanelMessage( Tag, Mesg, LogLevel );
+            } );
+        }
+
+        public static void PanelMessage( Procedure P, Func<string> Mesg, LogType LogLevel )
+        {
+            Worker.UIInvoke( () =>
+            {
+                string Tag = P.Name == P.TypeName
+                    ? P.Name
+                    : string.Format( "[{0}({1})]", P.Name, P.RawName )
+                    ;
+
+                PanelMessage( Tag, Mesg(), LogLevel );
+            } );
         }
 
         public ProcManager()
         {
             ProcList = new ObservableCollection<Procedure>();
-            _Guid = Guid.NewGuid();
+            _Id = Guid.NewGuid().ToString();
             Async = false;
         }
 
@@ -99,7 +125,6 @@ namespace libtaotu.Controls
             if ( Param == null ) return;
             ReadParam( Param );
         }
-
 
         public Procedure NewProcedure( ProcType P )
         {
@@ -124,11 +149,17 @@ namespace libtaotu.Controls
                 case ProcType.ENCODING:
                     Proc = new ProcEncoding();
                     break;
+                case ProcType.PARAMETER:
+                    Proc = new ProcParameter();
+                    break;
                 case ProcType.EXTRACT:
                     Proc = ProcExtract.Create();
                     break;
                 case ProcType.MARK:
                     Proc = ProcMark.Create();
+                    break;
+                case ProcType.LIST:
+                    Proc = ProcListLoader.Create();
                     break;
             }
 
@@ -196,12 +227,12 @@ namespace libtaotu.Controls
             }
         }
 
-        public XParameter ToXParam()
+        public XParameter ToXParam( string ProcId = null )
         {
             XParameter Param = new XParameter( "Procedures" );
             Param.SetValue( new XKey[] {
                 new XKey( "Async", Async )
-                , new XKey( "Guid", GUID )
+                , new XKey( "Guid", ProcId == null ? GUID : ProcId )
             } );
 
             int i = 0;

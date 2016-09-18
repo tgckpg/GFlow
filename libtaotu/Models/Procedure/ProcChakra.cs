@@ -31,8 +31,8 @@ namespace libtaotu.Models.Procedure
         {
             get
             {
-                if ( 60 < Script.Length )
-                    return Script.Substring( 0, 60 );
+                if ( 512 < Script.Length )
+                    return Script.Substring( 0, 512 ) + "...";
                 return Script;
             }
         }
@@ -65,15 +65,13 @@ namespace libtaotu.Models.Procedure
             // Search for usable convoy
             ProcConvoy UsableConvoy;
             if ( !TryGetConvoy( out UsableConvoy, ( P, C ) =>
-            {
-                return C.Payload is IEnumerable<IStorageFile>
-                || C.Payload is string;
-            }
+                C.Payload is IEnumerable<IStorageFile>
+                || C.Payload is string
             ) ) return Convoy;
 
             if ( UsableConvoy.Payload is IEnumerable<IStorageFile> )
             {
-                IEnumerable<IStorageFile> ISFs = UsableConvoy.Payload as IEnumerable<IStorageFile>;
+                IEnumerable<IStorageFile> ISFs = ( IEnumerable<IStorageFile> ) UsableConvoy.Payload;
                 foreach ( IStorageFile ISF in ISFs )
                 {
                     await ParseHtml( ISF );
@@ -82,7 +80,7 @@ namespace libtaotu.Models.Procedure
             }
 
             // This is a string
-            return new ProcConvoy( this, await ParseHtml( UsableConvoy.Payload as string ) );
+            return new ProcConvoy( this, await ParseHtml( ( string ) UsableConvoy.Payload ) );
         }
 
         protected async Task ParseHtml( IStorageFile ISF )
@@ -120,18 +118,18 @@ namespace libtaotu.Models.Procedure
             } );
 
             int i = 0;
-            ProcManager.PanelMessage( this, Res.RSTR( "SCRIPT_LIVE", STimeout ), LogType.INFO );
+            ProcManager.PanelMessage( this, () => Res.RSTR( "SCRIPT_LIVE", STimeout ), LogType.INFO );
             // Give 10 seconds for the script to run
             Timer Tmr = new Timer( x =>
             {
                 if ( STimeout <= ++i )
                 {
                     TCS.TrySetResult( null );
-                    ProcManager.PanelMessage( this, Res.RSTR( "SCRIPT_TIMED_OUT" ), LogType.INFO );
+                    ProcManager.PanelMessage( this, () => Res.RSTR( "SCRIPT_TIMED_OUT" ), LogType.INFO );
                     return;
                 }
 
-                ProcManager.PanelMessage( this, Res.RSTR( "SCRIPT_LIVE_D", STimeout - i ), LogType.INFO );
+                ProcManager.PanelMessage( this, () => Res.RSTR( "SCRIPT_LIVE_D", STimeout - i ), LogType.INFO );
             }, null, 1000, 1000 );
 
             Html = JsonDecode<string>( await TCS.Task );
@@ -175,7 +173,7 @@ namespace libtaotu.Models.Procedure
                         case "WAIT": break;
                         case "ERROR":
                             Errored = true;
-                            ProcManager.PanelMessage( this, Res.RSTR( "SCRIPT_ERROR" ), LogType.ERROR );
+                            ProcManager.PanelMessage( this, () => Res.RSTR( "ScriptError" ), LogType.ERROR );
                             TCS.TrySetResult( null );
                             break;
                         default:
@@ -185,7 +183,7 @@ namespace libtaotu.Models.Procedure
                 }
                 catch ( Exception ex )
                 {
-                    ProcManager.PanelMessage( this, Res.RSTR( "SCRIPT_ERROR", ex.Message ), LogType.ERROR );
+                    ProcManager.PanelMessage( this, () => Res.RSTR( "ScriptError", ex.Message ), LogType.ERROR );
                     TCS.TrySetResult( null );
                 }
             };
@@ -204,7 +202,7 @@ namespace libtaotu.Models.Procedure
             {
                 w.NavigationFailed -= Failed;
                 TCS.TrySetResult( null );
-                ProcManager.PanelMessage( this, Res.RSTR( "SCRIPT_NAV_FALIED" ), LogType.INFO );
+                ProcManager.PanelMessage( this, () => Res.RSTR( "SCRIPT_NAV_FALIED" ), LogType.INFO );
             };
 
             LongScript = ( sender, e ) =>

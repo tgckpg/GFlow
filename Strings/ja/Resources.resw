@@ -120,8 +120,14 @@
   <data name="Async.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>非同期処理</value>
   </data>
+  <data name="Caption.PlaceholderText" xml:space="preserve">
+    <value>見出し</value>
+  </data>
   <data name="ContinueIf.Text" xml:space="preserve">
     <value>指定されたURLに準拠し続けた場合</value>
+  </data>
+  <data name="Default.PlaceholderText" xml:space="preserve">
+    <value>既定値</value>
   </data>
   <data name="DiscardUnmatched.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>不一致の項目を破棄</value>
@@ -147,11 +153,20 @@
   <data name="Incoming.Text" xml:space="preserve">
     <value>着信パラメータ</value>
   </data>
+  <data name="Label.PlaceholderText" xml:space="preserve">
+    <value>ラベル</value>
+  </data>
+  <data name="ListBuilder.Text" xml:space="preserve">
+    <value>リストビルダ</value>
+  </data>
   <data name="Marker.Text" xml:space="preserve">
     <value>ラベル対応</value>
   </data>
   <data name="Param.PlaceholderText" xml:space="preserve">
     <value>パラメーター &gt;</value>
+  </data>
+  <data name="ParamDefinitions.Text" xml:space="preserve">
+    <value>パラメータの定義</value>
   </data>
   <data name="Pattern.PlaceholderText" xml:space="preserve">
     <value>正規表現パターン</value>
@@ -176,6 +191,9 @@
   </data>
   <data name="Test.Text" xml:space="preserve">
     <value>テスト</value>
+  </data>
+  <data name="TrustWarning.Text" xml:space="preserve">
+    <value>このスクリプトを信頼していない限り、ここで任意のアカウントのパスワードや個人的な情報を入力しないでください。</value>
   </data>
   <data name="UrlGenerator.Text" xml:space="preserve">
     <value>URLを生成</value>

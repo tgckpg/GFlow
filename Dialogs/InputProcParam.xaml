@@ -28,6 +28,7 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Margin="0,5" Foreground="OrangeRed"
                    x:Uid="/libtaotu/Resources/TrustWarning"
+                   TextWrapping="WrapWholeWords"
                    Text="Trust Warning"/>
         <ListView Grid.Row="1" ItemsSource="{Binding ParamDefs}"
                   ItemContainerStyle="{StaticResource StretchListItem}">

@@ -365,15 +365,20 @@ namespace libtaotu.Models.Procedure
             Settings.SetParameter( PDefs );
         }
 
-        public static ProcConvoy RestoreParams( XRegistry Settings )
+        public static ProcConvoy RestoreParams( XRegistry Settings, object Payload = null )
         {
             XParameter PPParams = Settings.Parameter( "PPValues" );
-            if ( PPParams == null ) return new ProcConvoy( new ProcPassThru(), null );
+            if ( PPParams == null ) return new ProcConvoy( new ProcPassThru(), Payload );
 
             ProcParameter Proc = new ProcParameter();
             Proc.SetParamDefs( Settings.Parameter( "PPValues" ) );
 
-            return new ProcConvoy( Proc, null );
+            return new ProcConvoy( Proc, Payload );
+        }
+
+        public static void DestroyParams( XRegistry Settings )
+        {
+            Settings.RemoveParameter( "PPValues" );
         }
 
         private void SetParamDefs( XParameter Param )

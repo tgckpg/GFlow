@@ -8,7 +8,6 @@ using Windows.UI.Xaml.Media;
 using Windows.UI;
 
 using Net.Astropenguin.DataModel;
-using Net.Astropenguin.Helpers;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;

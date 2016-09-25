@@ -126,6 +126,9 @@
   <data name="ContinueIf.Text" xml:space="preserve">
     <value>當符合指定 URL 時繼續</value>
   </data>
+  <data name="DecodeHtml.Text" xml:space="preserve">
+    <value>HTML 解碼</value>
+  </data>
   <data name="Default.PlaceholderText" xml:space="preserve">
     <value>預設值</value>
   </data>

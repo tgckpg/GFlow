@@ -126,6 +126,9 @@
   <data name="ContinueIf.Text" xml:space="preserve">
     <value>Continue if match with url</value>
   </data>
+  <data name="DecodeHtml.Text" xml:space="preserve">
+    <value>Decode Html</value>
+  </data>
   <data name="Default.PlaceholderText" xml:space="preserve">
     <value>Default value</value>
   </data>

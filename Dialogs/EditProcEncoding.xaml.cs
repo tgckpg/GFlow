@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+using Net.Astropenguin.IO;
 using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
 using Net.Astropenguin.Messaging;
@@ -42,6 +43,8 @@ namespace libtaotu.Dialogs
             :this()
         {
             this.EditTarget = EditTarget;
+
+            DecodeHtmlCheck.IsChecked = EditTarget.DecodeHtml;
             MessageBus.OnDelivery += MessageBus_OnDelivery;
         }
 
@@ -97,6 +100,11 @@ namespace libtaotu.Dialogs
             }
         }
 
+        private void SetDecodeHtml( object sender, RoutedEventArgs e )
+        {
+            EditTarget.DecodeHtml = ( bool ) DecodeHtmlCheck.IsChecked;
+        }
+
         private void ChangeEncoding( object sender, SelectionChangedEventArgs e )
         {
             EditTarget.CodePage = ( ( KeyValuePair<string, int> ) e.AddedItems[ 0 ] ).Value;
@@ -108,7 +116,7 @@ namespace libtaotu.Dialogs
             MessageBus.SendUI( typeof( ProceduresPanel ), "RUN", EditTarget );
         }
 
-        private void MessageBus_OnDelivery( Message Mesg )
+        private async void MessageBus_OnDelivery( Message Mesg )
         {
             ProcConvoy Convoy = Mesg.Payload as ProcConvoy;
             if ( Mesg.Content == "RUN_RESULT"
@@ -117,11 +125,19 @@ namespace libtaotu.Dialogs
             {
                 TestRunning.IsActive = false;
 
-                IEnumerable<IStorageFile> ISF = Convoy.Payload as IEnumerable<IStorageFile>;
-                if ( ISF != null && 0 < ISF.Count() )
+                IEnumerable<IStorageFile> ISFs = Convoy.Payload as IEnumerable<IStorageFile>;
+                if ( ISFs != null && 0 < ISFs.Count() )
                 {
-                    Preview.Navigate( Shared.SourceView, ISF.First() );
+                    Preview.Navigate( Shared.SourceView, ISFs.First() );
                 }
+                else if ( Convoy.Payload is string )
+                {
+                    IStorageFile ISF = await AppStorage.MkTemp();
+                    await ISF.WriteString( ( string ) Convoy.Payload );
+
+                    Preview.Navigate( Shared.SourceView, ISF );
+                }
+
             }
         }
     }

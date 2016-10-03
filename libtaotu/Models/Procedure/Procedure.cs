@@ -8,7 +8,6 @@ using Windows.UI.Xaml.Media;
 using Windows.UI;
 
 using Net.Astropenguin.DataModel;
-using Net.Astropenguin.Helpers;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
@@ -22,18 +21,22 @@ namespace libtaotu.Models.Procedure
         URLLIST = 1,
         GENERATOR = 2,
         FIND = 4,
+
         MARK = 8,
         EXTRACT = 16,
-        DUMMY = 32,
-        INSTRUCTION = 64,
-        PASSTHRU = 128,
-        RESULT = 256,
-        CHAKRA = 512,
-        ENCODING = 1024,
-        PARAMETER = 2048,
-        TEST_RUN = 4096,
-        FEED_RUN = 8192,
-        LIST = 16384,
+        LIST = 32,
+
+        PARAMETER = 64,
+        CHAKRA = 128,
+        ENCODING = 256,
+        RESULT = 512,
+
+        DUMMY = 1024,
+        INSTRUCTION = 2048,
+        PASSTHRU = 4096,
+
+        TEST_RUN = 8192,
+        FEED_RUN = 16384,
     }
 
     abstract class Procedure : ActiveData, INamable

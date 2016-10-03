@@ -93,7 +93,7 @@ namespace libtaotu.Models.Procedure
 
             bool IsFeedRun = ( ProcManager.TracePackage( Convoy, ( P, C ) => ( P.Type & ProcType.FEED_RUN ) != 0 ) != null );
 
-            ProcManager.PanelMessage( this, Res.SSTR( "RunMode", ModeName ), LogType.INFO );
+            ProcManager.PanelMessage( this, () => Res.RSTR( "RunMode", ModeName ), LogType.INFO );
 
             switch ( Mode )
             {

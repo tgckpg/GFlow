@@ -126,6 +126,9 @@
   <data name="ContinueIf.Text" xml:space="preserve">
     <value>指定されたURLに準拠し続けた場合</value>
   </data>
+  <data name="DecodeHtml.Text" xml:space="preserve">
+    <value>HTMLをデコード</value>
+  </data>
   <data name="Default.PlaceholderText" xml:space="preserve">
     <value>既定値</value>
   </data>

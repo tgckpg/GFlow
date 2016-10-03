@@ -119,7 +119,7 @@ namespace libtaotu.Models.Procedure
 
             int i = 0;
             ProcManager.PanelMessage( this, () => Res.RSTR( "SCRIPT_LIVE", STimeout ), LogType.INFO );
-            // Give 10 seconds for the script to run
+            // Give N seconds for the script to run
             Timer Tmr = new Timer( x =>
             {
                 if ( STimeout <= ++i )
@@ -137,7 +137,7 @@ namespace libtaotu.Models.Procedure
             Tmr.Dispose();
             p.AsAsyncAction().Cancel();
 
-            if ( WView != null ) WView.NavigateToString( "" );
+            if ( WView != null ) Worker.UIInvoke( () => WView.NavigateToString( "" ) );
 
             return Html;
         }

@@ -31,7 +31,7 @@ using libtaotu.Resources;
 
 namespace libtaotu.Pages
 {
-    public sealed partial class ProceduresPanel : Page
+    public sealed partial class ProceduresPanel : Page, IDisposable
     {
         public static readonly string ID = typeof( ProceduresPanel ).Name;
 
@@ -62,7 +62,7 @@ namespace libtaotu.Pages
 
         ~ProceduresPanel() { Dispose(); }
 
-        private void Dispose()
+        public void Dispose()
         {
             NavigationHandler.OnNavigatedBack -= StepSubProcedures;
             MessageBus.OnDelivery -= MessageBus_OnDelivery;

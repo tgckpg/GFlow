@@ -30,3 +30,4 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("wenku10")]
 [assembly: InternalsVisibleTo("libwenku8")]
+[assembly: InternalsVisibleTo("Tasks")]

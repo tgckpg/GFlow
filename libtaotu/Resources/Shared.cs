@@ -20,7 +20,7 @@ namespace libtaotu.Resources
         public static Type ProcMarker { get; private set; }
         public static Type ProcListLoader { get; private set; }
 
-        public static Func<Uri, HttpRequest> CreateRequest = x => new HttpRequest( x );
+        public static Func<Uri, HttpRequest> CreateRequest = x => new HttpRequest( x ) { EN_UITHREAD = false };
 
         public static void SetExtractor( Type T )
         {

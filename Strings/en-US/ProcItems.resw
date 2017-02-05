@@ -150,6 +150,9 @@
   <data name="MATCH" xml:space="preserve">
     <value>Match</value>
   </data>
+  <data name="OUTPUT" xml:space="preserve">
+    <value>Output</value>
+  </data>
   <data name="PARAMETER" xml:space="preserve">
     <value>Parameter</value>
   </data>
@@ -157,7 +160,7 @@
     <value>Replace</value>
   </data>
   <data name="RESULT" xml:space="preserve">
-    <value>Result View</value>
+    <value>Integrate Result</value>
   </data>
   <data name="SOURCE_AVAIL" xml:space="preserve">
     <value>Source</value>

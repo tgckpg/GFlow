@@ -132,6 +132,9 @@
   <data name="Default.PlaceholderText" xml:space="preserve">
     <value>預設值</value>
   </data>
+  <data name="Delimited.Text" xml:space="preserve">
+    <value>以換行分隔</value>
+  </data>
   <data name="DiscardUnmatched.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>取消不符合的項目</value>
   </data>
@@ -156,6 +159,9 @@
   <data name="Incoming.Text" xml:space="preserve">
     <value>傳入的參數</value>
   </data>
+  <data name="Key.Text" xml:space="preserve">
+    <value>鍵</value>
+  </data>
   <data name="Label.PlaceholderText" xml:space="preserve">
     <value>標籤</value>
   </data>
@@ -164,6 +170,9 @@
   </data>
   <data name="Marker.Text" xml:space="preserve">
     <value>標籤對應</value>
+  </data>
+  <data name="OutputDefs.Text" xml:space="preserve">
+    <value>整合輸出</value>
   </data>
   <data name="Param.PlaceholderText" xml:space="preserve">
     <value>參數 &gt;</value>
@@ -178,7 +187,7 @@
     <value>前綴</value>
   </data>
   <data name="Result.Text" xml:space="preserve">
-    <value>輸出結果</value>
+    <value>整合結果</value>
   </data>
   <data name="Script.Text" xml:space="preserve">
     <value>腳本</value>

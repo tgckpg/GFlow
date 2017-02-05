@@ -20,7 +20,7 @@ namespace libtaotu.Models.Procedure
 {
     using Controls;
 
-    enum RunMode { FEEDBACK = 1, INPUT = 2, SOURCE_AVAIL = 4, DEFINE = 8 }
+    enum RunMode { FEEDBACK = 1, INPUT = 2, SOURCE_AVAIL = 4, DEFINE = 8, OUTPUT = 16 }
 
     class ProcParameter : Procedure
     {

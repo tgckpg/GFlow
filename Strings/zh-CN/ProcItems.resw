@@ -150,6 +150,9 @@
   <data name="MATCH" xml:space="preserve">
     <value>配对</value>
   </data>
+  <data name="OUTPUT" xml:space="preserve">
+    <value>输出</value>
+  </data>
   <data name="PARAMETER" xml:space="preserve">
     <value>参数</value>
   </data>
@@ -157,7 +160,7 @@
     <value>取代</value>
   </data>
   <data name="RESULT" xml:space="preserve">
-    <value>检视结果</value>
+    <value>整合结果</value>
   </data>
   <data name="SOURCE_AVAIL" xml:space="preserve">
     <value>沿用</value>

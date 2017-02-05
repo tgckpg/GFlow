@@ -150,6 +150,9 @@
   <data name="MATCH" xml:space="preserve">
     <value>配合</value>
   </data>
+  <data name="OUTPUT" xml:space="preserve">
+    <value>出力</value>
+  </data>
   <data name="PARAMETER" xml:space="preserve">
     <value>パラメーター</value>
   </data>
@@ -157,7 +160,7 @@
     <value>替える</value>
   </data>
   <data name="RESULT" xml:space="preserve">
-    <value>結果を表示</value>
+    <value>結果統合</value>
   </data>
   <data name="SOURCE_AVAIL" xml:space="preserve">
     <value>たどる</value>

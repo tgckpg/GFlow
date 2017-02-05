@@ -210,4 +210,7 @@
   <data name="TestRun_UseDefault" xml:space="preserve">
     <value>Test running, using default values</value>
   </data>
+  <data name="ResultKeyNotFound" xml:space="preserve">
+    <value>Result key "{0}" not found</value>
+  </data>
 </root>

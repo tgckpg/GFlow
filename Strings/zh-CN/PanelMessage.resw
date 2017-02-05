@@ -210,4 +210,7 @@
   <data name="TestRun_UseDefault" xml:space="preserve">
     <value>运行测试，使用默认值。</value>
   </data>
+  <data name="ResultKeyNotFound" xml:space="preserve">
+    <value>找不到结果键“{0}”</value>
+  </data>
 </root>

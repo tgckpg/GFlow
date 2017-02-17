@@ -90,10 +90,7 @@ namespace libtaotu.Models.Procedure
             }
         }
 
-        protected StringResources ProcStrRes
-        {
-            get { return new StringResources( "/libtaotu/ProcItems" ); }
-        }
+        protected StringResBg ProcStrRes = new StringResBg( "/libtaotu/ProcItems" );
 
         public Procedure( ProcType P )
         {
@@ -108,7 +105,7 @@ namespace libtaotu.Models.Procedure
 
             if( Con == null )
             {
-                ProcManager.PanelMessage( this, () => Res.RSTR( "NoUsablePayload" ), LogType.WARNING );
+                ProcManager.PanelMessage( this, Res.RSTR( "NoUsablePayload" ), LogType.WARNING );
                 Faulted = true;
                 return false;
             }

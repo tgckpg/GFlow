@@ -104,7 +104,7 @@ namespace libtaotu.Models.Procedure
                     }
                     else
                     {
-                        ProcManager.PanelMessage( this, () => Res.RSTR( "ResultKeyNotFound", Def.Key ), LogType.WARNING );
+                        ProcManager.PanelMessage( this, Res.RSTR( "ResultKeyNotFound", Def.Key ), LogType.WARNING );
                     }
                 }
             }
@@ -142,7 +142,7 @@ namespace libtaotu.Models.Procedure
         {
             if ( Def != null && Def.SubProc.HasProcedures )
             {
-                ProcManager.PanelMessage( this, () => Res.RSTR( "SubProcRun" ), LogType.INFO );
+                ProcManager.PanelMessage( this, Res.RSTR( "SubProcRun" ), LogType.INFO );
                 ProcConvoy SubConvoy = await Def.SubProc.CreateSpider().Crawl( new ProcConvoy( null, Input ) );
 
                 // Process ReceivedConvoy

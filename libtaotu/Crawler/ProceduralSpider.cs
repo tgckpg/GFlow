@@ -32,7 +32,7 @@ namespace libtaotu.Crawler
         {
             if ( ProcList.Count() == 0 )
             {
-                ProcManager.PanelMessage( ID, () => Res.RSTR( "EmptyCrawling" ), LogType.INFO );
+                ProcManager.PanelMessage( ID, Res.RSTR( "EmptyCrawling" ), LogType.INFO );
                 return Convoy;
             }
 
@@ -40,7 +40,7 @@ namespace libtaotu.Crawler
 
             foreach ( Procedure Proc in ProcList )
             {
-                ProcManager.PanelMessage( ID, () => Res.RSTR( "Running" ) + ": " + Proc.Name, LogType.INFO );
+                ProcManager.PanelMessage( ID, Res.RSTR( "Running" ) + ": " + Proc.Name, LogType.INFO );
 
                 try
                 {
@@ -51,7 +51,7 @@ namespace libtaotu.Crawler
                 }
                 catch ( Exception ex )
                 {
-                    ProcManager.PanelMessage( ID, () => Res.RSTR( "Faulted", Proc.Name, ex.Message ), LogType.ERROR );
+                    ProcManager.PanelMessage( ID, Res.RSTR( "Faulted", Proc.Name, ex.Message ), LogType.ERROR );
                     Proc.Running = false;
                     Proc.Faulted = true;
                     Conveying = null;
@@ -59,7 +59,7 @@ namespace libtaotu.Crawler
                 }
             }
 
-            ProcManager.PanelMessage( ID, () => Res.RSTR( "RunComplete" ), LogType.INFO );
+            ProcManager.PanelMessage( ID, Res.RSTR( "RunComplete" ), LogType.INFO );
             return Conveying;
         }
 

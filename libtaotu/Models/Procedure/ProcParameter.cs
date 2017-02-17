@@ -93,14 +93,14 @@ namespace libtaotu.Models.Procedure
 
             bool IsFeedRun = ( ProcManager.TracePackage( Convoy, ( P, C ) => ( P.Type & ProcType.FEED_RUN ) != 0 ) != null );
 
-            ProcManager.PanelMessage( this, () => Res.RSTR( "RunMode", ModeName ), LogType.INFO );
+            ProcManager.PanelMessage( this, Res.RSTR( "RunMode", ModeName ), LogType.INFO );
 
             switch ( Mode )
             {
                 case RunMode.FEEDBACK:
                     if ( !IsFeedRun )
                     {
-                        ProcManager.PanelMessage( this, () => Res.RSTR( "NotAFeedRun" ), LogType.INFO );
+                        ProcManager.PanelMessage( this, Res.RSTR( "NotAFeedRun" ), LogType.INFO );
                         return Convoy;
                     }
 
@@ -118,7 +118,7 @@ namespace libtaotu.Models.Procedure
                     {
                         if ( UsableConvoy == null )
                         {
-                            ProcManager.PanelMessage( this, () => Res.RSTR( "NoUsableConvoy" ), LogType.WARNING );
+                            ProcManager.PanelMessage( this, Res.RSTR( "NoUsableConvoy" ), LogType.WARNING );
                             return Convoy;
                         }
                         return await IncomingTemplates( UsableConvoy );
@@ -134,14 +134,14 @@ namespace libtaotu.Models.Procedure
                 case RunMode.INPUT:
                     if ( IsFeedRun )
                     {
-                        ProcManager.PanelMessage( this, () => Res.RSTR( "FeedRunning" ), LogType.INFO );
+                        ProcManager.PanelMessage( this, Res.RSTR( "FeedRunning" ), LogType.INFO );
                         return Convoy;
                     }
 
                     ProcConvoy Con = ProcManager.TracePackage( Convoy, ( P, C ) => ( P.Type & ProcType.TEST_RUN ) != 0 );
                     if ( Con != null )
                     {
-                        ProcManager.PanelMessage( this, () => Res.RSTR( "TestRun_UseDefault" ), LogType.INFO );
+                        ProcManager.PanelMessage( this, Res.RSTR( "TestRun_UseDefault" ), LogType.INFO );
                         break;
                     }
 

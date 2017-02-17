@@ -44,7 +44,7 @@ namespace libtaotu.Models.Procedure
 
             if ( Incoming )
             {
-                ProcManager.PanelMessage( this, () => Res.RSTR( "IncomingCheck" ), LogType.INFO );
+                ProcManager.PanelMessage( this, Res.RSTR( "IncomingCheck" ), LogType.INFO );
 
                 ProcConvoy UsableConvoy = ProcManager.TracePackage(
                     Convoy, ( P, C ) =>
@@ -105,7 +105,7 @@ namespace libtaotu.Models.Procedure
 
             if ( ConvoyUrls == null && Urls.Count == 0 )
             {
-                ProcManager.PanelMessage( this, () => Res.RSTR( "EmptyUrlLIst" ), LogType.WARNING );
+                ProcManager.PanelMessage( this, Res.RSTR( "EmptyUrlLIst" ), LogType.WARNING );
             }
 
             List<IStorageFile> ISFs = new List<IStorageFile>();

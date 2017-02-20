@@ -199,7 +199,7 @@
     <value>フィードバック動作ではありません、このステップをスキップします</value>
   </data>
   <data name="RunMode" xml:space="preserve">
-    <value>動作モード</value>
+    <value>動作モード：{0}</value>
   </data>
   <data name="ScriptError" xml:space="preserve">
     <value>スクリプトエラー：{0}</value>

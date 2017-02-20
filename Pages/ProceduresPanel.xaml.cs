@@ -384,12 +384,13 @@ namespace libtaotu.Pages
 #if DEBUG
             Logger.Log( id, content, level );
 #endif
-            Logs.Add( new LogArgs( id, content, level, Signal.LOG ) );
-
-            while ( 1000 < Logs.Count )
-            {
-                Logs.RemoveAt( 0 );
-            }
+            var j = Dispatcher.RunIdleAsync( x => {
+                Logs.Add( new LogArgs( id, content, level, Signal.LOG ) );
+                while ( 1000 < Logs.Count )
+                {
+                    Logs.RemoveAt( 0 );
+                }
+            } );
         }
 
         private void ScrollToBottom()

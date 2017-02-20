@@ -199,7 +199,7 @@
     <value>Not a feedback operation, skipping this step</value>
   </data>
   <data name="RunMode" xml:space="preserve">
-    <value>Run mode</value>
+    <value>Run mode: {0}</value>
   </data>
   <data name="ScriptError" xml:space="preserve">
     <value>Script error: {0}</value>

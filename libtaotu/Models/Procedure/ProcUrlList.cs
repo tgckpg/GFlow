@@ -89,10 +89,10 @@ namespace libtaotu.Models.Procedure
                     if ( Delimited )
                     {
                         foreach ( string Urls in Payloads )
-                        foreach ( string Url in Urls.Split( new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries ) )
-                        {
-                            ConvoyUrls.Add( Url );
-                        }
+                            foreach ( string Url in Urls.Split( new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries ) )
+                            {
+                                ConvoyUrls.Add( Url );
+                            }
                     }
                     else
                     {
@@ -105,27 +105,27 @@ namespace libtaotu.Models.Procedure
 
             if ( ConvoyUrls == null && Urls.Count == 0 )
             {
-                ProcManager.PanelMessage( this, Res.RSTR( "EmptyUrlLIst" ), LogType.WARNING );
+                ProcManager.PanelMessage( this, Res.RSTR( "EmptyUrlList" ), LogType.WARNING );
             }
 
             List<IStorageFile> ISFs = new List<IStorageFile>();
 
-            foreach ( string u in Urls )
-            {
-                IStorageFile ISF = await ProceduralSpider.DownloadSource( Prefix + u );
-                if ( ISF != null ) ISFs.Add( ISF );
-            }
+            await DownloadToISFs( ISFs, Urls );
 
             if ( ConvoyUrls != null )
             {
-                foreach ( string u in ConvoyUrls )
-                {
-                    IStorageFile ISF = await ProceduralSpider.DownloadSource( Prefix + u );
-                    if ( ISF != null ) ISFs.Add( ISF );
-                }
+                await DownloadToISFs( ISFs, ConvoyUrls );
             }
 
             return new ProcConvoy( this, ISFs );
+        }
+
+        private async Task DownloadToISFs( IList<IStorageFile> ISFs, IEnumerable<string> Urls )
+        {
+            foreach ( string u in Urls )
+            {
+                ISFs.Add( await ProceduralSpider.DownloadSource( Prefix + u ) );
+            }
         }
 
         public override async Task Edit()

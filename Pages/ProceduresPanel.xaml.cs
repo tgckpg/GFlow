@@ -381,9 +381,6 @@ namespace libtaotu.Pages
 
         private void PanelLogItem( string id, string content, LogType level )
         {
-#if DEBUG
-            Logger.Log( id, content, level );
-#endif
             var j = Dispatcher.RunIdleAsync( x => {
                 Logs.Add( new LogArgs( id, content, level, Signal.LOG ) );
                 while ( 1000 < Logs.Count )

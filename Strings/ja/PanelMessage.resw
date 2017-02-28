@@ -199,7 +199,7 @@
     <value>フィードバック動作ではありません、このステップをスキップします</value>
   </data>
   <data name="RunMode" xml:space="preserve">
-    <value>動作モード</value>
+    <value>動作モード：{0}</value>
   </data>
   <data name="ScriptError" xml:space="preserve">
     <value>スクリプトエラー：{0}</value>
@@ -209,5 +209,8 @@
   </data>
   <data name="TestRun_UseDefault" xml:space="preserve">
     <value>テストを実行し、デフォルトを使用します</value>
+  </data>
+  <data name="ResultKeyNotFound" xml:space="preserve">
+    <value>結果キー "{0}"が見つかりません</value>
   </data>
 </root>

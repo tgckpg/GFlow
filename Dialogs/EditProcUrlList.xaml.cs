@@ -44,6 +44,7 @@ namespace libtaotu.Dialogs
             EditTarget = procUrlList;
 
             IncomingCheck.IsChecked = EditTarget.Incoming;
+            DelimitedCheck.IsChecked = EditTarget.Delimited;
             PrefixInput.Text = EditTarget.Prefix;
             UrlList.ItemsSource = EditTarget.Urls;
 
@@ -119,6 +120,11 @@ namespace libtaotu.Dialogs
         private void SetIncoming( object sender, RoutedEventArgs e )
         {
             EditTarget.Incoming = ( bool ) IncomingCheck.IsChecked;
+        }
+
+        private void SetDelimited( object sender, RoutedEventArgs e )
+        {
+            EditTarget.Delimited = ( bool ) DelimitedCheck.IsChecked;
         }
     }
 }

@@ -23,6 +23,7 @@ namespace libtaotu.Models.Procedure
 
         public HashSet<string> Urls { get; private set; }
         public bool Incoming { get; set; }
+        public bool Delimited { get; set; }
         public string Prefix { get; set; }
 
         protected override IconBase Icon { get { return new IconTOC() { AutoScale = true }; } }
@@ -43,52 +44,88 @@ namespace libtaotu.Models.Procedure
 
             if ( Incoming )
             {
-                ProcManager.PanelMessage( this, () => Res.RSTR( "IncomingCheck" ), LogType.INFO );
+                ProcManager.PanelMessage( this, Res.RSTR( "IncomingCheck" ), LogType.INFO );
 
                 ProcConvoy UsableConvoy = ProcManager.TracePackage(
                     Convoy, ( P, C ) =>
                     {
-                        return C.Payload is IEnumerable<string> || C.Payload is string;
+                        return C.Payload is IEnumerable<IStorageFile>
+                            || C.Payload is IEnumerable<string>
+                            || C.Payload is IStorageFile
+                            || C.Payload is string;
                     }
                 );
 
                 if ( UsableConvoy != null )
                 {
-                    if ( UsableConvoy.Payload is string )
+                    ConvoyUrls = new HashSet<string>();
+                    IEnumerable<string> Payloads;
+
+                    if ( UsableConvoy.Payload is IEnumerable<IStorageFile> )
                     {
-                        ConvoyUrls = new HashSet<string>();
-                        ConvoyUrls.Add( ( string ) UsableConvoy.Payload );
+                        IEnumerable<IStorageFile> CSFs = ( IEnumerable<IStorageFile> ) UsableConvoy.Payload;
+                        List<string> Defs = new List<string>();
+
+                        foreach ( IStorageFile CSF in CSFs )
+                        {
+                            Defs.Add( await CSF.ReadString() );
+                        }
+
+                        Payloads = Defs;
+                    }
+                    else if ( UsableConvoy.Payload is IStorageFile )
+                    {
+                        Payloads = new string[] { await ( ( IStorageFile ) UsableConvoy.Payload ).ReadString() };
+                    }
+                    else if ( UsableConvoy.Payload is string )
+                    {
+                        Payloads = new string[] { ( string ) UsableConvoy.Payload };
                     }
                     else
                     {
-                        ConvoyUrls = new HashSet<string>( ( IEnumerable<string> ) UsableConvoy.Payload );
+                        Payloads = ( IEnumerable<string> ) UsableConvoy.Payload;
                     }
+
+                    if ( Delimited )
+                    {
+                        foreach ( string Urls in Payloads )
+                            foreach ( string Url in Urls.Split( new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries ) )
+                            {
+                                ConvoyUrls.Add( Url );
+                            }
+                    }
+                    else
+                    {
+                        ConvoyUrls = new HashSet<string>( Payloads );
+                    }
+
+                    Payloads = null;
                 }
             }
 
             if ( ConvoyUrls == null && Urls.Count == 0 )
             {
-                ProcManager.PanelMessage( this, () => Res.RSTR( "EmptyUrlLIst" ), LogType.WARNING );
+                ProcManager.PanelMessage( this, Res.RSTR( "EmptyUrlList" ), LogType.WARNING );
             }
 
             List<IStorageFile> ISFs = new List<IStorageFile>();
 
-            foreach ( string u in Urls )
-            {
-                IStorageFile ISF = await ProceduralSpider.DownloadSource( Prefix + u );
-                if ( ISF != null ) ISFs.Add( ISF );
-            }
+            await DownloadToISFs( ISFs, Urls );
 
             if ( ConvoyUrls != null )
             {
-                foreach ( string u in ConvoyUrls )
-                {
-                    IStorageFile ISF = await ProceduralSpider.DownloadSource( Prefix + u );
-                    if ( ISF != null ) ISFs.Add( ISF );
-                }
+                await DownloadToISFs( ISFs, ConvoyUrls );
             }
 
             return new ProcConvoy( this, ISFs );
+        }
+
+        private async Task DownloadToISFs( IList<IStorageFile> ISFs, IEnumerable<string> Urls )
+        {
+            foreach ( string u in Urls )
+            {
+                ISFs.Add( await ProceduralSpider.DownloadSource( Prefix + u ) );
+            }
         }
 
         public override async Task Edit()
@@ -101,6 +138,7 @@ namespace libtaotu.Models.Procedure
             base.ReadParam( Param );
 
             Incoming = Param.GetBool( "Incoming" );
+            Delimited = Param.GetBool( "Delimited" );
             Prefix = Param.GetValue( "Prefix" );
 
             XParameter[] Params = Param.Parameters( "url" );
@@ -117,6 +155,7 @@ namespace libtaotu.Models.Procedure
 
             Param.SetValue( new XKey[] {
                 new XKey( "Incoming", Incoming )
+                , new XKey( "Delimited", Delimited )
                 , new XKey( "Prefix", Prefix )
             } );
 

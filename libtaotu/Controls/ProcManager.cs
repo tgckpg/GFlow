@@ -8,7 +8,6 @@ using System.Reflection;
 using Windows.UI.Xaml.Controls;
 
 using Net.Astropenguin.DataModel;
-using Net.Astropenguin.Helpers;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
 using Net.Astropenguin.Messaging;
@@ -64,52 +63,22 @@ namespace libtaotu.Controls
 
         public static void PanelMessage( string ID, string Mesg, LogType LogLevel )
         {
-            MessageBus.SendUI(
+            Logger.Log( ID, Mesg, LogLevel );
+            MessageBus.Send(
                 typeof( ProceduresPanel )
                 , Mesg
                 , new ProceduresPanel.PanelLog() { LogType = LogLevel, ID = ID }
             );
         }
 
-        public static void PanelMessage( string ID, Func<string> Mesg, LogType LogLevel )
-        {
-            Worker.UIInvoke( () =>
-            {
-#if DEBUG
-                Logger.Log( ID, Mesg(), LogLevel );
-#endif
-                MessageBus.SendUI(
-                    typeof( ProceduresPanel )
-                    , Mesg()
-                    , new ProceduresPanel.PanelLog() { LogType = LogLevel, ID = ID }
-                );
-            } );
-        }
-
         public static void PanelMessage( Procedure P, string Mesg, LogType LogLevel )
         {
-            Worker.UIInvoke( () =>
-            {
-                string Tag = P.Name == P.TypeName
-                    ? P.Name
-                    : string.Format( "[{0}({1})]", P.Name, P.RawName )
-                    ;
+            string Tag = P.Name == P.TypeName
+                ? P.Name
+                : string.Format( "[{0}({1})]", P.Name, P.RawName )
+                ;
 
-                PanelMessage( Tag, Mesg, LogLevel );
-            } );
-        }
-
-        public static void PanelMessage( Procedure P, Func<string> Mesg, LogType LogLevel )
-        {
-            Worker.UIInvoke( () =>
-            {
-                string Tag = P.Name == P.TypeName
-                    ? P.Name
-                    : string.Format( "[{0}({1})]", P.Name, P.RawName )
-                    ;
-
-                PanelMessage( Tag, Mesg(), LogLevel );
-            } );
+            PanelMessage( Tag, Mesg, LogLevel );
         }
 
         public ProcManager()

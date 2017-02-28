@@ -11,24 +11,15 @@ namespace libtaotu.Controls
 {
     static class Res
     {
-        private static StringResources stp;
+        private static StringResBg stp = new StringResBg( "/libtaotu/PanelMessage" );
 
-
-        public static Func<string> SSTR( string key, string ColonAfter )
+        public static string SSTR( string key, string ColonAfter )
         {
-            return () => RSTR( key ) + ": " + ColonAfter;
+            return RSTR( key ) + ": " + ColonAfter;
         }
 
-        /// <summary>
-        /// An alias ProcPanel.RSTR
-        /// </summary>
         public static string RSTR( string key, params object[] args )
         {
-            if ( stp == null )
-            {
-                stp = new StringResources( "/libtaotu/PanelMessage" );
-            }
-
             try
             {
                 string s = string.Format( stp.Str( key ), args );

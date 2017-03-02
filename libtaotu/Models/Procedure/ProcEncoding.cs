@@ -83,15 +83,14 @@ namespace libtaotu.Models.Procedure
                                 continue;
                             }
 
+                            ProcManager.PanelMessage( this, Res.SSTR( "ConvertEncoding", ISF.Name ), LogType.INFO );
                             Content = await ISF.ReadString( Enc );
                         }
 
                         if ( DecodeHtml )
                         {
-                            await ISF.WriteString( WebUtility.HtmlDecode( Content ) );
+                            Content = WebUtility.HtmlDecode( Content );
                         }
-
-                        ProcManager.PanelMessage( this, Res.SSTR( "ConvertEncoding", ISF.Name ), LogType.INFO );
 
                         await ISF.WriteString( Content );
                     }

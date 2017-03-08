@@ -13,102 +13,107 @@ using Net.Astropenguin.Logging;
 
 namespace libtaotu.Crawler
 {
-    using Controls;
-    using Models.Procedure;
-    using Resources;
+	using Controls;
+	using Models.Procedure;
+	using Resources;
 
-    sealed class ProceduralSpider
-    {
-        public static readonly string ID = typeof( ProceduralSpider ).Name;
+	sealed class ProceduralSpider
+	{
+		public static readonly string ID = typeof( ProceduralSpider ).Name;
 
-        private IEnumerable<Procedure> ProcList;
+		private IEnumerable<Procedure> ProcList;
 
-        public ProceduralSpider( IEnumerable<Procedure> ProcList )
-        {
-            this.ProcList = ProcList;
-        }
+		public ProceduralSpider( IEnumerable<Procedure> ProcList )
+		{
+			this.ProcList = ProcList;
+		}
 
-        public async Task<ProcConvoy> Crawl( ProcConvoy Convoy = null )
-        {
-            if ( ProcList.Count() == 0 )
-            {
-                ProcManager.PanelMessage( ID, Res.RSTR( "EmptyCrawling" ), LogType.INFO );
-                return Convoy;
-            }
+		public async Task<ProcConvoy> Crawl( ProcConvoy Convoy = null )
+		{
+			if ( ProcList.Count() == 0 )
+			{
+				ProcManager.PanelMessage( ID, Res.RSTR( "EmptyCrawling" ), LogType.INFO );
+				return Convoy;
+			}
 
-            ProcConvoy Conveying = Convoy;
+			ProcConvoy Conveying = Convoy;
 
-            foreach ( Procedure Proc in ProcList )
-            {
-                ProcManager.PanelMessage( ID, Res.RSTR( "Running" ) + ": " + Proc.Name, LogType.INFO );
+			foreach ( Procedure Proc in ProcList )
+			{
+				ProcManager.PanelMessage( ID, Res.RSTR( "Running" ) + ": " + Proc.Name, LogType.INFO );
 
-                try
-                {
-                    Proc.Running = true;
-                    ProcConvoy Received = await Proc.Run( Conveying );
-                    Conveying = Received;
-                    Proc.Running = false;
-                }
-                catch ( Exception ex )
-                {
-                    ProcManager.PanelMessage(
-                        ID, Res.RSTR(
-                            "Faulted", Proc.Name
-                            , ex.Message + ( ex.InnerException == null ? "" : "[ " + ex.InnerException.Message + " ]" )
-                        )
-                        , LogType.ERROR
-                    );
-                    Proc.Running = false;
-                    Proc.Faulted = true;
-                    Conveying = null;
-                    break;
-                }
-            }
+				try
+				{
+					Proc.Running = true;
+					ProcConvoy Received = await Proc.Run( Conveying );
+					Conveying = Received;
+					Proc.Running = false;
+				}
+				catch ( Exception ex )
+				{
+					ProcManager.PanelMessage(
+						ID, Res.RSTR(
+							"Faulted", Proc.Name
+							, ex.Message + ( ex.InnerException == null ? "" : "[ " + ex.InnerException.Message + " ]" )
+						)
+						, LogType.ERROR
+					);
+					Proc.Running = false;
+					Proc.Faulted = true;
+					Conveying = null;
+					break;
+				}
+			}
 
-            ProcManager.PanelMessage( ID, Res.RSTR( "RunComplete" ), LogType.INFO );
-            return Conveying;
-        }
+			ProcManager.PanelMessage( ID, Res.RSTR( "RunComplete" ), LogType.INFO );
+			return Conveying;
+		}
 
-        public static async Task<IStorageFile> DownloadSource( string url )
-        {
-            ProcManager.PanelMessage( ID, Res.SSTR( "Download", url ), LogType.INFO );
+		public static async Task<IStorageFile> DownloadSource( string url )
+		{
+			ProcManager.PanelMessage( ID, Res.SSTR( "Download", url ), LogType.INFO );
 
-            TaskCompletionSource<IStorageFile> TCS = new TaskCompletionSource<IStorageFile>();
+			TaskCompletionSource<IStorageFile> TCS = new TaskCompletionSource<IStorageFile>();
 
-            try
-            {
-                HttpRequest Request = Shared.CreateRequest( new Uri( url ) );
+			try
+			{
+				HttpRequest Request = Shared.CreateRequest( new Uri( url ) );
 
-                StorageFile SF = await AppStorage.MkTemp();
-                Request.OnRequestComplete += async ( DRequestCompletedEventArgs DArgs ) =>
-                {
-                    using ( IRandomAccessStream IRS = await SF.OpenAsync( FileAccessMode.ReadWrite ) )
-                    {
-                        try
-                        {
-                            await IRS.WriteAsync( DArgs.ResponseBytes.AsBuffer() );
-                            await IRS.FlushAsync();
-                            TCS.TrySetResult( SF );
-                        }
-                        catch ( Exception ex )
-                        {
-                            await IRS.WriteAsync( Encoding.UTF8.GetBytes( ex.Message ).AsBuffer() );
-                            await IRS.FlushAsync();
-                            TCS.TrySetException( ex );
-                        }
-                    }
-                };
+				StorageFile SF = await AppStorage.MkTemp();
+				Request.OnRequestComplete += async ( DRequestCompletedEventArgs DArgs ) =>
+				{
+					try
+					{
+						using ( IRandomAccessStream IRS = await SF.OpenAsync( FileAccessMode.ReadWrite ) )
+						{
+							await IRS.WriteAsync( DArgs.ResponseBytes.AsBuffer() );
+							await IRS.FlushAsync();
+						}
 
-                Request.OpenAsync();
-            }
-            catch ( UriFormatException )
-            {
-                ProcManager.PanelMessage( ID, Res.SSTR( "InvalidURL", url ), LogType.ERROR );
-                TCS.TrySetCanceled();
-            }
+						TCS.TrySetResult( SF );
+					}
+					catch ( Exception ex )
+					{
+						using ( IRandomAccessStream IRS = await SF.OpenAsync( FileAccessMode.ReadWrite ) )
+						{
+							await IRS.WriteAsync( Encoding.UTF8.GetBytes( ex.Message ).AsBuffer() );
+							await IRS.FlushAsync();
+						}
 
-            return await TCS.Task;
-        }
+						TCS.TrySetException( ex );
+					}
+				};
 
-    }
+				Request.OpenAsync();
+			}
+			catch ( UriFormatException )
+			{
+				ProcManager.PanelMessage( ID, Res.SSTR( "InvalidURL", url ), LogType.ERROR );
+				TCS.TrySetCanceled();
+			}
+
+			return await TCS.Task;
+		}
+
+	}
 }

@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace libtaotu.Models.Procedure
 {
-    class ProcConvoy
-    {
-        public Procedure Dispatcher { get; private set; }
+	class ProcConvoy
+	{
+		public Procedure Dispatcher { get; private set; }
 
-        public object Payload { get; private set; }
+		public object Payload { get; private set; }
 
-        public ProcConvoy( Procedure Dispatcher, object Payload )
-        {
-            this.Dispatcher = Dispatcher;
-            this.Payload = Payload;
-        }
-    }
+		public ProcConvoy( Procedure Dispatcher, object Payload )
+		{
+			this.Dispatcher = Dispatcher;
+			this.Payload = Payload;
+		}
+	}
 }

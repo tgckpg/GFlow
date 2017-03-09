@@ -12,45 +12,45 @@ using Net.Astropenguin.Loaders;
 
 namespace libtaotu.Dialogs
 {
-    using Models.Procedure;
+	using Models.Procedure;
 
-    sealed partial class InputProcParam : ContentDialog
-    {
-        private ProcParameter Param;
+	sealed partial class InputProcParam : ContentDialog
+	{
+		private ProcParameter Param;
 
-        public bool Canceled { get; private set; }
-        private SortedDictionary<int, TextBox> InputValues = new SortedDictionary<int, TextBox>();
+		public bool Canceled { get; private set; }
+		private SortedDictionary<int, TextBox> InputValues = new SortedDictionary<int, TextBox>();
 
-        public InputProcParam( ProcParameter Param )
-        {
-            Canceled = true;
+		public InputProcParam( ProcParameter Param )
+		{
+			Canceled = true;
 
-            this.InitializeComponent();
-            this.Param = Param;
+			this.InitializeComponent();
+			this.Param = Param;
 
-            SetTemplate();
-        }
+			SetTemplate();
+		}
 
-        private void SetTemplate()
-        {
-            StringResources stx = new StringResources( "/libtaotu/Message" );
-            PrimaryButtonText = stx.Str( "OK" );
-            SecondaryButtonText = stx.Str( "Cancel" );
+		private void SetTemplate()
+		{
+			StringResources stx = new StringResources( "/libtaotu/Message" );
+			PrimaryButtonText = stx.Str( "OK" );
+			SecondaryButtonText = stx.Str( "Cancel" );
 
-            InputTitle.Text = Param.Caption;
-            LayoutRoot.DataContext = Param;
-        }
+			InputTitle.Text = Param.Caption;
+			LayoutRoot.DataContext = Param;
+		}
 
-        private void ContentDialog_PrimaryButtonClick( ContentDialog sender, ContentDialogButtonClickEventArgs args )
-        {
-            Param.SetDefaults( InputValues.Remap( x => x.Value.Text ).ToArray() );
-            Canceled = false;
-        }
+		private void ContentDialog_PrimaryButtonClick( ContentDialog sender, ContentDialogButtonClickEventArgs args )
+		{
+			Param.SetDefaults( InputValues.Remap( x => x.Value.Text ).ToArray() );
+			Canceled = false;
+		}
 
-        private void RegisterInput( object sender, RoutedEventArgs e )
-        {
-            TextBox TextInput = ( TextBox ) sender;
-            InputValues.Add( ( int ) TextInput.Tag, TextInput );
-        }
-    }
+		private void RegisterInput( object sender, RoutedEventArgs e )
+		{
+			TextBox TextInput = ( TextBox ) sender;
+			InputValues.Add( ( int ) TextInput.Tag, TextInput );
+		}
+	}
 }

@@ -21,99 +21,99 @@ using libtaotu.Models.Procedure;
 
 namespace libtaotu.Dialogs
 {
-    sealed partial class EditProcParam : ContentDialog
-    {
-        public static readonly string ID = typeof( EditProcParam ).Name;
+	sealed partial class EditProcParam : ContentDialog
+	{
+		public static readonly string ID = typeof( EditProcParam ).Name;
 
-        private ProcParameter EditTarget;
+		private ProcParameter EditTarget;
 
-        private EditProcParam()
-        {
-            this.InitializeComponent();
-            SetTemplate();
-        }
+		private EditProcParam()
+		{
+			this.InitializeComponent();
+			SetTemplate();
+		}
 
-        private void SetTemplate()
-        {
-            StringResources stx = new StringResources( "/libtaotu/Message" );
-            PrimaryButtonText = stx.Str( "OK" );
-        }
+		private void SetTemplate()
+		{
+			StringResources stx = new StringResources( "/libtaotu/Message" );
+			PrimaryButtonText = stx.Str( "OK" );
+		}
 
-        public EditProcParam( ProcParameter EditTarget )
-            : this()
-        {
-            this.EditTarget = EditTarget;
+		public EditProcParam( ProcParameter EditTarget )
+			: this()
+		{
+			this.EditTarget = EditTarget;
 
-            if ( EditTarget.ParamDefs.Count == 0 )
-            {
-                EditTarget.ParamDefs.Add( new ProcParameter.ParamDef( "", "" ) );
-            }
+			if ( EditTarget.ParamDefs.Count == 0 )
+			{
+				EditTarget.ParamDefs.Add( new ProcParameter.ParamDef( "", "" ) );
+			}
 
-            ParamControl.DataContext = EditTarget;
-            IncomingCheck.IsChecked = EditTarget.Incoming;
+			ParamControl.DataContext = EditTarget;
+			IncomingCheck.IsChecked = EditTarget.Incoming;
 
-            if ( !string.IsNullOrEmpty( EditTarget.TemplateStr ) )
-            {
-                TemplateStr.Text = EditTarget.TemplateStr;
-            }
+			if ( !string.IsNullOrEmpty( EditTarget.TemplateStr ) )
+			{
+				TemplateStr.Text = EditTarget.TemplateStr;
+			}
 
-            if( !string.IsNullOrEmpty( EditTarget.Caption ) )
-            {
-                Caption.Text = EditTarget.Caption;
-            }
+			if( !string.IsNullOrEmpty( EditTarget.Caption ) )
+			{
+				Caption.Text = EditTarget.Caption;
+			}
 
-            FormattedOutput.Text = EditTarget.ApplyParams();
-        }
+			FormattedOutput.Text = EditTarget.ApplyParams();
+		}
 
-        private void AddDef( object sender, RoutedEventArgs e )
-        {
-            EditTarget.AddDef( new ProcParameter.ParamDef( "", "" ) );
-            FormattedOutput.Text = EditTarget.ApplyParams();
-        }
+		private void AddDef( object sender, RoutedEventArgs e )
+		{
+			EditTarget.AddDef( new ProcParameter.ParamDef( "", "" ) );
+			FormattedOutput.Text = EditTarget.ApplyParams();
+		}
 
-        private void RemoveDef( object sender, RoutedEventArgs e )
-        {
-            Button B = sender as Button;
-            EditTarget.RemoveDef( B.DataContext as ProcParameter.ParamDef );
-            FormattedOutput.Text = EditTarget.ApplyParams();
-        }
+		private void RemoveDef( object sender, RoutedEventArgs e )
+		{
+			Button B = sender as Button;
+			EditTarget.RemoveDef( B.DataContext as ProcParameter.ParamDef );
+			FormattedOutput.Text = EditTarget.ApplyParams();
+		}
 
-        private void ToggleMode( object sender, RoutedEventArgs e )
-        {
-            EditTarget.ToggleMode();
-        }
+		private void ToggleMode( object sender, RoutedEventArgs e )
+		{
+			EditTarget.ToggleMode();
+		}
 
-        private void SetLabel( object sender, RoutedEventArgs e )
-        {
-            TextBox Input = sender as TextBox;
-            ProcParameter.ParamDef Item = Input.DataContext as ProcParameter.ParamDef;
-            Item.Label = Input.Text;
-        }
+		private void SetLabel( object sender, RoutedEventArgs e )
+		{
+			TextBox Input = sender as TextBox;
+			ProcParameter.ParamDef Item = Input.DataContext as ProcParameter.ParamDef;
+			Item.Label = Input.Text;
+		}
 
-        private void SetDefault( object sender, RoutedEventArgs e )
-        {
-            TextBox Input = sender as TextBox;
-            ProcParameter.ParamDef Item = Input.DataContext as ProcParameter.ParamDef;
-            Item.Default = Input.Text;
-            FormattedOutput.Text = EditTarget.ApplyParams();
-        }
+		private void SetDefault( object sender, RoutedEventArgs e )
+		{
+			TextBox Input = sender as TextBox;
+			ProcParameter.ParamDef Item = Input.DataContext as ProcParameter.ParamDef;
+			Item.Default = Input.Text;
+			FormattedOutput.Text = EditTarget.ApplyParams();
+		}
 
-        private void SetIncoming( object sender, RoutedEventArgs e )
-        {
-            EditTarget.Incoming = ( bool ) IncomingCheck.IsChecked;
-        }
+		private void SetIncoming( object sender, RoutedEventArgs e )
+		{
+			EditTarget.Incoming = ( bool ) IncomingCheck.IsChecked;
+		}
 
-        private void SetTemplateStr( object sender, RoutedEventArgs e )
-        {
-            TextBox Input = sender as TextBox;
-            EditTarget.TemplateStr = Input.Text;
-            FormattedOutput.Text = EditTarget.ApplyParams();
-        }
+		private void SetTemplateStr( object sender, RoutedEventArgs e )
+		{
+			TextBox Input = sender as TextBox;
+			EditTarget.TemplateStr = Input.Text;
+			FormattedOutput.Text = EditTarget.ApplyParams();
+		}
 
-        private void SetCaption( object sender, RoutedEventArgs e )
-        {
-            TextBox Input = sender as TextBox;
-            EditTarget.Caption = Input.Text;
-        }
-    }
+		private void SetCaption( object sender, RoutedEventArgs e )
+		{
+			TextBox Input = sender as TextBox;
+			EditTarget.Caption = Input.Text;
+		}
+	}
 }

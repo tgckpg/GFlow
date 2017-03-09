@@ -9,28 +9,28 @@ using Net.Astropenguin.Logging;
 
 namespace libtaotu.Controls
 {
-    static class Res
-    {
-        private static StringResBg stp = new StringResBg( "/libtaotu/PanelMessage" );
+	static class Res
+	{
+		private static StringResBg stp = new StringResBg( "/libtaotu/PanelMessage" );
 
-        public static string SSTR( string key, string ColonAfter )
-        {
-            return RSTR( key ) + ": " + ColonAfter;
-        }
+		public static string SSTR( string key, string ColonAfter )
+		{
+			return RSTR( key ) + ": " + ColonAfter;
+		}
 
-        public static string RSTR( string key, params object[] args )
-        {
-            try
-            {
-                string s = string.Format( stp.Str( key ), args );
-                return s;
-            }
-            catch ( Exception ex )
-            {
-                Logger.Log( "RSTR", ex.Message, LogType.WARNING );
-            }
+		public static string RSTR( string key, params object[] args )
+		{
+			try
+			{
+				string s = string.Format( stp.Str( key ), args );
+				return s;
+			}
+			catch ( Exception ex )
+			{
+				Logger.Log( "RSTR", ex.Message, LogType.WARNING );
+			}
 
-            return key;
-        }
-    }
+			return key;
+		}
+	}
 }

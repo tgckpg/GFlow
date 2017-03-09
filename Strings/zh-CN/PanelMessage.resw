@@ -213,4 +213,10 @@
   <data name="ResultKeyNotFound" xml:space="preserve">
     <value>找不到结果键“{0}”</value>
   </data>
+  <data name="InputBackground" xml:space="preserve">
+    <value>后台运行，切换到模式 "沿用"</value>
+  </data>
+  <data name="InputFeedRunSkip" xml:space="preserve">
+    <value>反馈操作中，跳过此步骤。</value>
+  </data>
 </root>

@@ -213,4 +213,10 @@
   <data name="ResultKeyNotFound" xml:space="preserve">
     <value>找不到結果鍵「{0}」</value>
   </data>
+  <data name="InputBackground" xml:space="preserve">
+    <value>背景執行，切換到模式「沿用」</value>
+  </data>
+  <data name="InputFeedRunSkip" xml:space="preserve">
+    <value>反饋操作中，跳過此步驟。</value>
+  </data>
 </root>

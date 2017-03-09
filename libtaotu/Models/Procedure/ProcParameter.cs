@@ -132,9 +132,15 @@ namespace libtaotu.Models.Procedure
 
 				/*** Belows only accepts incoming templates ***/
 				case RunMode.INPUT:
+					if( Worker.BackgroundOnly )
+					{
+						ProcManager.PanelMessage( this, Res.RSTR( "InputBackground" ), LogType.INFO );
+						goto case RunMode.SOURCE_AVAIL;
+					}
+
 					if ( IsFeedRun )
 					{
-						ProcManager.PanelMessage( this, Res.RSTR( "FeedRunning" ), LogType.INFO );
+						ProcManager.PanelMessage( this, Res.RSTR( "InputFeedRunSkip" ), LogType.INFO );
 						return Convoy;
 					}
 

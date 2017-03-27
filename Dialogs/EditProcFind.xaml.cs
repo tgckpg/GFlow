@@ -24,120 +24,120 @@ using libtaotu.Resources;
 
 namespace libtaotu.Dialogs
 {
-    sealed partial class EditProcFind : ContentDialog
-    {
-        public static readonly string ID = typeof( EditProcFind ).Name;
+	sealed partial class EditProcFind : ContentDialog
+	{
+		public static readonly string ID = typeof( EditProcFind ).Name;
 
-        private IStorageFile TestContent;
+		private IStorageFile TestContent;
 
-        private ProcFind EditTarget;
+		private ProcFind EditTarget;
 
-        private EditProcFind()
-        {
-            this.InitializeComponent();
-            SetTemplate();
-        }
+		private EditProcFind()
+		{
+			this.InitializeComponent();
+			SetTemplate();
+		}
 
-        private void SetTemplate()
-        {
-            StringResources stx = new StringResources( "/libtaotu/Message" );
-            PrimaryButtonText = stx.Str( "OK" );
-        }
+		private void SetTemplate()
+		{
+			StringResources stx = new StringResources( "/libtaotu/Message" );
+			PrimaryButtonText = stx.Str( "OK" );
+		}
 
-        public EditProcFind( ProcFind EditTarget )
-            :this()
-        {
-            this.EditTarget = EditTarget;
+		public EditProcFind( ProcFind EditTarget )
+			:this()
+		{
+			this.EditTarget = EditTarget;
 
-            if( EditTarget.RegexPairs.Count == 0 )
-            {
-                EditTarget.RegexPairs.Add( new ProcFind.RegItem() );
-            }
+			if( EditTarget.RegexPairs.Count == 0 )
+			{
+				EditTarget.RegexPairs.Add( new ProcFind.RegItem() );
+			}
 
-            RegexControl.DataContext = EditTarget;
-            if ( !string.IsNullOrEmpty( EditTarget.TestLink ) )
-            {
-                TestLink.Text = EditTarget.TestLink;
-            }
-        }
+			RegexControl.DataContext = EditTarget;
+			if ( !string.IsNullOrEmpty( EditTarget.TestLink ) )
+			{
+				TestLink.Text = EditTarget.TestLink;
+			}
+		}
 
-        private async void PreviewProcess( object sender, RoutedEventArgs e )
-        {
-            string Url = TestLink.Text.Trim();
-            if ( string.IsNullOrEmpty( Url ) ) return;
+		private async void PreviewProcess( object sender, RoutedEventArgs e )
+		{
+			string Url = TestLink.Text.Trim();
+			if ( string.IsNullOrEmpty( Url ) ) return;
 
-            try
-            {
-                TestContent = await ProceduralSpider.DownloadSource( Url );
-            }
-            catch( Exception ex )
-            {
-                Logger.Log( ID, ex.Message, LogType.INFO );
-                return;
-            }
+			try
+			{
+				TestContent = await ProceduralSpider.DownloadSource( Url );
+			}
+			catch( Exception ex )
+			{
+				Logger.Log( ID, ex.Message, LogType.INFO );
+				return;
+			}
 
-            UpdateTestSubject();
-        }
+			UpdateTestSubject();
+		}
 
-        private void AddRegex( object sender, RoutedEventArgs e )
-        {
-            EditTarget.RegexPairs.Add( new ProcFind.RegItem() );
-        }
+		private void AddRegex( object sender, RoutedEventArgs e )
+		{
+			EditTarget.RegexPairs.Add( new ProcFind.RegItem() );
+		}
 
-        private void ToggleMode( object sender, RoutedEventArgs e )
-        {
-            EditTarget.ToggleMode();
-        }
+		private void ToggleMode( object sender, RoutedEventArgs e )
+		{
+			EditTarget.ToggleMode();
+		}
 
-        private void SetPattern( object sender, RoutedEventArgs e )
-        {
-            TextBox Input = sender as TextBox;
-            ProcFind.RegItem Item = Input.DataContext as ProcFind.RegItem;
-            Item.Pattern = Input.Text;
+		private void SetPattern( object sender, RoutedEventArgs e )
+		{
+			TextBox Input = sender as TextBox;
+			ProcFind.RegItem Item = Input.DataContext as ProcFind.RegItem;
+			Item.Pattern = Input.Text;
 
-            Item.Validate( EditTarget.Mode );
-        }
+			Item.Validate( EditTarget.Mode );
+		}
 
-        private void SetFormat( object sender, RoutedEventArgs e )
-        {
-            TextBox Input = sender as TextBox;
-            ProcFind.RegItem Item = Input.DataContext as ProcFind.RegItem;
-            Item.Format = Input.Text;
+		private void SetFormat( object sender, RoutedEventArgs e )
+		{
+			TextBox Input = sender as TextBox;
+			ProcFind.RegItem Item = Input.DataContext as ProcFind.RegItem;
+			Item.Format = Input.Text;
 
-            Item.Validate( EditTarget.Mode );
-        }
+			Item.Validate( EditTarget.Mode );
+		}
 
-        private void SetTestLink( object sender, RoutedEventArgs e )
-        {
-            TextBox Input = sender as TextBox;
-            EditTarget.TestLink = Input.Text;
-        }
+		private void SetTestLink( object sender, RoutedEventArgs e )
+		{
+			TextBox Input = sender as TextBox;
+			EditTarget.TestLink = Input.Text;
+		}
 
-        private void RemoveRegex( object sender, RoutedEventArgs e )
-        {
-            Button B = sender as Button;
-            EditTarget.RemoveRegex( B.DataContext as ProcFind.RegItem );
+		private void RemoveRegex( object sender, RoutedEventArgs e )
+		{
+			Button B = sender as Button;
+			EditTarget.RemoveRegex( B.DataContext as ProcFind.RegItem );
 
-            UpdateTestSubject();
-        }
+			UpdateTestSubject();
+		}
 
-        private void ApplyRegex( object sender, RoutedEventArgs e )
-        {
-            Button B = sender as Button;
-            ProcFind.RegItem Item = B.DataContext as ProcFind.RegItem;
+		private void ApplyRegex( object sender, RoutedEventArgs e )
+		{
+			Button B = sender as Button;
+			ProcFind.RegItem Item = B.DataContext as ProcFind.RegItem;
 
-            Item.Enabled = !Item.Enabled;
+			Item.Enabled = !Item.Enabled;
 
-            UpdateTestSubject();
-        }
+			UpdateTestSubject();
+		}
 
-        private async void UpdateTestSubject()
-        {
-            if ( TestContent == null ) return;
-            IStorageFile ISF = await EditTarget.FilterContent( TestContent );
+		private async void UpdateTestSubject()
+		{
+			if ( TestContent == null ) return;
+			IStorageFile ISF = await EditTarget.FilterContent( TestContent );
 
-            Frame.Navigate( Shared.SourceView, ISF );
-            FrameContainer.Visibility = Visibility.Visible;
-        }
-    }
+			Frame.Navigate( Shared.SourceView, ISF );
+			FrameContainer.Visibility = Visibility.Visible;
+		}
+	}
 }

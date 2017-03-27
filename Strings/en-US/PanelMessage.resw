@@ -213,4 +213,10 @@
   <data name="ResultKeyNotFound" xml:space="preserve">
     <value>Result key "{0}" not found</value>
   </data>
+  <data name="InputBackground" xml:space="preserve">
+    <value>Background only, switch to mode "SOURCE"</value>
+  </data>
+  <data name="InputFeedRunSkip" xml:space="preserve">
+    <value>Feed running, skipping this step</value>
+  </data>
 </root>

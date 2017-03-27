@@ -18,137 +18,136 @@ using Net.Astropenguin.UI.Icons;
 
 namespace libtaotu.Models.Procedure
 {
-    using Controls;
+	using Controls;
 
-    class ProcEncoding : Procedure
-    {
-        public static readonly string ID = typeof( ProcEncoding ).Name;
+	class ProcEncoding : Procedure
+	{
+		public static readonly string ID = typeof( ProcEncoding ).Name;
 
-        public int CodePage { get; set; }
-        public bool DecodeHtml { get; set; }
+		public int CodePage { get; set; }
+		public bool DecodeHtml { get; set; }
 
-        protected override IconBase Icon { get { return new IconRetract() { AutoScale = true }; } }
-        protected override Color BgColor { get { return Colors.MidnightBlue; } }
+		protected override IconBase Icon { get { return new IconRetract() { AutoScale = true }; } }
+		protected override Color BgColor { get { return Colors.MidnightBlue; } }
 
-        public ProcEncoding()
-            : base( ProcType.ENCODING )
-        {
-            CodePage = Encoding.UTF8.CodePage;
-            DecodeHtml = false;
-        }
+		public ProcEncoding()
+			: base( ProcType.ENCODING )
+		{
+			CodePage = Encoding.UTF8.CodePage;
+			DecodeHtml = false;
+		}
 
-        public override async Task<ProcConvoy> Run( ProcConvoy Convoy )
-        {
-            await base.Run( Convoy );
+		public override async Task<ProcConvoy> Run( ProcConvoy Convoy )
+		{
+			await base.Run( Convoy );
 
-            // Search for usable convoy
-            ProcConvoy UsableConvoy;
-            if ( !TryGetConvoy( out UsableConvoy, ( P, C ) =>
-            {
-                return C.Payload is IEnumerable<IStorageFile>
-                || C.Payload is string;
-            }
-            ) ) return Convoy;
+			// Search for usable convoy
+			ProcConvoy UsableConvoy;
+			if ( !TryGetConvoy( out UsableConvoy, ( P, C ) =>
+			{
+				return C.Payload is IEnumerable<IStorageFile>
+				|| C.Payload is string;
+			}
+			) ) return Convoy;
 
-            try
-            {
-                if ( DoNothing() ) return new ProcConvoy( this, null );
+			try
+			{
+				if ( DoNothing() ) return new ProcConvoy( this, null );
 
-                Encoding Enc = null;
+				Encoding Enc = null;
 
-                if ( CodePage != Encoding.UTF8.CodePage )
-                {
-                    Encoding.RegisterProvider( CodePagesEncodingProvider.Instance );
-                    Enc = Encoding.GetEncoding( CodePage );
-                }
+				if ( CodePage != Encoding.UTF8.CodePage )
+				{
+					Encoding.RegisterProvider( CodePagesEncodingProvider.Instance );
+					Enc = Encoding.GetEncoding( CodePage );
+				}
 
-                if ( UsableConvoy.Payload is IEnumerable<IStorageFile> )
-                {
-                    IEnumerable<IStorageFile> ISFs = ( IEnumerable<IStorageFile> ) UsableConvoy.Payload;
+				if ( UsableConvoy.Payload is IEnumerable<IStorageFile> )
+				{
+					IEnumerable<IStorageFile> ISFs = ( IEnumerable<IStorageFile> ) UsableConvoy.Payload;
 
-                    foreach ( IStorageFile ISF in ISFs )
-                    {
-                        string Content;
-                        if ( Enc == null )
-                        {
-                            Content = await ISF.ReadString();
-                        }
-                        else
-                        {
-                            ProcManager.PanelMessage( this, Res.SSTR( "ReadEncoding", Enc.EncodingName ), LogType.INFO );
+					foreach ( IStorageFile ISF in ISFs )
+					{
+						string Content;
+						if ( Enc == null )
+						{
+							Content = await ISF.ReadString();
+						}
+						else
+						{
+							ProcManager.PanelMessage( this, Res.SSTR( "ReadEncoding", Enc.EncodingName ), LogType.INFO );
 
-                            if ( !DecodeHtml )
-                            {
-                                await ISF.WriteString( await ISF.ReadString( Enc ) );
-                                continue;
-                            }
+							if ( !DecodeHtml )
+							{
+								await ISF.WriteString( await ISF.ReadString( Enc ) );
+								continue;
+							}
 
-                            Content = await ISF.ReadString( Enc );
-                        }
+							ProcManager.PanelMessage( this, Res.SSTR( "ConvertEncoding", ISF.Name ), LogType.INFO );
+							Content = await ISF.ReadString( Enc );
+						}
 
-                        if ( DecodeHtml )
-                        {
-                            await ISF.WriteString( WebUtility.HtmlDecode( Content ) );
-                        }
+						if ( DecodeHtml )
+						{
+							Content = WebUtility.HtmlDecode( Content );
+						}
 
-                        ProcManager.PanelMessage( this, Res.SSTR( "ConvertEncoding", ISF.Name ), LogType.INFO );
+						await ISF.WriteString( Content );
+					}
 
-                        await ISF.WriteString( Content );
-                    }
+					return new ProcConvoy( this, UsableConvoy.Payload );
+				}
+				else
+				{
+					string Content = ( string ) UsableConvoy.Payload;
+					if ( Enc != null )
+					{
+						ProcManager.PanelMessage( this, Res.RSTR( "CantConvertStringLiterals" ), LogType.INFO );
+					}
 
-                    return new ProcConvoy( this, UsableConvoy.Payload );
-                }
-                else
-                {
-                    string Content = ( string ) UsableConvoy.Payload;
-                    if ( Enc != null )
-                    {
-                        ProcManager.PanelMessage( this, Res.RSTR( "CantConvertStringLiterals" ), LogType.INFO );
-                    }
+					if ( DecodeHtml )
+					{
+						return new ProcConvoy( this, WebUtility.HtmlDecode( Content ) );
+					}
+				}
+			}
+			catch ( Exception ex )
+			{
+				ProcManager.PanelMessage( this, Res.SSTR( "EncodingFalied", ex.Message ), LogType.INFO );
+			}
 
-                    if ( DecodeHtml )
-                    {
-                        return new ProcConvoy( this, WebUtility.HtmlDecode( Content ) );
-                    }
-                }
-            }
-            catch ( Exception ex )
-            {
-                ProcManager.PanelMessage( this, Res.SSTR( "EncodingFalied", ex.Message ), LogType.INFO );
-            }
+			return new ProcConvoy( this, null );
+		}
 
-            return new ProcConvoy( this, null );
-        }
+		private bool DoNothing()
+		{
+			return ( CodePage == Encoding.UTF8.CodePage ) && !DecodeHtml;
+		}
 
-        private bool DoNothing()
-        {
-            return ( CodePage == Encoding.UTF8.CodePage ) && !DecodeHtml;
-        }
+		public override async Task Edit()
+		{
+			await Popups.ShowDialog( new Dialogs.EditProcEncoding( this ) );
+		}
 
-        public override async Task Edit()
-        {
-            await Popups.ShowDialog( new Dialogs.EditProcEncoding( this ) );
-        }
+		public override void ReadParam( XParameter Param )
+		{
+			base.ReadParam( Param );
 
-        public override void ReadParam( XParameter Param )
-        {
-            base.ReadParam( Param );
+			XParameter[] RegParams = Param.Parameters( "i" );
+			CodePage = Param.GetSaveInt( "CodePage" );
+			DecodeHtml = Param.GetBool( "DecodeHtml" );
+		}
 
-            XParameter[] RegParams = Param.Parameters( "i" );
-            CodePage = Param.GetSaveInt( "CodePage" );
-            DecodeHtml = Param.GetBool( "DecodeHtml" );
-        }
+		public override XParameter ToXParam()
+		{
+			XParameter Param = base.ToXParam();
 
-        public override XParameter ToXParam()
-        {
-            XParameter Param = base.ToXParam();
+			Param.SetValue( new XKey[] {
+				new XKey( "CodePage", CodePage )
+				, new XKey( "DecodeHtml", DecodeHtml )
+			} );
 
-            Param.SetValue( new XKey[] {
-                new XKey( "CodePage", CodePage )
-                , new XKey( "DecodeHtml", DecodeHtml )
-            } );
-
-            return Param;
-        }
-    }
+			return Param;
+		}
+	}
 }

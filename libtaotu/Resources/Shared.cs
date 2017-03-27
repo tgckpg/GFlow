@@ -10,52 +10,52 @@ using Net.Astropenguin.Loaders;
 
 namespace libtaotu.Resources
 {
-    using Models.Procedure;
-    class Shared
-    {
-        public static Type SourceView;
-        public static Type RenameDialog;
+	using Models.Procedure;
+	class Shared
+	{
+		public static Type SourceView;
+		public static Type RenameDialog;
 
-        public static Type ProcExtractor { get; private set; }
-        public static Type ProcMarker { get; private set; }
-        public static Type ProcListLoader { get; private set; }
+		public static Type ProcExtractor { get; private set; }
+		public static Type ProcMarker { get; private set; }
+		public static Type ProcListLoader { get; private set; }
 
-        public static Func<Uri, HttpRequest> CreateRequest = x => new HttpRequest( x ) { EN_UITHREAD = false };
+		public static Func<Uri, HttpRequest> CreateRequest = x => new HttpRequest( x ) { EN_UITHREAD = false };
 
-        public static void SetExtractor( Type T )
-        {
-            if( T.GetTypeInfo().IsSubclassOf( typeof( Procedure ) ) )
-            {
-                ProcExtractor = T;
-            }
-            else
-            {
-                throw new InvalidCastException();
-            }
-        }
+		public static void SetExtractor( Type T )
+		{
+			if( T.GetTypeInfo().IsSubclassOf( typeof( Procedure ) ) )
+			{
+				ProcExtractor = T;
+			}
+			else
+			{
+				throw new InvalidCastException();
+			}
+		}
 
-        public static void SetMarker( Type T )
-        {
-            if( T.GetTypeInfo().IsSubclassOf( typeof( Procedure ) ) )
-            {
-                ProcMarker = T;
-            }
-            else
-            {
-                throw new InvalidCastException();
-            }
-        }
+		public static void SetMarker( Type T )
+		{
+			if( T.GetTypeInfo().IsSubclassOf( typeof( Procedure ) ) )
+			{
+				ProcMarker = T;
+			}
+			else
+			{
+				throw new InvalidCastException();
+			}
+		}
 
-        public static void SetListLoader( Type T )
-        {
-            if( T.GetTypeInfo().IsSubclassOf( typeof( Procedure ) ) )
-            {
-                ProcListLoader = T;
-            }
-            else
-            {
-                throw new InvalidCastException();
-            }
-        }
-    }
+		public static void SetListLoader( Type T )
+		{
+			if( T.GetTypeInfo().IsSubclassOf( typeof( Procedure ) ) )
+			{
+				ProcListLoader = T;
+			}
+			else
+			{
+				throw new InvalidCastException();
+			}
+		}
+	}
 }

@@ -213,4 +213,10 @@
   <data name="ResultKeyNotFound" xml:space="preserve">
     <value>結果キー "{0}"が見つかりません</value>
   </data>
+  <data name="InputBackground" xml:space="preserve">
+    <value>バックグラウンドのみ、モード「たどる」に切り替えます</value>
+  </data>
+  <data name="InputFeedRunSkip" xml:space="preserve">
+    <value>フィードバック動作モード、このステップをスキップします</value>
+  </data>
 </root>

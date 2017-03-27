@@ -9,9 +9,9 @@ using libtaotu.Models.Procedure;
 
 namespace libtaotu.Models.Interfaces
 {
-    interface ISubProcedure
-    {
-        ProcManager SubProcedures { get; set; }
-        void SubEditComplete();
-    }
+	interface ISubProcedure
+	{
+		ProcManager SubProcedures { get; set; }
+		void SubEditComplete();
+	}
 }

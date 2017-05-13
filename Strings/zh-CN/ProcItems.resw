@@ -165,6 +165,9 @@
   <data name="SOURCE_AVAIL" xml:space="preserve">
     <value>沿用</value>
   </data>
+  <data name="TRANSLATE" xml:space="preserve">
+    <value>简 → 繁 转换</value>
+  </data>
   <data name="URLLIST" xml:space="preserve">
     <value>网址列表</value>
   </data>

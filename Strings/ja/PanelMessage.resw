@@ -219,4 +219,7 @@
   <data name="InputFeedRunSkip" xml:space="preserve">
     <value>フィードバック動作モード、このステップをスキップします</value>
   </data>
+  <data name="ReadEncoding" xml:space="preserve">
+    <value>エンコードを読む：{0}</value>
+  </data>
 </root>

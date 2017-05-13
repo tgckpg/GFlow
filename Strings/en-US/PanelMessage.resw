@@ -219,4 +219,7 @@
   <data name="InputFeedRunSkip" xml:space="preserve">
     <value>Feed running, skipping this step</value>
   </data>
+  <data name="ReadEncoding" xml:space="preserve">
+    <value>Read Encoding: {0}</value>
+  </data>
 </root>

@@ -165,6 +165,9 @@
   <data name="SOURCE_AVAIL" xml:space="preserve">
     <value>Source</value>
   </data>
+  <data name="TRANSLATE" xml:space="preserve">
+    <value>zh-hans → zh-hant</value>
+  </data>
   <data name="URLLIST" xml:space="preserve">
     <value>Url List</value>
   </data>

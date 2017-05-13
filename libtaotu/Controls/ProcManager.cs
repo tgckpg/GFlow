@@ -121,14 +121,8 @@ namespace libtaotu.Controls
 				case ProcType.PARAMETER:
 					Proc = new ProcParameter();
 					break;
-				case ProcType.EXTRACT:
-					Proc = ProcExtract.Create();
-					break;
-				case ProcType.MARK:
-					Proc = ProcMark.Create();
-					break;
-				case ProcType.LIST:
-					Proc = ProcListLoader.Create();
+				default:
+					Proc = Resources.Shared.ProcCreate( P );
 					break;
 			}
 

@@ -220,6 +220,6 @@
     <value>反馈操作中，跳过此步骤。</value>
   </data>
   <data name="ReadEncoding" xml:space="preserve">
-    <value>读取编码：{0}</value>
+    <value>读取编码</value>
   </data>
 </root>

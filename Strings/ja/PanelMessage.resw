@@ -205,7 +205,7 @@
     <value>スクリプトエラー：{0}</value>
   </data>
   <data name="SubProcRun" xml:space="preserve">
-    <value>サブプロシージャーを実行します</value>
+    <value>サブプロセス を実行します</value>
   </data>
   <data name="TestRun_UseDefault" xml:space="preserve">
     <value>テストを実行し、デフォルトを使用します</value>
@@ -220,6 +220,6 @@
     <value>フィードバック動作モード、このステップをスキップします</value>
   </data>
   <data name="ReadEncoding" xml:space="preserve">
-    <value>エンコードを読む：{0}</value>
+    <value>エンコード を読む</value>
   </data>
 </root>

@@ -220,6 +220,6 @@
     <value>Feed running, skipping this step</value>
   </data>
   <data name="ReadEncoding" xml:space="preserve">
-    <value>Read Encoding: {0}</value>
+    <value>Read Encoding</value>
   </data>
 </root>

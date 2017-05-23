@@ -158,15 +158,12 @@
     <Compile Include="libtaotu\Models\Interfaces\ISubProcedure.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcChakra.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcDummy.cs" />
-    <Compile Include="libtaotu\Models\Procedure\ProcExtract.cs" />
     <Compile Include="libtaotu\Models\Procedure\Procedure.cs" />
     <Compile Include="libtaotu\Models\ProcConvoy.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcEncoding.cs" />
-    <Compile Include="libtaotu\Models\Procedure\ProcListLoader.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcParameter.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcFind.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcGenerator.cs" />
-    <Compile Include="libtaotu\Models\Procedure\ProcMark.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcPassThru.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcResult.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcUrlList.cs" />

@@ -196,7 +196,7 @@
     <value>ストップ条件</value>
   </data>
   <data name="SubProcs.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>サブプロシージャー</value>
+    <value>サブプロセス</value>
   </data>
   <data name="Sync.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>同期処理</value>

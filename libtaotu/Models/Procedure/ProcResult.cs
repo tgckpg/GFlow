@@ -134,7 +134,7 @@ namespace libtaotu.Models.Procedure
 			else if( Result is IEnumerable<IStorageFile> )
 			{
 				foreach ( IStorageFile ISF in ( ( IEnumerable<IStorageFile> ) Result ) )
-					await File.WriteFile( ( IStorageFile ) ISF, true, new byte[] { ( byte ) '\n' } );
+					await File.WriteFile( ISF, true, new byte[] { ( byte ) '\n' } );
 			}
 		}
 

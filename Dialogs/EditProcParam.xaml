@@ -38,7 +38,7 @@
             </Grid.RowDefinitions>
             <CheckBox Grid.Row="0" x:Name="IncomingCheck" Foreground="White"
                       Unchecked="SetIncoming" Checked="SetIncoming" >
-                <TextBlock x:Uid="/libtaotu/Resources/Incoming" Text="Incoming" />
+                <TextBlock x:Uid="/libtaotu/Resources/Incoming" Foreground="White" Text="Incoming" />
             </CheckBox>
             <TextBox Grid.Row="1" x:Name="TemplateStr" PlaceholderText="Template String"
                      LostFocus="SetTemplateStr" />

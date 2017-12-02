@@ -41,7 +41,7 @@
         <StackPanel Grid.Row="0">
             <CheckBox x:Name="IncomingCheck" Foreground="White"
                       Unchecked="SetIncoming" Checked="SetIncoming" >
-                <TextBlock x:Uid="/libtaotu/Resources/Incoming" Text="Incoming" />
+                <TextBlock x:Uid="/libtaotu/Resources/Incoming" Foreground="White" Text="Incoming" />
             </CheckBox>
             <Grid Margin="5">
                 <Grid.ColumnDefinitions>

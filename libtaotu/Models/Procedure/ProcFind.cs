@@ -18,6 +18,7 @@ using Net.Astropenguin.UI.Icons;
 namespace libtaotu.Models.Procedure
 {
 	using Controls;
+	using Models.Interfaces;
 
 	enum FindMode { MATCH = 1, REPLACE = 2 }
 
@@ -58,9 +59,9 @@ namespace libtaotu.Models.Procedure
 			SetMode( Mode == FindMode.REPLACE ? FindMode.MATCH : FindMode.REPLACE );
 		}
 
-		public override async Task<ProcConvoy> Run( ProcConvoy Convoy )
+		public override async Task<ProcConvoy> Run( ICrawler Crawler, ProcConvoy Convoy )
 		{
-			await base.Run( Convoy );
+			await base.Run( Crawler, Convoy );
 
 			ProcConvoy UsableConvoy;
 			if ( !TryGetConvoy( out UsableConvoy, ( P, C ) =>
@@ -74,7 +75,7 @@ namespace libtaotu.Models.Procedure
 			if ( UsableConvoy.Payload is string )
 			{
 				IStorageFile ISF = await AppStorage.MkTemp();
-				TargetFiles.Add( await FilterContent( ISF, UsableConvoy.Payload as string ) );
+				TargetFiles.Add( await FilterContent( Crawler, ISF, UsableConvoy.Payload as string ) );
 			}
 			else
 			{
@@ -82,7 +83,7 @@ namespace libtaotu.Models.Procedure
 
 				foreach ( IStorageFile ISF in SrcFiles )
 				{
-					TargetFiles.Add( await FilterContent( ISF ) );
+					TargetFiles.Add( await FilterContent( Crawler, ISF ) );
 				}
 			}
 
@@ -94,14 +95,14 @@ namespace libtaotu.Models.Procedure
 			await Popups.ShowDialog( new Dialogs.EditProcFind( this ) );
 		}
 
-		public async Task<IStorageFile> FilterContent( IStorageFile Src )
+		public async Task<IStorageFile> FilterContent( ICrawler Crawler, IStorageFile Src )
 		{
-			return await FilterContent( await AppStorage.MkTemp(), await Src.ReadString() );
+			return await FilterContent( Crawler, await AppStorage.MkTemp(), await Src.ReadString() );
 		}
 
-		public async Task<IStorageFile> FilterContent( IStorageFile SF, string Content )
+		public async Task<IStorageFile> FilterContent( ICrawler Crawler, IStorageFile SF, string Content )
 		{
-			IEnumerable<string> str = Parse( Content );
+			IEnumerable<string> str = Parse( Crawler, Content );
 
 			if ( await SF.WriteString( string.Join( "\n", str ) ) )
 			{
@@ -111,7 +112,7 @@ namespace libtaotu.Models.Procedure
 			return null;
 		}
 
-		private IEnumerable<string> Parse( string v )
+		private IEnumerable<string> Parse( ICrawler Crawler, string v )
 		{
 			try
 			{
@@ -168,7 +169,7 @@ namespace libtaotu.Models.Procedure
 			}
 			catch ( Exception ex )
 			{
-				ProcManager.PanelMessage( this, ex.Message, LogType.INFO );
+				Crawler.PLog( this, ex.Message, LogType.INFO );
 			}
 
 			return new string[] { v };

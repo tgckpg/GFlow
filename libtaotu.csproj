@@ -155,6 +155,7 @@
     <Compile Include="libtaotu\Controls\Res.cs" />
     <Compile Include="libtaotu\Controls\ProcManager.cs" />
     <Compile Include="libtaotu\Crawler\ProceduralSpider.cs" />
+    <Compile Include="libtaotu\Models\Interfaces\ICrawler.cs" />
     <Compile Include="libtaotu\Models\Interfaces\ISubProcedure.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcChakra.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcDummy.cs" />

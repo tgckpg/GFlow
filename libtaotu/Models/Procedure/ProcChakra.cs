@@ -13,13 +13,14 @@ using Windows.UI;
 using Windows.Storage;
 
 using Net.Astropenguin.Helpers;
+using Net.Astropenguin.UI.Icons;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
 
 namespace libtaotu.Models.Procedure
 {
 	using Controls;
-	using Net.Astropenguin.UI.Icons;
+	using Models.Interfaces;
 
 	class ProcChakra : Procedure
 	{
@@ -58,9 +59,9 @@ namespace libtaotu.Models.Procedure
 			ReadChakraScript();
 		}
 
-		public override async Task<ProcConvoy> Run( ProcConvoy Convoy )
+		public override async Task<ProcConvoy> Run( ICrawler Crawler, ProcConvoy Convoy )
 		{
-			await base.Run( Convoy );
+			await base.Run( Crawler, Convoy );
 
 			// Search for usable convoy
 			ProcConvoy UsableConvoy;
@@ -74,23 +75,23 @@ namespace libtaotu.Models.Procedure
 				IEnumerable<IStorageFile> ISFs = ( IEnumerable<IStorageFile> ) UsableConvoy.Payload;
 				foreach ( IStorageFile ISF in ISFs )
 				{
-					await ParseHtml( ISF );
+					await ParseHtml( Crawler, ISF );
 				}
 				return new ProcConvoy( this, UsableConvoy.Payload );
 			}
 
 			// This is a string
-			return new ProcConvoy( this, await ParseHtml( ( string ) UsableConvoy.Payload ) );
+			return new ProcConvoy( this, await ParseHtml( Crawler, ( string ) UsableConvoy.Payload ) );
 		}
 
-		protected async Task ParseHtml( IStorageFile ISF )
+		protected async Task ParseHtml( ICrawler Crawler, IStorageFile ISF )
 		{
 			string Html = await ISF.ReadString();
-			Html = await ParseHtml( Html );
+			Html = await ParseHtml( Crawler, Html );
 			await ISF.WriteString( Html );
 		}
 
-		protected async Task<string> ParseHtml( string Html )
+		protected async Task<string> ParseHtml( ICrawler Crawler, string Html )
 		{
 			// Just put the entire thing into background
 			TaskCompletionSource<string> TCS = new TaskCompletionSource<string>();
@@ -112,24 +113,24 @@ namespace libtaotu.Models.Procedure
 				Worker.UIInvoke( () =>
 				{
 					WView = new WebView( WebViewExecutionMode.SeparateThread );
-					BoundEvents( WView, TCS );
+					BoundEvents( Crawler, WView, TCS );
 					WView.NavigateToString( Html );
 				} );
 			} );
 
 			int i = 0;
-			ProcManager.PanelMessage( this, Res.RSTR( "SCRIPT_LIVE", STimeout ), LogType.INFO );
+			Crawler.PLog( this, Res.RSTR( "SCRIPT_LIVE", STimeout ), LogType.INFO );
 			// Give N seconds for the script to run
 			Timer Tmr = new Timer( x =>
 			{
 				if ( STimeout <= ++i )
 				{
 					TCS.TrySetResult( null );
-					ProcManager.PanelMessage( this, Res.RSTR( "SCRIPT_TIMED_OUT" ), LogType.INFO );
+					Crawler.PLog( this, Res.RSTR( "SCRIPT_TIMED_OUT" ), LogType.INFO );
 					return;
 				}
 
-				ProcManager.PanelMessage( this, Res.RSTR( "SCRIPT_LIVE_D", STimeout - i ), LogType.INFO );
+				Crawler.PLog( this, Res.RSTR( "SCRIPT_LIVE_D", STimeout - i ), LogType.INFO );
 			}, null, 1000, 1000 );
 
 			Html = JsonDecode<string>( await TCS.Task );
@@ -154,7 +155,7 @@ namespace libtaotu.Models.Procedure
 		}
 
 		// Ensures the events will only fired once
-		private void BoundEvents( WebView w, TaskCompletionSource<string> TCS )
+		private void BoundEvents( ICrawler Crawler, WebView w, TaskCompletionSource<string> TCS )
 		{
 			TypedEventHandler<WebView, WebViewNavigationCompletedEventArgs> CompleteHandler = null;
 			TypedEventHandler<WebView, WebViewLongRunningScriptDetectedEventArgs> LongScript = null;
@@ -173,7 +174,7 @@ namespace libtaotu.Models.Procedure
 						case "WAIT": break;
 						case "ERROR":
 							Errored = true;
-							ProcManager.PanelMessage( this, Res.RSTR( "ScriptError" ), LogType.ERROR );
+							Crawler.PLog( this, Res.RSTR( "ScriptError" ), LogType.ERROR );
 							TCS.TrySetResult( null );
 							break;
 						default:
@@ -183,7 +184,7 @@ namespace libtaotu.Models.Procedure
 				}
 				catch ( Exception ex )
 				{
-					ProcManager.PanelMessage( this, Res.RSTR( "ScriptError", ex.Message ), LogType.ERROR );
+					Crawler.PLog( this, Res.RSTR( "ScriptError", ex.Message ), LogType.ERROR );
 					TCS.TrySetResult( null );
 				}
 			};
@@ -194,7 +195,7 @@ namespace libtaotu.Models.Procedure
 				TCS.TrySetResult( e.Value );
 				if( Errored )
 				{
-					ProcManager.PanelMessage( this, JsonDecode<string>( e.Value ), LogType.ERROR );
+					Crawler.PLog( this, JsonDecode<string>( e.Value ), LogType.ERROR );
 				}
 			};
 
@@ -202,7 +203,7 @@ namespace libtaotu.Models.Procedure
 			{
 				w.NavigationFailed -= Failed;
 				TCS.TrySetResult( null );
-				ProcManager.PanelMessage( this, Res.RSTR( "SCRIPT_NAV_FALIED" ), LogType.INFO );
+				Crawler.PLog( this, Res.RSTR( "SCRIPT_NAV_FALIED" ), LogType.INFO );
 			};
 
 			LongScript = ( sender, e ) =>

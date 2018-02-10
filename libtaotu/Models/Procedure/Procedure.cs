@@ -16,6 +16,8 @@ using Net.Astropenguin.UI.Icons;
 namespace libtaotu.Models.Procedure
 {
 	using Controls;
+	using Models.Interfaces;
+
 	internal enum ProcType
 	{
 		URLLIST = 1,
@@ -115,7 +117,7 @@ namespace libtaotu.Models.Procedure
 			return true;
 		}
 
-		virtual public async Task<ProcConvoy> Run( ProcConvoy Convoy )
+		virtual public async Task<ProcConvoy> Run( ICrawler Crawler,  ProcConvoy Convoy )
 		{
 			return await Task.Run( () => this.Convoy = Convoy );
 		}

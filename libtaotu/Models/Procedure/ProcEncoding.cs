@@ -19,6 +19,7 @@ using Net.Astropenguin.UI.Icons;
 namespace libtaotu.Models.Procedure
 {
 	using Controls;
+	using Models.Interfaces;
 
 	class ProcEncoding : Procedure
 	{
@@ -37,9 +38,9 @@ namespace libtaotu.Models.Procedure
 			DecodeHtml = false;
 		}
 
-		public override async Task<ProcConvoy> Run( ProcConvoy Convoy )
+		public override async Task<ProcConvoy> Run( ICrawler Crawler, ProcConvoy Convoy )
 		{
-			await base.Run( Convoy );
+			await base.Run( Crawler, Convoy );
 
 			// Search for usable convoy
 			ProcConvoy UsableConvoy;
@@ -75,7 +76,7 @@ namespace libtaotu.Models.Procedure
 						}
 						else
 						{
-							ProcManager.PanelMessage( this, Res.SSTR( "ReadEncoding", Enc.EncodingName ), LogType.INFO );
+							Crawler.PLog( this, Res.SSTR( "ReadEncoding", Enc.EncodingName ), LogType.INFO );
 
 							if ( !DecodeHtml )
 							{
@@ -83,7 +84,7 @@ namespace libtaotu.Models.Procedure
 								continue;
 							}
 
-							ProcManager.PanelMessage( this, Res.SSTR( "ConvertEncoding", ISF.Name ), LogType.INFO );
+							Crawler.PLog( this, Res.SSTR( "ConvertEncoding", ISF.Name ), LogType.INFO );
 							Content = await ISF.ReadString( Enc );
 						}
 
@@ -102,7 +103,7 @@ namespace libtaotu.Models.Procedure
 					string Content = ( string ) UsableConvoy.Payload;
 					if ( Enc != null )
 					{
-						ProcManager.PanelMessage( this, Res.RSTR( "CantConvertStringLiterals" ), LogType.INFO );
+						Crawler.PLog( this, Res.RSTR( "CantConvertStringLiterals" ), LogType.INFO );
 					}
 
 					if ( DecodeHtml )
@@ -113,7 +114,7 @@ namespace libtaotu.Models.Procedure
 			}
 			catch ( Exception ex )
 			{
-				ProcManager.PanelMessage( this, Res.SSTR( "EncodingFalied", ex.Message ), LogType.INFO );
+				Crawler.PLog( this, Res.SSTR( "EncodingFalied", ex.Message ), LogType.INFO );
 			}
 
 			return new ProcConvoy( this, null );

@@ -31,10 +31,12 @@ namespace libtaotu.Dialogs
 		private IStorageFile TestContent;
 
 		private ProcFind EditTarget;
+		private ProceduralSpider MCrawler;
 
 		private EditProcFind()
 		{
 			this.InitializeComponent();
+			MCrawler = new ProceduralSpider( new Procedure[ 0 ] );
 			SetTemplate();
 		}
 
@@ -68,7 +70,7 @@ namespace libtaotu.Dialogs
 
 			try
 			{
-				TestContent = await ProceduralSpider.DownloadSource( Url );
+				TestContent = await MCrawler.DownloadSource( Url );
 			}
 			catch( Exception ex )
 			{
@@ -134,7 +136,7 @@ namespace libtaotu.Dialogs
 		private async void UpdateTestSubject()
 		{
 			if ( TestContent == null ) return;
-			IStorageFile ISF = await EditTarget.FilterContent( TestContent );
+			IStorageFile ISF = await EditTarget.FilterContent( MCrawler, TestContent );
 
 			Frame.Navigate( Shared.SourceView, ISF );
 			FrameContainer.Visibility = Visibility.Visible;

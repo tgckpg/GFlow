@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 using Net.Astropenguin.Loaders;
 
+using libtaotu.Crawler;
 using libtaotu.Models.Procedure;
 
 namespace libtaotu.Dialogs
@@ -26,10 +27,12 @@ namespace libtaotu.Dialogs
 		public static readonly string ID = typeof( EditProcParam ).Name;
 
 		private ProcParameter EditTarget;
+		private ProceduralSpider MCrawler;
 
 		private EditProcParam()
 		{
 			this.InitializeComponent();
+			MCrawler = new ProceduralSpider( new Procedure[ 0 ] );
 			SetTemplate();
 		}
 
@@ -62,20 +65,20 @@ namespace libtaotu.Dialogs
 				Caption.Text = EditTarget.Caption;
 			}
 
-			FormattedOutput.Text = EditTarget.ApplyParams();
+			FormattedOutput.Text = EditTarget.ApplyParams( MCrawler );
 		}
 
 		private void AddDef( object sender, RoutedEventArgs e )
 		{
 			EditTarget.AddDef( new ProcParameter.ParamDef( "", "" ) );
-			FormattedOutput.Text = EditTarget.ApplyParams();
+			FormattedOutput.Text = EditTarget.ApplyParams( MCrawler );
 		}
 
 		private void RemoveDef( object sender, RoutedEventArgs e )
 		{
 			Button B = sender as Button;
 			EditTarget.RemoveDef( B.DataContext as ProcParameter.ParamDef );
-			FormattedOutput.Text = EditTarget.ApplyParams();
+			FormattedOutput.Text = EditTarget.ApplyParams( MCrawler );
 		}
 
 		private void ToggleMode( object sender, RoutedEventArgs e )
@@ -95,7 +98,7 @@ namespace libtaotu.Dialogs
 			TextBox Input = sender as TextBox;
 			ProcParameter.ParamDef Item = Input.DataContext as ProcParameter.ParamDef;
 			Item.Default = Input.Text;
-			FormattedOutput.Text = EditTarget.ApplyParams();
+			FormattedOutput.Text = EditTarget.ApplyParams( MCrawler );
 		}
 
 		private void SetIncoming( object sender, RoutedEventArgs e )
@@ -107,7 +110,7 @@ namespace libtaotu.Dialogs
 		{
 			TextBox Input = sender as TextBox;
 			EditTarget.TemplateStr = Input.Text;
-			FormattedOutput.Text = EditTarget.ApplyParams();
+			FormattedOutput.Text = EditTarget.ApplyParams( MCrawler );
 		}
 
 		private void SetCaption( object sender, RoutedEventArgs e )

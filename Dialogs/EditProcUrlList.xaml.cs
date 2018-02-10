@@ -89,7 +89,7 @@ namespace libtaotu.Dialogs
 		{
 			Button B = sender as Button;
 			string Url = B.DataContext as string;
-			Frame.Navigate( Shared.SourceView, await ProceduralSpider.DownloadSource( Url ) );
+			Frame.Navigate( Shared.SourceView, await new ProceduralSpider( new Procedure[ 0 ] ).DownloadSource( Url ) );
 			FrameContainer.Visibility = Visibility.Visible;
 		}
 

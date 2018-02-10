@@ -18,6 +18,7 @@ namespace libtaotu.Models.Procedure
 {
 	using Controls;
 	using Crawler;
+	using Models.Interfaces;
 
 	class ProcGenerator : Procedure
 	{
@@ -65,16 +66,16 @@ namespace libtaotu.Models.Procedure
 			Urls = new ObservableHashSet<string>();
 		}
 
-		public override async Task<ProcConvoy> Run( ProcConvoy Convoy )
+		public override async Task<ProcConvoy> Run( ICrawler Crawler, ProcConvoy Convoy )
 		{
-			await base.Run( Convoy );
+			await base.Run( Crawler, Convoy );
 
 			string LoadUrl = null;
 			FirstStopped = false;
 
 			if ( Incoming )
 			{
-				ProcManager.PanelMessage( this, Res.RSTR( "IncomingCheck" ), LogType.INFO );
+				Crawler.PLog( this, Res.RSTR( "IncomingCheck" ), LogType.INFO );
 
 				ProcConvoy UsableConvoy = ProcManager.TracePackage(
 					Convoy, ( P, C ) =>
@@ -105,7 +106,7 @@ namespace libtaotu.Models.Procedure
 
 			if( string.IsNullOrEmpty( LoadUrl ) )
 			{
-				ProcManager.PanelMessage( this, Res.RSTR( "NoEntryPoint" ), LogType.WARNING );
+				Crawler.PLog( this, Res.RSTR( "NoEntryPoint" ), LogType.WARNING );
 				return Convoy;
 			}
 
@@ -118,14 +119,14 @@ namespace libtaotu.Models.Procedure
 			{
 				if( string.IsNullOrEmpty( LoadUrl ) )
 				{
-					ProcManager.PanelMessage( this, Res.RSTR( "CannotCarrieOn" ), LogType.ERROR );
+					Crawler.PLog( this, Res.RSTR( "CannotCarrieOn" ), LogType.ERROR );
 					break;
 				}
 
-				IStorageFile ISF = await ProceduralSpider.DownloadSource( LoadUrl );
+				IStorageFile ISF = await Crawler.DownloadSource( LoadUrl );
 
 				string Matchee = await ISF.ReadString();
-				Continue = NextUrl( Matchee, out LoadUrl ) && !WillStop( Matchee );
+				Continue = NextUrl( Matchee, out LoadUrl ) && !WillStop( Crawler, Matchee );
 
 				if ( Continue || !DiscardUnmatched )
 				{
@@ -172,7 +173,7 @@ namespace libtaotu.Models.Procedure
 			return Continue;
 		}
 
-		private bool WillStop( string v )
+		private bool WillStop( ICrawler Crawler, string v )
 		{
 			foreach( ProcFind.RegItem Reg in StopIfs )
 			{
@@ -186,7 +187,7 @@ namespace libtaotu.Models.Procedure
 						return false;
 					}
 
-					ProcManager.PanelMessage( this, Res.RSTR( "MatchedStop", Reg.Pattern ), LogType.INFO );
+					Crawler.PLog( this, Res.RSTR( "MatchedStop", Reg.Pattern ), LogType.INFO );
 					return true;
 				}
 			}

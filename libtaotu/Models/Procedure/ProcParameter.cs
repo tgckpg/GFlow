@@ -152,8 +152,12 @@ namespace libtaotu.Models.Procedure
 						break;
 					}
 
-					Dialogs.InputProcParam InputDialog = new Dialogs.InputProcParam( this );
-					await Popups.ShowDialog( InputDialog );
+					Dialogs.InputProcParam InputDialog = null;
+					await Worker.RunUITaskAsync( () =>
+					{
+						InputDialog = new Dialogs.InputProcParam( this );
+						return Popups.ShowDialog( InputDialog );
+					} );
 
 					if ( InputDialog.Canceled )
 					{

@@ -157,7 +157,7 @@ namespace libtaotu.Models.Procedure
 
 					if ( InputDialog.Canceled )
 					{
-						throw new OperationCanceledException( "Canceled by user" );
+						throw new OperationCanceledException( Res.RSTR( "OperationCanceled" ) );
 					}
 
 					// Input sets the dafault values

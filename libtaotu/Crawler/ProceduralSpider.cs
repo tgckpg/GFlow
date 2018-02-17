@@ -27,6 +27,8 @@ namespace libtaotu.Crawler
 		public Action<string, LogType> Log { get; set; } = ( a, b ) => ProcManager.PanelMessage( ID, a, b );
 		public Action<Procedure, string, LogType> PLog { get; set; } = ( p, a, b ) => ProcManager.PanelMessage( p, a, b );
 
+		public Exception LastException { get; private set; }
+
 		public ProceduralSpider( IEnumerable<Procedure> ProcList )
 		{
 			this.ProcList = ProcList;
@@ -55,6 +57,8 @@ namespace libtaotu.Crawler
 				}
 				catch ( Exception ex )
 				{
+					LastException = ex;
+
 					Log(
 						Res.RSTR(
 							"Faulted", Proc.Name

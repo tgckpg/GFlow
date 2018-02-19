@@ -45,14 +45,7 @@ namespace libtaotu.Dialogs
 			this.EditTarget = EditTarget;
 
 			DecodeHtmlCheck.IsChecked = EditTarget.DecodeHtml;
-			MessageBus.OnDelivery += MessageBus_OnDelivery;
-		}
-
-		~EditProcEncoding() { Dispose(); }
-
-		public void Dispose()
-		{
-			MessageBus.OnDelivery -= MessageBus_OnDelivery;
+			MessageBus.Subscribe( this, MessageBus_OnDelivery );
 		}
 
 		private void SetTemplate()

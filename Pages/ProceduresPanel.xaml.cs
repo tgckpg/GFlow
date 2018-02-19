@@ -56,23 +56,21 @@ namespace libtaotu.Pages
 			}
 
 			NavigationHandler.InsertHandlerOnNavigatedBack( StepSubProcedures );
-			MessageBus.OnDelivery += MessageBus_OnDelivery;
+			MessageBus.Subscribe( this, MessageBus_OnDelivery );
 			SetTemplate();
 		}
-
-		~ProceduresPanel() { Dispose(); }
 
 		public void Dispose()
 		{
 			NavigationHandler.OnNavigatedBack -= StepSubProcedures;
-			MessageBus.OnDelivery -= MessageBus_OnDelivery;
+			MessageBus.Unsubscribe( this, MessageBus_OnDelivery );
 		}
 
 		protected override void OnNavigatedTo( NavigationEventArgs e )
 		{
 			base.OnNavigatedTo( e );
 			NavigationHandler.InsertHandlerOnNavigatedBack( StepSubProcedures );
-			MessageBus.OnDelivery += MessageBus_OnDelivery;
+			MessageBus.Subscribe( this, MessageBus_OnDelivery );
 
 			if ( e.Parameter != null )
 			{

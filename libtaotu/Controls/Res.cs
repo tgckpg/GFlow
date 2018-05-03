@@ -11,7 +11,7 @@ namespace libtaotu.Controls
 {
 	static class Res
 	{
-		private static StringResBg stp = new StringResBg( "/libtaotu/PanelMessage" );
+		private static StringResources stp = StringResources.Load( "/libtaotu/PanelMessage" );
 
 		public static string SSTR( string key, string ColonAfter )
 		{

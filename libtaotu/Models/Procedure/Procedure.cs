@@ -94,7 +94,7 @@ namespace libtaotu.Models.Procedure
 			}
 		}
 
-		protected StringResBg ProcStrRes = new StringResBg( "/libtaotu/ProcItems" );
+		protected static StringResources ProcStrRes = StringResources.Load( "/libtaotu/ProcItems" );
 
 		public Procedure( ProcType P )
 		{

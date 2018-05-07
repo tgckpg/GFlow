@@ -342,8 +342,8 @@ namespace libtaotu.Pages
 			NameLevel.Text = GetNameFromChains();
 			LayoutRoot.DataContext = PM;
 			SubProcInd.State = PM == RootManager
-				? ControlState.Foreatii
-				: ControlState.Reovia
+				? ControlState.Closed
+				: ControlState.Active
 				;
 		}
 

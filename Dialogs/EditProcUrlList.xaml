@@ -28,11 +28,11 @@
                      PlaceholderText="Prefix" LostFocus="SetPrefix" />
             <CheckBox x:Name="IncomingCheck" Foreground="White"
                       Unchecked="SetIncoming" Checked="SetIncoming" >
-                <TextBlock x:Uid="/libtaotu/Resources/Incoming" Text="Incoming" />
+                <TextBlock x:Uid="/libtaotu/Resources/Incoming" Foreground="White" Text="Incoming" />
             </CheckBox>
             <CheckBox x:Name="DelimitedCheck" Foreground="White"
                       Unchecked="SetDelimited" Checked="SetDelimited" >
-                <TextBlock x:Uid="/libtaotu/Resources/Delimited" Text="Delimited by line breaks" />
+                <TextBlock x:Uid="/libtaotu/Resources/Delimited" Foreground="White" Text="Delimited by line breaks" />
             </CheckBox>
             <Grid>
                 <Grid.ColumnDefinitions>

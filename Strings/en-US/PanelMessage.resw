@@ -222,4 +222,7 @@
   <data name="ReadEncoding" xml:space="preserve">
     <value>Read Encoding</value>
   </data>
+  <data name="OperationCanceled" xml:space="preserve">
+    <value>Operation canceled</value>
+  </data>
 </root>

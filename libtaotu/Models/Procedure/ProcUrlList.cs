@@ -16,6 +16,7 @@ namespace libtaotu.Models.Procedure
 {
 	using Controls;
 	using Crawler;
+	using Models.Interfaces;
 
 	class ProcUrlList : Procedure
 	{
@@ -36,15 +37,15 @@ namespace libtaotu.Models.Procedure
 			Prefix = "";
 		}
 
-		public override async Task<ProcConvoy> Run( ProcConvoy Convoy )
+		public override async Task<ProcConvoy> Run( ICrawler Crawler, ProcConvoy Convoy )
 		{
-			await base.Run( Convoy );
+			await base.Run( Crawler, Convoy );
 
 			HashSet<string> ConvoyUrls = null;
 
 			if ( Incoming )
 			{
-				ProcManager.PanelMessage( this, Res.RSTR( "IncomingCheck" ), LogType.INFO );
+				Crawler.PLog( this, Res.RSTR( "IncomingCheck" ), LogType.INFO );
 
 				ProcConvoy UsableConvoy = ProcManager.TracePackage(
 					Convoy, ( P, C ) =>
@@ -105,26 +106,26 @@ namespace libtaotu.Models.Procedure
 
 			if ( ConvoyUrls == null && Urls.Count == 0 )
 			{
-				ProcManager.PanelMessage( this, Res.RSTR( "EmptyUrlList" ), LogType.WARNING );
+				Crawler.PLog( this, Res.RSTR( "EmptyUrlList" ), LogType.WARNING );
 			}
 
 			List<IStorageFile> ISFs = new List<IStorageFile>();
 
-			await DownloadToISFs( ISFs, Urls );
+			await DownloadToISFs( Crawler, ISFs, Urls );
 
 			if ( ConvoyUrls != null )
 			{
-				await DownloadToISFs( ISFs, ConvoyUrls );
+				await DownloadToISFs( Crawler, ISFs, ConvoyUrls );
 			}
 
 			return new ProcConvoy( this, ISFs );
 		}
 
-		private async Task DownloadToISFs( IList<IStorageFile> ISFs, IEnumerable<string> Urls )
+		private async Task DownloadToISFs( ICrawler Crawler, IList<IStorageFile> ISFs, IEnumerable<string> Urls )
 		{
 			foreach ( string u in Urls )
 			{
-				ISFs.Add( await ProceduralSpider.DownloadSource( Prefix + u ) );
+				ISFs.Add( await Crawler.DownloadSource( Prefix + u ) );
 			}
 		}
 

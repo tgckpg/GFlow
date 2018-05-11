@@ -67,9 +67,9 @@ namespace libtaotu.Models.Procedure
 			}
 		}
 
-		public override async Task<ProcConvoy> Run( ProcConvoy Convoy )
+		public override async Task<ProcConvoy> Run( ICrawler Crawler, ProcConvoy Convoy )
 		{
-			await base.Run( Convoy );
+			await base.Run( Crawler, Convoy );
 
 			ProcConvoy ThisUsableConvoy;
 
@@ -89,7 +89,7 @@ namespace libtaotu.Models.Procedure
 				{
 					if ( Def.Key == Key && HasUsableConvoy )
 					{
-						object Payload = await SubprocRun( Def, ThisUsableConvoy.Payload );
+						object Payload = await SubprocRun( Crawler, Def, ThisUsableConvoy.Payload );
 						await AppendResult( OutputTmp, Payload );
 					}
 					else if ( TryGetConvoy( out UsableConvoy, ( P, C ) =>
@@ -99,12 +99,12 @@ namespace libtaotu.Models.Procedure
 						&& C.Payload is IEnumerable<IStorageFile>
 					) )
 					{
-						object Payload = await SubprocRun( Def, UsableConvoy.Payload );
+						object Payload = await SubprocRun( Crawler, Def, UsableConvoy.Payload );
 						await AppendResult( OutputTmp, Payload );
 					}
 					else
 					{
-						ProcManager.PanelMessage( this, Res.RSTR( "ResultKeyNotFound", Def.Key ), LogType.WARNING );
+						Crawler.PLog( this, Res.RSTR( "ResultKeyNotFound", Def.Key ), LogType.WARNING );
 					}
 				}
 			}
@@ -134,16 +134,16 @@ namespace libtaotu.Models.Procedure
 			else if( Result is IEnumerable<IStorageFile> )
 			{
 				foreach ( IStorageFile ISF in ( ( IEnumerable<IStorageFile> ) Result ) )
-					await File.WriteFile( ( IStorageFile ) ISF, true, new byte[] { ( byte ) '\n' } );
+					await File.WriteFile( ISF, true, new byte[] { ( byte ) '\n' } );
 			}
 		}
 
-		private async Task<object> SubprocRun( OutputDef Def, object Input )
+		private async Task<object> SubprocRun( ICrawler Crawler, OutputDef Def, object Input )
 		{
 			if ( Def != null && Def.SubProc.HasProcedures )
 			{
-				ProcManager.PanelMessage( this, Res.RSTR( "SubProcRun" ), LogType.INFO );
-				ProcConvoy SubConvoy = await Def.SubProc.CreateSpider().Crawl( new ProcConvoy( null, Input ) );
+				Crawler.PLog( this, Res.RSTR( "SubProcRun" ), LogType.INFO );
+				ProcConvoy SubConvoy = await Def.SubProc.CreateSpider( Crawler ).Crawl( new ProcConvoy( null, Input ) );
 
 				// Process ReceivedConvoy
 				if ( SubConvoy.Payload is string

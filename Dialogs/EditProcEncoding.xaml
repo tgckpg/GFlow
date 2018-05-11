@@ -51,7 +51,7 @@
         </Button>
         <CheckBox x:Name="DecodeHtmlCheck" Grid.Row="1" Foreground="White"
                   Unchecked="SetDecodeHtml" Checked="SetDecodeHtml" >
-            <TextBlock x:Uid="/libtaotu/Resources/DecodeHtml" Text="Decode Html" />
+            <TextBlock x:Uid="/libtaotu/Resources/DecodeHtml" Foreground="White" Text="Decode Html" />
         </CheckBox>
         <!-- Preview Section -->
         <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="5">

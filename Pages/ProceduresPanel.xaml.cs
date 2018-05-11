@@ -56,23 +56,21 @@ namespace libtaotu.Pages
 			}
 
 			NavigationHandler.InsertHandlerOnNavigatedBack( StepSubProcedures );
-			MessageBus.OnDelivery += MessageBus_OnDelivery;
+			MessageBus.Subscribe( this, MessageBus_OnDelivery );
 			SetTemplate();
 		}
-
-		~ProceduresPanel() { Dispose(); }
 
 		public void Dispose()
 		{
 			NavigationHandler.OnNavigatedBack -= StepSubProcedures;
-			MessageBus.OnDelivery -= MessageBus_OnDelivery;
+			MessageBus.Unsubscribe( this, MessageBus_OnDelivery );
 		}
 
 		protected override void OnNavigatedTo( NavigationEventArgs e )
 		{
 			base.OnNavigatedTo( e );
 			NavigationHandler.InsertHandlerOnNavigatedBack( StepSubProcedures );
-			MessageBus.OnDelivery += MessageBus_OnDelivery;
+			MessageBus.Subscribe( this, MessageBus_OnDelivery );
 
 			if ( e.Parameter != null )
 			{
@@ -101,7 +99,7 @@ namespace libtaotu.Pages
 
 		private void SetTemplate()
 		{
-			StringResources stx = new StringResources( "/libtaotu/ProcItems" );
+			StringResources stx = StringResources.Load( "/libtaotu/ProcItems" );
 			Dictionary<ProcType, string> ProcChoices = new Dictionary<ProcType, string>();
 
 			Type PType = typeof( ProcType );
@@ -187,7 +185,7 @@ namespace libtaotu.Pages
 		{
 			bool Yes = false;
 
-			StringResources stx = new StringResources( "/libtaotu/Message" );
+			StringResources stx = StringResources.Load( "/libtaotu/Message" );
 			MessageDialog Msg = new MessageDialog( stx.Str( "ConfirmDiscard" ) );
 			Msg.Commands.Add( new UICommand( stx.Str( "Yes" ), x => Yes = true ) );
 			Msg.Commands.Add( new UICommand( stx.Str( "No" ) ) );
@@ -344,8 +342,8 @@ namespace libtaotu.Pages
 			NameLevel.Text = GetNameFromChains();
 			LayoutRoot.DataContext = PM;
 			SubProcInd.State = PM == RootManager
-				? ControlState.Foreatii
-				: ControlState.Reovia
+				? ControlState.Closed
+				: ControlState.Active
 				;
 		}
 

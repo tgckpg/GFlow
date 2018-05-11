@@ -29,5 +29,5 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 [assembly: InternalsVisibleTo("wenku10")]
-[assembly: InternalsVisibleTo("libwenku8")]
+[assembly: InternalsVisibleTo("GR")]
 [assembly: InternalsVisibleTo("Tasks")]

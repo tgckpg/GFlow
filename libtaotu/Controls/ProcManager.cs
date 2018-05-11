@@ -16,6 +16,7 @@ namespace libtaotu.Controls
 {
 	using Crawler;
 	using Models.Procedure;
+	using Models.Interfaces;
 	using Pages;
 
 	class ProcManager : ActiveData
@@ -136,7 +137,9 @@ namespace libtaotu.Controls
 			this.To = To;
 		}
 
-		public ProceduralSpider CreateSpider()
+		public ProceduralSpider CreateSpider() => CreateSpider( null );
+
+		public ProceduralSpider CreateSpider( ICrawler Parent )
 		{
 			IEnumerable<Procedure> SelectedProcs = ProcList;
 
@@ -150,7 +153,14 @@ namespace libtaotu.Controls
 				SelectedProcs = SelectedProcs.Take( To - From );
 			}
 
-			return new ProceduralSpider( SelectedProcs );
+			ProceduralSpider Sp = new ProceduralSpider( SelectedProcs );
+			if( Parent != null )
+			{
+				Sp.Log = Parent.Log;
+				Sp.PLog = Parent.PLog;
+			}
+
+			return Sp;
 		}
 
 		public void RemoveProcedure( Procedure P )

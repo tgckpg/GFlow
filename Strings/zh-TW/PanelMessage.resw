@@ -222,4 +222,7 @@
   <data name="ReadEncoding" xml:space="preserve">
     <value>讀取編碼</value>
   </data>
+  <data name="OperationCanceled" xml:space="preserve">
+    <value>作業取消</value>
+  </data>
 </root>

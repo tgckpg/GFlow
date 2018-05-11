@@ -30,17 +30,10 @@ namespace libtaotu.Dialogs
 
 		private void SetTemplate()
 		{
-			StringResources stx = new StringResources( "/libtaotu/Message" );
+			StringResources stx = StringResources.Load( "/libtaotu/Message" );
 			PrimaryButtonText = stx.Str( "OK" );
 
-			MessageBus.OnDelivery += MessageBus_OnDelivery;
-		}
-
-		~EditProcResult() { Dispose(); }
-
-		public void Dispose()
-		{
-			MessageBus.OnDelivery -= MessageBus_OnDelivery;
+			MessageBus.Subscribe( this, MessageBus_OnDelivery );
 		}
 
 		public EditProcResult( ProcResult EditTarget )

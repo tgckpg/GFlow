@@ -14,14 +14,20 @@ using Net.Astropenguin.Logging;
 namespace libtaotu.Crawler
 {
 	using Controls;
+	using Models.Interfaces;
 	using Models.Procedure;
 	using Resources;
 
-	sealed class ProceduralSpider
+	sealed class ProceduralSpider : ICrawler
 	{
 		public static readonly string ID = typeof( ProceduralSpider ).Name;
 
 		private IEnumerable<Procedure> ProcList;
+
+		public Action<string, LogType> Log { get; set; } = ( a, b ) => ProcManager.PanelMessage( ID, a, b );
+		public Action<Procedure, string, LogType> PLog { get; set; } = ( p, a, b ) => ProcManager.PanelMessage( p, a, b );
+
+		public Exception LastException { get; private set; }
 
 		public ProceduralSpider( IEnumerable<Procedure> ProcList )
 		{
@@ -32,7 +38,7 @@ namespace libtaotu.Crawler
 		{
 			if ( ProcList.Count() == 0 )
 			{
-				ProcManager.PanelMessage( ID, Res.RSTR( "EmptyCrawling" ), LogType.INFO );
+				Log( Res.RSTR( "EmptyCrawling" ), LogType.INFO );
 				return Convoy;
 			}
 
@@ -40,19 +46,21 @@ namespace libtaotu.Crawler
 
 			foreach ( Procedure Proc in ProcList )
 			{
-				ProcManager.PanelMessage( ID, Res.RSTR( "Running" ) + ": " + Proc.Name, LogType.INFO );
+				Log( Res.RSTR( "Running" ) + ": " + Proc.Name, LogType.INFO );
 
 				try
 				{
 					Proc.Running = true;
-					ProcConvoy Received = await Proc.Run( Conveying );
+					ProcConvoy Received = await Proc.Run( this, Conveying );
 					Conveying = Received;
 					Proc.Running = false;
 				}
 				catch ( Exception ex )
 				{
-					ProcManager.PanelMessage(
-						ID, Res.RSTR(
+					LastException = ex;
+
+					Log(
+						Res.RSTR(
 							"Faulted", Proc.Name
 							, ex.Message + ( ex.InnerException == null ? "" : "[ " + ex.InnerException.Message + " ]" )
 						)
@@ -65,13 +73,13 @@ namespace libtaotu.Crawler
 				}
 			}
 
-			ProcManager.PanelMessage( ID, Res.RSTR( "RunComplete" ), LogType.INFO );
+			Log( Res.RSTR( "RunComplete" ), LogType.INFO );
 			return Conveying;
 		}
 
-		public static async Task<IStorageFile> DownloadSource( string url )
+		public async Task<IStorageFile> DownloadSource( string url )
 		{
-			ProcManager.PanelMessage( ID, Res.SSTR( "Download", url ), LogType.INFO );
+			Log( Res.SSTR( "Download", url ), LogType.INFO );
 
 			TaskCompletionSource<IStorageFile> TCS = new TaskCompletionSource<IStorageFile>();
 
@@ -108,7 +116,7 @@ namespace libtaotu.Crawler
 			}
 			catch ( UriFormatException )
 			{
-				ProcManager.PanelMessage( ID, Res.SSTR( "InvalidURL", url ), LogType.ERROR );
+				Log( Res.SSTR( "InvalidURL", url ), LogType.ERROR );
 				TCS.TrySetCanceled();
 			}
 

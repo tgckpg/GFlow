@@ -222,4 +222,7 @@
   <data name="ReadEncoding" xml:space="preserve">
     <value>エンコード を読む</value>
   </data>
+  <data name="OperationCanceled" xml:space="preserve">
+    <value>操作がキャンセルされました</value>
+  </data>
 </root>

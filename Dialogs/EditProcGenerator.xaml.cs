@@ -36,7 +36,7 @@ namespace libtaotu.Dialogs
 
 		private void SetTemplate()
 		{
-			StringResources stx = new StringResources( "/libtaotu/Message" );
+			StringResources stx = StringResources.Load( "/libtaotu/Message" );
 			PrimaryButtonText = stx.Str( "OK" );
 		}
 

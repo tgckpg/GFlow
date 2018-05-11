@@ -19,6 +19,7 @@ using Net.Astropenguin.UI.Icons;
 namespace libtaotu.Models.Procedure
 {
 	using Controls;
+	using Models.Interfaces;
 
 	enum RunMode { FEEDBACK = 1, INPUT = 2, SOURCE_AVAIL = 4, DEFINE = 8, OUTPUT = 16 }
 
@@ -85,22 +86,22 @@ namespace libtaotu.Models.Procedure
 			}
 		}
 
-		public override async Task<ProcConvoy> Run( ProcConvoy Convoy )
+		public override async Task<ProcConvoy> Run( ICrawler Crawler, ProcConvoy Convoy )
 		{
-			await base.Run( Convoy );
+			await base.Run( Crawler, Convoy );
 
 			ProcConvoy UsableConvoy;
 
 			bool IsFeedRun = ( ProcManager.TracePackage( Convoy, ( P, C ) => ( P.Type & ProcType.FEED_RUN ) != 0 ) != null );
 
-			ProcManager.PanelMessage( this, Res.RSTR( "RunMode", ModeName ), LogType.INFO );
+			Crawler.PLog( this, Res.RSTR( "RunMode", ModeName ), LogType.INFO );
 
 			switch ( Mode )
 			{
 				case RunMode.FEEDBACK:
 					if ( !IsFeedRun )
 					{
-						ProcManager.PanelMessage( this, Res.RSTR( "NotAFeedRun" ), LogType.INFO );
+						Crawler.PLog( this, Res.RSTR( "NotAFeedRun" ), LogType.INFO );
 						return Convoy;
 					}
 
@@ -118,14 +119,14 @@ namespace libtaotu.Models.Procedure
 					{
 						if ( UsableConvoy == null )
 						{
-							ProcManager.PanelMessage( this, Res.RSTR( "NoUsableConvoy" ), LogType.WARNING );
+							Crawler.PLog( this, Res.RSTR( "NoUsableConvoy" ), LogType.WARNING );
 							return Convoy;
 						}
-						return await IncomingTemplates( UsableConvoy );
+						return await IncomingTemplates( Crawler, UsableConvoy );
 					}
 					else if ( UsableConvoy != null )
 					{
-						return await IncomingArguments( UsableConvoy );
+						return await IncomingArguments( Crawler, UsableConvoy );
 					}
 
 					goto DEFAULT_PARAMS;
@@ -134,29 +135,33 @@ namespace libtaotu.Models.Procedure
 				case RunMode.INPUT:
 					if( Worker.BackgroundOnly )
 					{
-						ProcManager.PanelMessage( this, Res.RSTR( "InputBackground" ), LogType.INFO );
+						Crawler.PLog( this, Res.RSTR( "InputBackground" ), LogType.INFO );
 						goto case RunMode.SOURCE_AVAIL;
 					}
 
 					if ( IsFeedRun )
 					{
-						ProcManager.PanelMessage( this, Res.RSTR( "InputFeedRunSkip" ), LogType.INFO );
+						Crawler.PLog( this, Res.RSTR( "InputFeedRunSkip" ), LogType.INFO );
 						return Convoy;
 					}
 
 					ProcConvoy Con = ProcManager.TracePackage( Convoy, ( P, C ) => ( P.Type & ProcType.TEST_RUN ) != 0 );
 					if ( Con != null )
 					{
-						ProcManager.PanelMessage( this, Res.RSTR( "TestRun_UseDefault" ), LogType.INFO );
+						Crawler.PLog( this, Res.RSTR( "TestRun_UseDefault" ), LogType.INFO );
 						break;
 					}
 
-					Dialogs.InputProcParam InputDialog = new Dialogs.InputProcParam( this );
-					await Popups.ShowDialog( InputDialog );
+					Dialogs.InputProcParam InputDialog = null;
+					await Worker.RunUITaskAsync( () =>
+					{
+						InputDialog = new Dialogs.InputProcParam( this );
+						return Popups.ShowDialog( InputDialog );
+					} );
 
 					if ( InputDialog.Canceled )
 					{
-						throw new OperationCanceledException( "Canceled by user" );
+						throw new OperationCanceledException( Res.RSTR( "OperationCanceled" ) );
 					}
 
 					// Input sets the dafault values
@@ -180,16 +185,16 @@ namespace libtaotu.Models.Procedure
 					|| C.Payload is string
 				) ) return Convoy;
 
-				return await IncomingTemplates( UsableConvoy );
+				return await IncomingTemplates( Crawler, UsableConvoy );
 			}
 
 			DEFAULT_PARAMS:
-			return new ProcConvoy( this, ApplyParams() );
+			return new ProcConvoy( this, ApplyParams( Crawler ) );
 		}
 
-		public string ApplyParams( params string[] Args )
+		public string ApplyParams( ICrawler Crawler, params string[] Args )
 		{
-			return FormatParams( TemplateStr, Args );
+			return FormatParams( Crawler, TemplateStr, Args );
 		}
 
 		public void SetDefaults( string[] Defaults )
@@ -213,16 +218,16 @@ namespace libtaotu.Models.Procedure
 			await Popups.ShowDialog( new Dialogs.EditProcParam( this ) );
 		}
 
-		private async Task<ProcConvoy> IncomingTemplates( ProcConvoy UsableConvoy )
+		private async Task<ProcConvoy> IncomingTemplates( ICrawler Crawler, ProcConvoy UsableConvoy )
 		{
 			if ( UsableConvoy.Payload is string )
 			{
-				return new ProcConvoy( this, FormatParams( ( string ) UsableConvoy.Payload ) );
+				return new ProcConvoy( this, FormatParams( Crawler, ( string ) UsableConvoy.Payload ) );
 			}
 			else if ( UsableConvoy.Payload is IStorageFile )
 			{
 				IStorageFile tmp = await AppStorage.MkTemp();
-				await tmp.WriteString( FormatParams( await ( ( IStorageFile ) UsableConvoy.Payload ).ReadString() ) );
+				await tmp.WriteString( FormatParams( Crawler, await ( ( IStorageFile ) UsableConvoy.Payload ).ReadString() ) );
 				return new ProcConvoy( this, tmp );
 			}
 			else if ( UsableConvoy.Payload is IEnumerable<IStorageFile> )
@@ -233,7 +238,7 @@ namespace libtaotu.Models.Procedure
 				foreach ( IStorageFile Template in Templates )
 				{
 					IStorageFile tmp = await AppStorage.MkTemp();
-					await tmp.WriteString( FormatParams( await Template.ReadString() ) );
+					await tmp.WriteString( FormatParams( Crawler, await Template.ReadString() ) );
 					TemplatedStrs.Add( tmp );
 				}
 
@@ -242,20 +247,20 @@ namespace libtaotu.Models.Procedure
 			else
 			{
 				IEnumerable<string> Templates = ( IEnumerable<string> ) UsableConvoy.Payload;
-				return new ProcConvoy( this, Templates.Remap( x => FormatParams( x ) ) );
+				return new ProcConvoy( this, Templates.Remap( x => FormatParams( Crawler, x ) ) );
 			}
 		}
 
-		private async Task<ProcConvoy> IncomingArguments( ProcConvoy UsableConvoy )
+		private async Task<ProcConvoy> IncomingArguments( ICrawler Crawler, ProcConvoy UsableConvoy )
 		{
 			if ( UsableConvoy.Payload is string )
 			{
-				return new ProcConvoy( this, ApplyParams( ( ( string ) UsableConvoy.Payload ).Split( new char[] { '\n' }, ParamDefs.Count ) ) );
+				return new ProcConvoy( this, ApplyParams( Crawler, ( ( string ) UsableConvoy.Payload ).Split( new char[] { '\n' }, ParamDefs.Count ) ) );
 			}
 			else if ( UsableConvoy.Payload is IStorageFile )
 			{
 				IStorageFile tmp = await AppStorage.MkTemp();
-				await tmp.WriteString( ApplyParams( await ( ( IStorageFile ) UsableConvoy.Payload ).ReadLines( ParamDefs.Count ) ) );
+				await tmp.WriteString( ApplyParams( Crawler, await ( ( IStorageFile ) UsableConvoy.Payload ).ReadLines( ParamDefs.Count ) ) );
 				return new ProcConvoy( this, tmp );
 			}
 			else if ( UsableConvoy.Payload is IEnumerable<IStorageFile> )
@@ -266,7 +271,7 @@ namespace libtaotu.Models.Procedure
 				foreach ( IStorageFile Arg in Args )
 				{
 					IStorageFile tmp = await AppStorage.MkTemp();
-					await tmp.WriteString( ApplyParams( await Arg.ReadLines( ParamDefs.Count ) ) );
+					await tmp.WriteString( ApplyParams( Crawler, await Arg.ReadLines( ParamDefs.Count ) ) );
 					TemplatedStrs.Add( tmp );
 				}
 
@@ -275,7 +280,7 @@ namespace libtaotu.Models.Procedure
 			else
 			{
 				IEnumerable<string> Args = ( IEnumerable<string> ) UsableConvoy.Payload;
-				return new ProcConvoy( this, Args.Remap( x => ApplyParams( x ) ) );
+				return new ProcConvoy( this, Args.Remap( x => ApplyParams( Crawler, x ) ) );
 			}
 		}
 
@@ -333,7 +338,7 @@ namespace libtaotu.Models.Procedure
 			return Param;
 		}
 
-		private string FormatParams( string Template, params string[] Args )
+		private string FormatParams( ICrawler Crawler, string Template, params string[] Args )
 		{
 			try
 			{
@@ -349,7 +354,7 @@ namespace libtaotu.Models.Procedure
 			}
 			catch ( Exception ex )
 			{
-				ProcManager.PanelMessage( this, ex.Message, LogType.INFO );
+				Crawler.PLog( this, ex.Message, LogType.INFO );
 			}
 
 			return "";

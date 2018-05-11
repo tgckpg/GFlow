@@ -11,7 +11,7 @@
     <AssemblyName>libtaotu</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.15063.0</TargetPlatformVersion>
+    <TargetPlatformVersion>10.0.17134.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.14393.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -155,6 +155,7 @@
     <Compile Include="libtaotu\Controls\Res.cs" />
     <Compile Include="libtaotu\Controls\ProcManager.cs" />
     <Compile Include="libtaotu\Crawler\ProceduralSpider.cs" />
+    <Compile Include="libtaotu\Models\Interfaces\ICrawler.cs" />
     <Compile Include="libtaotu\Models\Interfaces\ISubProcedure.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcChakra.cs" />
     <Compile Include="libtaotu\Models\Procedure\ProcDummy.cs" />
@@ -231,7 +232,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>5.4.0</Version>
+      <Version>5.4.2</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Encoding.CodePages">
       <Version>4.4.0</Version>

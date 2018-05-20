@@ -9,5 +9,21 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <msc:CanvasControl x:Name="DrawBoard" />
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <msc:CanvasControl x:Name="DrawBoard" />
+
+        <GridView x:Name="ProceduresList" Grid.Column="0" Grid.Row="1"/>
+
+        <Frame x:Name="PropertyPanel" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"/>
+
+    </Grid>
 </Page>

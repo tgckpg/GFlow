@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Controls;
 
 using Net.Astropenguin.Loaders;
 
-namespace libtaotu.Resources
+namespace GFlow.Resources
 {
 	using Models.Procedure;
 	class Shared

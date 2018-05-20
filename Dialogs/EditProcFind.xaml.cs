@@ -18,11 +18,11 @@ using Windows.UI.Xaml.Navigation;
 using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
 
-using libtaotu.Crawler;
-using libtaotu.Models.Procedure;
-using libtaotu.Resources;
+using GFlow.Crawler;
+using GFlow.Models.Procedure;
+using GFlow.Resources;
 
-namespace libtaotu.Dialogs
+namespace GFlow.Dialogs
 {
 	sealed partial class EditProcFind : ContentDialog
 	{
@@ -42,7 +42,7 @@ namespace libtaotu.Dialogs
 
 		private void SetTemplate()
 		{
-			StringResources stx = StringResources.Load( "/libtaotu/Message" );
+			StringResources stx = StringResources.Load( "/GFlow/Message" );
 			PrimaryButtonText = stx.Str( "OK" );
 		}
 

@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
 
-namespace libtaotu.Controls
+namespace GFlow.Controls
 {
 	static class Res
 	{
-		private static StringResources stp = StringResources.Load( "/libtaotu/PanelMessage" );
+		private static StringResources stp = StringResources.Load( "/GFlow/PanelMessage" );
 
 		public static string SSTR( string key, string ColonAfter )
 		{

@@ -1,8 +1,8 @@
 ﻿<ContentDialog
-    x:Class="libtaotu.Dialogs.EditProcFind"
+    x:Class="GFlow.Dialogs.EditProcFind"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:libtaotu.Dialogs"
+    xmlns:local="using:GFlow.Dialogs"
     xmlns:p="using:Net.Astropenguin.UI"
     xmlns:i="using:Net.Astropenguin.UI.Icons"
     xmlns:v="using:Net.Astropenguin.UI.Converters"
@@ -20,7 +20,7 @@
         <v:DataStateConverter x:Key="DataStateConverter" />
     </ContentDialog.Resources>
     <ContentDialog.Title>
-        <TextBlock x:Uid="/libtaotu/Resources/FindConditions"
+        <TextBlock x:Uid="/GFlow/Resources/FindConditions"
                    Text="Edit Find Conditions" Foreground="White" />
     </ContentDialog.Title>
 
@@ -63,14 +63,14 @@
                             </Grid.ColumnDefinitions>
 
                             <TextBox Grid.Column="0"
-                                     x:Uid="/libtaotu/Resources/Pattern"
+                                     x:Uid="/GFlow/Resources/Pattern"
                                      PlaceholderText="Pattern" Margin="3"
                                      Text="{Binding Pattern}"
                                      FontFamily="Lucida Console"
                                      LostFocus="SetPattern"/>
 
                             <TextBox Grid.Column="1"
-                                     x:Uid="/libtaotu/Resources/Format"
+                                     x:Uid="/GFlow/Resources/Format"
                                      PlaceholderText="Format" Margin="3"
                                      Text="{Binding Format}"
                                      FontFamily="Lucida Console"

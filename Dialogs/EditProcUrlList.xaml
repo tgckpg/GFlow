@@ -1,8 +1,8 @@
 ﻿<ContentDialog
-    x:Class="libtaotu.Dialogs.EditProcUrlList"
+    x:Class="GFlow.Dialogs.EditProcUrlList"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:libtaotu.Dialogs"
+    xmlns:local="using:GFlow.Dialogs"
     xmlns:i="using:Net.Astropenguin.UI.Icons"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -13,7 +13,7 @@
     PrimaryButtonClick="AddRemainingUrl"
     IsSecondaryButtonEnabled="False">
     <ContentDialog.Title>
-        <TextBlock x:Uid="/libtaotu/Resources/UrlList"
+        <TextBlock x:Uid="/GFlow/Resources/UrlList"
                    Text="Edit UrlList" Foreground="White" />
     </ContentDialog.Title>
 
@@ -23,16 +23,16 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel>
-            <TextBox x:Name="PrefixInput" x:Uid="/libtaotu/Resources/Prefix"
+            <TextBox x:Name="PrefixInput" x:Uid="/GFlow/Resources/Prefix"
                      Margin="0,10"
                      PlaceholderText="Prefix" LostFocus="SetPrefix" />
             <CheckBox x:Name="IncomingCheck" Foreground="White"
                       Unchecked="SetIncoming" Checked="SetIncoming" >
-                <TextBlock x:Uid="/libtaotu/Resources/Incoming" Foreground="White" Text="Incoming" />
+                <TextBlock x:Uid="/GFlow/Resources/Incoming" Foreground="White" Text="Incoming" />
             </CheckBox>
             <CheckBox x:Name="DelimitedCheck" Foreground="White"
                       Unchecked="SetDelimited" Checked="SetDelimited" >
-                <TextBlock x:Uid="/libtaotu/Resources/Delimited" Foreground="White" Text="Delimited by line breaks" />
+                <TextBlock x:Uid="/GFlow/Resources/Delimited" Foreground="White" Text="Delimited by line breaks" />
             </CheckBox>
             <Grid>
                 <Grid.ColumnDefinitions>

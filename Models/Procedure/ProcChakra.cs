@@ -17,7 +17,7 @@ using Net.Astropenguin.UI.Icons;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
 
-namespace libtaotu.Models.Procedure
+namespace GFlow.Models.Procedure
 {
 	using Controls;
 	using Models.Interfaces;
@@ -244,7 +244,7 @@ namespace libtaotu.Models.Procedure
 		{
 			if ( string.IsNullOrEmpty( ChakraScript ) )
 			{
-				TextReader Text = File.OpenText( "libtaotu/Resources/ProcChakraJs.html" );
+				TextReader Text = File.OpenText( "GFlow/Resources/ProcChakraJs.html" );
 				ChakraScript = await Text.ReadToEndAsync();
 			}
 		}

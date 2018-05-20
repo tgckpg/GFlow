@@ -11,7 +11,7 @@ using Net.Astropenguin.IO;
 using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
 
-namespace libtaotu.Crawler
+namespace GFlow.Crawler
 {
 	using Controls;
 	using Models.Interfaces;

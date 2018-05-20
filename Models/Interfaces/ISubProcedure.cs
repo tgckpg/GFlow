@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using libtaotu.Controls;
-using libtaotu.Models.Procedure;
+using GFlow.Controls;
+using GFlow.Models.Procedure;
 
-namespace libtaotu.Models.Interfaces
+namespace GFlow.Models.Interfaces
 {
 	interface ISubProcedure
 	{

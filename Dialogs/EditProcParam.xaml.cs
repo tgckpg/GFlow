@@ -17,10 +17,10 @@ using Windows.UI.Xaml.Navigation;
 
 using Net.Astropenguin.Loaders;
 
-using libtaotu.Crawler;
-using libtaotu.Models.Procedure;
+using GFlow.Crawler;
+using GFlow.Models.Procedure;
 
-namespace libtaotu.Dialogs
+namespace GFlow.Dialogs
 {
 	sealed partial class EditProcParam : ContentDialog
 	{
@@ -38,7 +38,7 @@ namespace libtaotu.Dialogs
 
 		private void SetTemplate()
 		{
-			StringResources stx = StringResources.Load( "/libtaotu/Message" );
+			StringResources stx = StringResources.Load( "/GFlow/Message" );
 			PrimaryButtonText = stx.Str( "OK" );
 		}
 

@@ -10,7 +10,7 @@ using Windows.UI.Xaml.Controls;
 using Net.Astropenguin.Linq;
 using Net.Astropenguin.Loaders;
 
-namespace libtaotu.Dialogs
+namespace GFlow.Dialogs
 {
 	using Models.Procedure;
 
@@ -33,7 +33,7 @@ namespace libtaotu.Dialogs
 
 		private void SetTemplate()
 		{
-			StringResources stx = StringResources.Load( "/libtaotu/Message" );
+			StringResources stx = StringResources.Load( "/GFlow/Message" );
 			PrimaryButtonText = stx.Str( "OK" );
 			SecondaryButtonText = stx.Str( "Cancel" );
 

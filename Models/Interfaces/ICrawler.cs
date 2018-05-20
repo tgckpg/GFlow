@@ -7,7 +7,7 @@ using Windows.Storage;
 
 using Net.Astropenguin.Logging;
 
-namespace libtaotu.Models.Interfaces
+namespace GFlow.Models.Interfaces
 {
 	using Procedure;
 

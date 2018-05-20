@@ -24,12 +24,12 @@ using Net.Astropenguin.Logging;
 using Net.Astropenguin.Messaging;
 using Net.Astropenguin.UI;
 
-using libtaotu.Controls;
-using libtaotu.Models.Interfaces;
-using libtaotu.Models.Procedure;
-using libtaotu.Resources;
+using GFlow.Controls;
+using GFlow.Models.Interfaces;
+using GFlow.Models.Procedure;
+using GFlow.Resources;
 
-namespace libtaotu.Pages
+namespace GFlow.Pages
 {
 	public sealed partial class ProceduresPanel : Page, IDisposable
 	{
@@ -99,7 +99,7 @@ namespace libtaotu.Pages
 
 		private void SetTemplate()
 		{
-			StringResources stx = StringResources.Load( "/libtaotu/ProcItems" );
+			StringResources stx = StringResources.Load( "/GFlow/ProcItems" );
 			Dictionary<ProcType, string> ProcChoices = new Dictionary<ProcType, string>();
 
 			Type PType = typeof( ProcType );
@@ -185,7 +185,7 @@ namespace libtaotu.Pages
 		{
 			bool Yes = false;
 
-			StringResources stx = StringResources.Load( "/libtaotu/Message" );
+			StringResources stx = StringResources.Load( "/GFlow/Message" );
 			MessageDialog Msg = new MessageDialog( stx.Str( "ConfirmDiscard" ) );
 			Msg.Commands.Add( new UICommand( stx.Str( "Yes" ), x => Yes = true ) );
 			Msg.Commands.Add( new UICommand( stx.Str( "No" ) ) );

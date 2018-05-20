@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
 
-namespace libtaotu.Dialogs
+namespace GFlow.Dialogs
 {
 	using Crawler;
 	using Controls;
@@ -36,7 +36,7 @@ namespace libtaotu.Dialogs
 
 		private void SetTemplate()
 		{
-			StringResources stx = StringResources.Load( "/libtaotu/Message" );
+			StringResources stx = StringResources.Load( "/GFlow/Message" );
 			PrimaryButtonText = stx.Str( "OK" );
 		}
 

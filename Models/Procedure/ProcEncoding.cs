@@ -16,7 +16,7 @@ using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
 using Net.Astropenguin.UI.Icons;
 
-namespace libtaotu.Models.Procedure
+namespace GFlow.Models.Procedure
 {
 	using Controls;
 	using Models.Interfaces;

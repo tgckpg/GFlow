@@ -13,7 +13,7 @@ using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
 using Net.Astropenguin.UI.Icons;
 
-namespace libtaotu.Models.Procedure
+namespace GFlow.Models.Procedure
 {
 	using Controls;
 	using Models.Interfaces;
@@ -94,7 +94,7 @@ namespace libtaotu.Models.Procedure
 			}
 		}
 
-		protected static StringResources ProcStrRes = StringResources.Load( "/libtaotu/ProcItems" );
+		protected static StringResources ProcStrRes = StringResources.Load( "/GFlow/ProcItems" );
 
 		public Procedure( ProcType P )
 		{

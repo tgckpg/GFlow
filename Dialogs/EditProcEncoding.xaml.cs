@@ -20,7 +20,7 @@ using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
 using Net.Astropenguin.Messaging;
 
-namespace libtaotu.Dialogs
+namespace GFlow.Dialogs
 {
 	using Models.Procedure;
 	using Pages;
@@ -50,7 +50,7 @@ namespace libtaotu.Dialogs
 
 		private void SetTemplate()
 		{
-			StringResources stx = StringResources.Load( "/libtaotu/Message" );
+			StringResources stx = StringResources.Load( "/GFlow/Message" );
 			PrimaryButtonText = stx.Str( "OK" );
 
 			int[] KnownCodePages = new int[] {

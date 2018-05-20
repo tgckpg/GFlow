@@ -1,8 +1,8 @@
 ﻿<Page
-    x:Class="libtaotu.Pages.ProceduresPanel"
+    x:Class="GFlow.Pages.ProceduresPanel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:libtaotu.Pages"
+    xmlns:local="using:GFlow.Pages"
     xmlns:p="using:Net.Astropenguin.UI"
     xmlns:i="using:Net.Astropenguin.UI.Icons"
     xmlns:v="using:Net.Astropenguin.UI.Converters"
@@ -56,9 +56,9 @@
         <v:DataStateConverter x:Key="DataStateConverter" />
 
         <MenuFlyout x:Key="ProcedureContext">
-            <MenuFlyoutItem x:Uid="/libtaotu/ContextMenu/Rename" Text="Rename" Click="RenameProcedure" />
-            <MenuFlyoutItem x:Uid="/libtaotu/ContextMenu/Edit" Text="Edit" Click="EditProcedure" />
-            <MenuFlyoutItem x:Uid="/libtaotu/ContextMenu/Delete" Text="Remove" Click="RemoveProcedure" />
+            <MenuFlyoutItem x:Uid="/GFlow/ContextMenu/Rename" Text="Rename" Click="RenameProcedure" />
+            <MenuFlyoutItem x:Uid="/GFlow/ContextMenu/Edit" Text="Edit" Click="EditProcedure" />
+            <MenuFlyoutItem x:Uid="/GFlow/ContextMenu/Delete" Text="Remove" Click="RemoveProcedure" />
         </MenuFlyout>
 
     </Page.Resources>

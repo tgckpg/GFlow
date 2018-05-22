@@ -15,7 +15,7 @@ namespace GFlow.Controls.BasicElements
 	class GFButton : GFElement, IForeground, IBackground
 	{
 		public Color FGFill { get; set; } = Colors.Black;
-		public Color BGFill { get; set; } = Color.FromArgb( 0xFF, 0xF0, 0xF0, 0xF0 );
+		public Color BGFill { get; set; } = Color.FromArgb( 0xFF, 0xA0, 0xA0, 0xA0 );
 
 		public Boundary Padding { get; set; } = new Boundary( 5, 10 );
 
@@ -62,19 +62,12 @@ namespace GFlow.Controls.BasicElements
 		void Drag( float x, float y );
 	}
 
-	class GFPanel : GFElement, IGFDraggable, IGFContainer
+	class GFPanel : GFElement, IGFContainer
 	{
-		public GFButton DragHandle { get; set; } = new GFButton();
 		public IList<GFElement> Children { get; set; } = new List<GFElement>();
 
 		public GFPanel()
 		{
-		}
-
-		public void Drag( float dx, float dy )
-		{
-			Bounds.X += dx;
-			Bounds.Y += dy;
 		}
 
 		public void Add( GFElement Elem )
@@ -89,8 +82,12 @@ namespace GFlow.Controls.BasicElements
 
 		public override void Draw( CanvasDrawingSession ds, GFElement Parent, GFElement Prev )
 		{
-			DragHandle.Draw( ds, this, null );
-			Vector2 VH = new Vector2( 0, DragHandle.ActualBounds.H );
+			Vector2 VH = Vector2.Zero;
+
+			if ( Prev != null )
+			{
+				VH.Y = Prev.ActualBounds.H;
+			}
 
 			lock ( Children )
 			{

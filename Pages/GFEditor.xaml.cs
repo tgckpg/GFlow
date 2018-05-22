@@ -29,13 +29,12 @@ namespace GFlow.Pages
 		private void SetTemplate()
 		{
 			GFDrawBoard DBoard = new GFDrawBoard( DrawBoard );
-			var k = new GFPanel();
-			k.Children.Add( new GFButton() { Label = "Item A", MouseOver = BtnOver, MouseOut = BtnOut } );
-			k.Children.Add( new GFButton() { Label = "Item B", MouseOver = BtnOver, MouseOut = BtnOut } );
-			k.Children.Add( new GFButton() { Label = "Item C", MouseOver = BtnOver, MouseOut = BtnOut } );
-			k.Children.Add( new GFButton() { Label = "Item D", MouseOver = BtnOver, MouseOut = BtnOut } );
-			k.Children.Add( new GFButton() { Label = "Item E", MouseOver = BtnOver, MouseOut = BtnOut } );
-			DBoard.Add( k );
+
+			GFProcedure GFProc = new GFProcedure( new Models.Procedure.ProcResult() );
+			DBoard.Add( GFProc );
+
+			GFProcedure GFProc2 = new GFProcedure( new Models.Procedure.ProcFind() );
+			DBoard.Add( GFProc2 );
 
 			// GFPropertyPanel PropertyPanel = new GFPropertyPanel():
 			// GFProcedureList CompPanel = new GFProcedureList();
@@ -49,6 +48,13 @@ namespace GFlow.Pages
 		private void BtnOut( GFButton Target )
 		{
 			Target.BGFill = Color.FromArgb( 0xF0, 0xF0, 0xF0, 0xF0 );
+		}
+
+		private GFButton TestButton( string Label )
+		{
+			GFButton Btn = new GFButton() { Label = Label, MouseOver = BtnOver, MouseOut = BtnOut };
+			Btn.LabelFormat.FontSize = 16;
+			return Btn;
 		}
 
 	}

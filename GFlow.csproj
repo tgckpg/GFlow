@@ -130,6 +130,7 @@
   <ItemGroup>
     <Compile Include="Controls\BasicElements.cs" />
     <Compile Include="Controls\GFDrawBoard.cs" />
+    <Compile Include="Controls\GraphElements.cs" />
     <Compile Include="Controls\Interfaces.cs" />
     <Compile Include="Controls\ProcedureBase.cs" />
     <Compile Include="Dialogs\InputProcParam.xaml.cs">

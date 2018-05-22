@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace GFlow.Controls
 {
+	using BasicElements;
 	using Models.Procedure;
 
-	class GFProcedure : IGFPanel, IGFDraggable
+	class GFProcedure : GFPanel, IGFDraggable
 	{
 		public IGFConnector<GFProcedure> Input { get; set; }
 		public IGFConnector<GFProcedure> Output { get; set; }
@@ -17,18 +18,5 @@ namespace GFlow.Controls
 		public List<IGFProperty<GFProcedure>> SubProcs { get; set; } = new List<IGFProperty<GFProcedure>>();
 
 		public Procedure Properties { get; set; }
-		public Vector4 Bounds { get; set; }
-
-		public float X { get; set; }
-		public float Y { get; set; }
-
-		public Boundary DragHandle { get; set; }
-
-		public void Drag( float dx, float dy )
-		{
-			X += dx;
-			Y += dy;
-		}
-
 	}
 }

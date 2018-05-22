@@ -1,4 +1,5 @@
 ﻿using Microsoft.Graphics.Canvas;
+using Microsoft.Graphics.Canvas.Text;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,47 +12,101 @@ using Net.Astropenguin.Linq;
 
 namespace GFlow.Controls.BasicElements
 {
-	class GFButton : IGFElement, IForeground, IBackground
+	class GFButton : GFElement, IForeground, IBackground
 	{
-		public Vector2 P { get; set; }
-
-		public Boundary Bounds { get; set; } = new Boundary() { W = 200, H = 24 };
-
 		public Color FGFill { get; set; } = Colors.Black;
-		public Color BGFill { get; set; } = Colors.Gray;
+		public Color BGFill { get; set; } = Color.FromArgb( 0xFF, 0xF0, 0xF0, 0xF0 );
 
+		public Boundary Padding { get; set; } = new Boundary( 5, 10 );
+
+		public CanvasTextFormat LabelFormat { get; set; } = new CanvasTextFormat() { FontSize = 18 };
 		public string Label { get; set; } = "Text Label";
 
-		virtual public void Draw( CanvasDrawingSession ds )
+		public Action<GFButton> MouseOver { get; set; }
+		public Action<GFButton> MouseOut { get; set; }
+
+		public Action<GFButton> MousePress { get; set; }
+		public Action<GFButton> MouseRelease { get; set; }
+
+		public GFButton()
 		{
-			ds.DrawRectangle( P.X + Bounds.X, P.Y + Bounds.Y, Bounds.W, Bounds.H, BGFill );
-			ds.DrawText( Label, P, FGFill );
+			Bounds.W = 200;
+			Bounds.H = 24;
+		}
+
+		public override void Draw( CanvasDrawingSession ds, GFElement Parent, GFElement Prev )
+		{
+			Vector2 pXY = Vector2.Zero;
+			if ( Parent != null )
+			{
+				pXY = Parent.Bounds.XY;
+			}
+
+			CanvasTextLayout TL = new CanvasTextLayout( ds, Label, LabelFormat, Bounds.W, Bounds.H );
+
+			ActualBounds = new Boundary(
+				DrawOffset.X + pXY.X + Bounds.X
+				, DrawOffset.Y + pXY.Y + Bounds.Y
+				, Padding.Left + Bounds.W + Padding.Right
+				, Padding.Top + Bounds.H + Padding.Bottom
+			);
+
+			ds.FillRectangle( ActualBounds.X, ActualBounds.Y, ActualBounds.W, ActualBounds.H, BGFill );
+			ds.DrawTextLayout( TL, ActualBounds.X + Padding.Left, ActualBounds.Y + Padding.Top, FGFill );
 		}
 	}
 
-	class GFPanel : GFButton
+	interface IGFDraggable
 	{
-		IList<IGFElement> Children { get; set; }
+		GFButton DragHandle { get; set; }
+		void Drag( float x, float y );
+	}
 
-		public override void Draw( CanvasDrawingSession ds )
+	class GFPanel : GFElement, IGFDraggable, IGFContainer
+	{
+		public GFButton DragHandle { get; set; } = new GFButton();
+		public IList<GFElement> Children { get; set; } = new List<GFElement>();
+
+		public GFPanel()
 		{
-			base.Draw( ds );
-			IGFElement Prev;
-			Children.AggExec( ( C1, C2, PState ) =>
+		}
+
+		public void Drag( float dx, float dy )
+		{
+			Bounds.X += dx;
+			Bounds.Y += dy;
+		}
+
+		public void Add( GFElement Elem )
+		{
+			lock ( Children ) Children.Add( Elem );
+		}
+
+		public void Remove( GFElement Elem )
+		{
+			lock ( Children ) Children.Remove( Elem );
+		}
+
+		public override void Draw( CanvasDrawingSession ds, GFElement Parent, GFElement Prev )
+		{
+			DragHandle.Draw( ds, this, null );
+			Vector2 VH = new Vector2( 0, DragHandle.ActualBounds.H );
+
+			lock ( Children )
 			{
-
-				if( PState == 1 )
+				Children.AggExec( ( C1, C2, PState ) =>
 				{
-					C2.P.Y = C1.P.Y + C1.
-				}
+					if ( PState < 2 )
+					{
+						C2.DrawOffset = VH;
+						C2.Draw( ds, this, C1 );
 
-				if ( PState < 2 )
-				{
-					C2.Draw( ds );
-				}
+						VH.Y += C2.ActualBounds.H;
+					}
+				} );
+			}
 
-			} );
-
+			ActualBounds = new Boundary( Bounds.X, Bounds.Y, Bounds.W, VH.Y );
 		}
 	}
 

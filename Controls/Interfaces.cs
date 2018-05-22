@@ -1,20 +1,23 @@
-﻿using System;
+﻿using Microsoft.Graphics.Canvas;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI;
 
 namespace GFlow.Controls
 {
-	interface IGFBoundary
-	{
-		Vector4 Bounds { get; set; }
-	}
+	struct Boundary { public float X, Y, W, H; }
 
-	interface IGFButton : IGFBoundary
-	{
+	interface IForeground { Color FGFill { get; set; } }
+	interface IBackground { Color BGFill { get; set; } }
 
+	interface IGFElement
+	{
+		Vector2 P { get; set; }
+		void Draw( CanvasDrawingSession ds );
 	}
 
 	interface IGFProperty<T>
@@ -34,13 +37,9 @@ namespace GFlow.Controls
 		T Target { get; set; }
 	}
 
-	interface IGFDraggable
+	interface IGFDraggable : IGFElement
 	{
-		float X { get; set; }
-		float Y { get; set; }
-
-		IGFBoundary DragHandle { get; set; }
-
+		Boundary DragHandle { get; set; }
 		void Drag( float x, float y );
 	}
 

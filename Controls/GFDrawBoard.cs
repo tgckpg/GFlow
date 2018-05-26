@@ -13,6 +13,7 @@ using Net.Astropenguin.Linq;
 namespace GFlow.Controls
 {
 	using BasicElements;
+	using EventsArgs;
 
 	class GFDrawBoard : IGFContainer
 	{
@@ -99,11 +100,11 @@ namespace GFlow.Controls
 			{
 				if ( HitTarget is IGFDraggable Draggable )
 				{
-					Draggable.DragHandle.MouseOut?.Invoke( Draggable.DragHandle );
+					Draggable.DragHandle.MouseOut?.Invoke( this, new GFPointerEventArgs() { Target = Draggable.DragHandle } );
 				}
 				else if ( HitTarget is GFButton Btn )
 				{
-					Btn.MouseOut?.Invoke( Btn );
+					Btn.MouseOut?.Invoke( this, new GFPointerEventArgs() { Target = Btn } );
 				}
 
 				HitTarget = Hit;
@@ -113,18 +114,29 @@ namespace GFlow.Controls
 
 		private void Stage_PointerReleased( object sender, PointerRoutedEventArgs e )
 		{
-			if( DragTarget != null )
+			if ( DragTarget != null )
 			{
 				DragTarget = null;
+			}
+
+			if ( HitTarget is GFButton Button )
+			{
+				Button.MouseRelease?.Invoke( this, new GFPointerEventArgs() { Target = Button } );
 			}
 		}
 
 		private void Stage_PointerPressed( object sender, PointerRoutedEventArgs e )
 		{
-			if( HitTarget is IGFDraggable Draggable )
+			PrevDragPos = e.GetCurrentPoint( Stage ).Position.ToVector2();
+
+			if ( HitTarget is IGFDraggable Draggable )
 			{
-				PrevDragPos = e.GetCurrentPoint( Stage ).Position.ToVector2();
 				DragTarget = Draggable;
+			}
+
+			if ( HitTarget is GFButton Button )
+			{
+				Button.MousePress?.Invoke( this, new GFPointerEventArgs() { Target = Button, Pos = PrevDragPos } );
 			}
 		}
 
@@ -134,15 +146,15 @@ namespace GFlow.Controls
 			{
 				foreach ( GFElement Child in GFC.Children )
 				{
-					if( Child is IGFDraggable Draggable && Draggable.DragHandle.ActualBounds.Test( P ) )
+					if ( Child is IGFDraggable Draggable && Draggable.DragHandle.ActualBounds.Test( P ) )
 					{
-						Draggable.DragHandle.MouseOver?.Invoke( Draggable.DragHandle );
+						Draggable.DragHandle.MouseOver?.Invoke( this, new GFPointerEventArgs() { Target = Draggable.DragHandle } );
 						return Child;
 					}
 
 					if ( Child is GFButton Btn && Btn.ActualBounds.Test( P ) )
 					{
-						Btn.MouseOver?.Invoke( Btn );
+						Btn.MouseOver?.Invoke( this, new GFPointerEventArgs() { Target = Btn } );
 						return Btn;
 					}
 

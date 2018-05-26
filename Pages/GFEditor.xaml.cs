@@ -17,6 +17,7 @@ namespace GFlow.Pages
 {
 	using Controls;
 	using Controls.BasicElements;
+	using Controls.EventsArgs;
 
 	public sealed partial class GFEditor : Page
 	{
@@ -38,23 +39,6 @@ namespace GFlow.Pages
 
 			// GFPropertyPanel PropertyPanel = new GFPropertyPanel():
 			// GFProcedureList CompPanel = new GFProcedureList();
-		}
-
-		private void BtnOver( GFButton Target )
-		{
-			Target.BGFill = Color.FromArgb( 0xFF, 0xFF, 0xFF, 0xFF );
-		}
-
-		private void BtnOut( GFButton Target )
-		{
-			Target.BGFill = Color.FromArgb( 0xF0, 0xF0, 0xF0, 0xF0 );
-		}
-
-		private GFButton TestButton( string Label )
-		{
-			GFButton Btn = new GFButton() { Label = Label, MouseOver = BtnOver, MouseOut = BtnOut };
-			Btn.LabelFormat.FontSize = 16;
-			return Btn;
 		}
 
 	}

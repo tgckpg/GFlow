@@ -12,6 +12,7 @@ using Net.Astropenguin.Linq;
 
 namespace GFlow.Controls.BasicElements
 {
+	using EventsArgs;
 	class GFButton : GFElement, IForeground, IBackground
 	{
 		public Color FGFill { get; set; } = Colors.Black;
@@ -22,11 +23,11 @@ namespace GFlow.Controls.BasicElements
 		public CanvasTextFormat LabelFormat { get; set; } = new CanvasTextFormat() { FontSize = 18 };
 		public string Label { get; set; } = "Text Label";
 
-		public Action<GFButton> MouseOver { get; set; }
-		public Action<GFButton> MouseOut { get; set; }
+		public Action<object, GFPointerEventArgs> MouseOver { get; set; }
+		public Action<object, GFPointerEventArgs> MouseOut { get; set; }
 
-		public Action<GFButton> MousePress { get; set; }
-		public Action<GFButton> MouseRelease { get; set; }
+		public Action<object, GFPointerEventArgs> MousePress { get; set; }
+		public Action<object, GFPointerEventArgs> MouseRelease { get; set; }
 
 		public GFButton()
 		{
@@ -56,7 +57,7 @@ namespace GFlow.Controls.BasicElements
 
 	interface IGFDraggable
 	{
-		GFButton DragHandle { get; set; }
+		GFButton DragHandle { get; }
 		void Drag( float x, float y );
 	}
 

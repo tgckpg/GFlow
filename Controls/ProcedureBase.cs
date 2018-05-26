@@ -39,10 +39,10 @@ namespace GFlow.Controls
 			DragHandle.Label = Proc.Name;
 
 			InputNode = CreatePropNode( "Input" );
-			InputNode.SynapseL = true;
+			InputNode.Children.Add( new GFSynapseL() );
 
 			OutputNode = CreatePropNode( "Output" );
-			OutputNode.SynapseR = true;
+			OutputNode.Children.Add( new GFSynapseR() );
 
 			PropNode = CreatePropNode( "Properties" );
 

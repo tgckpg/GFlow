@@ -54,12 +54,25 @@ namespace GFlow.Controls
 			{
 				using ( CanvasDrawingSession ds = args.DrawingSession )
 				{
-					foreach ( GFElement Child in Children )
-					{
-						Child.Draw( ds, null, null );
-					}
+					DrawR( ds, this );
 				}
 			}
+		}
+
+		private void DrawR( CanvasDrawingSession ds, IGFContainer Container )
+		{
+			GFElement GCElem = Container as GFElement;
+			Container.Children.AggExec( ( a, b, s ) =>
+			{
+				if ( s < 2 )
+				{
+					b.Draw( ds, GCElem, a );
+					if ( b is IGFContainer GFC )
+					{
+						DrawR( ds, GFC );
+					}
+				}
+			} );
 		}
 
 		private GFElement HitTarget;

@@ -21,6 +21,9 @@ namespace GFlow.Controls
 		public float LeftRight { get => Left; set { Left = value; Right = value; } }
 		public float TopBottom { get => Top; set { Top = value; Bottom = value; } }
 
+		public float LRs => Left + Right;
+		public float TBs => Top + Bottom;
+
 		public Boundary() { }
 
 		public Boundary( float X, float Y, float W, float H )
@@ -43,6 +46,21 @@ namespace GFlow.Controls
 		public Vector2 WH => new Vector2( W, H );
 		public Vector4 XYWH => new Vector4( X, Y, W, H );
 
+		public Vector2 XW
+		{
+			get => new Vector2( X, W );
+			set { X = value.X; W = value.Y; }
+		}
+
+		public float XWs => X + W;
+		public float YHs => Y + H;
+
+		public Vector2 YH
+		{
+			get => new Vector2( Y, H );
+			set { Y = value.X; H = value.Y; }
+		}
+
 		public bool Test( Vector2 p )
 		{
 			return ( X <= p.X && p.X <= ( X + W ) ) && ( Y <= p.Y && p.Y <= ( Y + H ) );
@@ -52,7 +70,7 @@ namespace GFlow.Controls
 	abstract class GFElement
 	{
 		virtual public Boundary Bounds { get; set; } = new Boundary();
-		virtual public Boundary ActualBounds { get; internal set; }
+		virtual public Boundary ActualBounds { get; protected set; } = new Boundary();
 
 		public Vector2 DrawOffset { get; set; }
 

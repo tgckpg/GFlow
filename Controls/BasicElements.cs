@@ -44,12 +44,10 @@ namespace GFlow.Controls.BasicElements
 
 			CanvasTextLayout TL = new CanvasTextLayout( ds, Label, LabelFormat, Bounds.W, Bounds.H );
 
-			ActualBounds = new Boundary(
-				DrawOffset.X + pXY.X + Bounds.X
-				, DrawOffset.Y + pXY.Y + Bounds.Y
-				, Padding.Left + Bounds.W + Padding.Right
-				, Padding.Top + Bounds.H + Padding.Bottom
-			);
+			ActualBounds.X = DrawOffset.X + pXY.X + Bounds.X;
+			ActualBounds.Y = DrawOffset.Y + pXY.Y + Bounds.Y;
+			ActualBounds.W = Padding.LRs + Bounds.W;
+			ActualBounds.H = Padding.TBs + Bounds.H;
 
 			ds.FillRectangle( ActualBounds.X, ActualBounds.Y, ActualBounds.W, ActualBounds.H, BGFill );
 			ds.DrawTextLayout( TL, ActualBounds.X + Padding.Left, ActualBounds.Y + Padding.Top, FGFill );

@@ -60,6 +60,37 @@ namespace GFlow.Controls
 			}
 		}
 
+		public IList<T> FilterElements<T>()
+			where T : GFElement
+		{
+			lock ( Children )
+			{
+				List<T> Pool = new List<T>();
+				_FilterElement( this, Pool );
+				return Pool;
+			}
+		}
+
+		private void _FilterElement<T>( IGFContainer Container, List<T> Pool )
+			where T : GFElement
+		{
+			Container.Children.AggExec( ( a, b, s ) =>
+			{
+				if ( s < 2 )
+				{
+					if ( b is T )
+					{
+						Pool.Add( ( T ) b );
+					}
+
+					if ( b is IGFContainer GFC )
+					{
+						_FilterElement( GFC, Pool );
+					}
+				}
+			} );
+		}
+
 		private void DrawR( CanvasDrawingSession ds, IGFContainer Container )
 		{
 			GFElement GCElem = Container as GFElement;
@@ -89,7 +120,7 @@ namespace GFlow.Controls
 			{
 				Vector2 Delta = Pos - PrevDragPos;
 				PrevDragPos = Pos;
-				DragTarget.Drag( Delta.X, Delta.Y );
+				DragTarget.Drag( Delta.X, Delta.Y, Pos.X, Pos.Y );
 				Stage.Invalidate();
 				return;
 			}
@@ -114,14 +145,15 @@ namespace GFlow.Controls
 
 		private void Stage_PointerReleased( object sender, PointerRoutedEventArgs e )
 		{
-			if ( DragTarget != null )
-			{
-				DragTarget = null;
-			}
-
 			if ( HitTarget is GFButton Button )
 			{
 				Button.MouseRelease?.Invoke( this, new GFPointerEventArgs() { Target = Button } );
+			}
+
+			if ( DragTarget != null )
+			{
+				DragTarget = null;
+				Stage.Invalidate();
 			}
 		}
 

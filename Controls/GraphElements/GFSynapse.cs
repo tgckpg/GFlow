@@ -17,8 +17,13 @@ namespace GFlow.Controls.GraphElements
 		public Color SNFill { get; set; } = Colors.Black;
 		public GFButton DragHandle => this;
 
+		public Vector2 SnapPoint;
+
 		protected bool DrawConnector = false;
 		protected Vector2 EndPoint;
+
+		protected IEnumerable<GFSynapse> TargetEndPoints;
+		protected GFSynapse SnappedTarget;
 
 		public GFSynapse()
 		{
@@ -26,19 +31,34 @@ namespace GFlow.Controls.GraphElements
 			MouseOver = _MouseOver;
 			MouseOut = _MouseOut;
 
-			MousePress = _StartDrag;
-			MouseRelease = _EndDrag;
+			MousePress = StartDrag;
+			MouseRelease = EndDrag;
 		}
 
-		private void _StartDrag( object sender, GFPointerEventArgs e )
+		private void StartDrag( object sender, GFPointerEventArgs e )
 		{
 			EndPoint = e.Pos;
 			DrawConnector = true;
+
+			if ( this is GFSynapseL )
+			{
+				TargetEndPoints = ( ( GFDrawBoard ) sender ).FilterElements<GFSynapseR>().Cast<GFSynapse>();
+			}
+			else if ( this is GFSynapseR )
+			{
+				TargetEndPoints = ( ( GFDrawBoard ) sender ).FilterElements<GFSynapseL>().Cast<GFSynapse>();
+			}
 		}
 
-		private void _EndDrag( object sender, GFPointerEventArgs e )
+		private void EndDrag( object sender, GFPointerEventArgs e )
 		{
 			DrawConnector = false;
+			TargetEndPoints = null;
+
+			if( SnappedTarget != null )
+			{
+				( ( GFDrawBoard ) sender ).Children.Add( new GFLink( this, SnappedTarget ) );
+			}
 		}
 
 		private static void _MouseOver( object sender, GFPointerEventArgs e )
@@ -51,10 +71,19 @@ namespace GFlow.Controls.GraphElements
 			( ( GFSynapse ) e.Target ).SNFill = Colors.Black;
 		}
 
-		public void Drag( float x, float y )
+		public void Drag( float x, float y, float ax, float ay )
 		{
-			EndPoint.X += x;
-			EndPoint.Y += y;
+			if ( SnappedTarget?.ActualBounds.Test( ax, ay ) != true )
+			{
+				EndPoint.X = ax;
+				EndPoint.Y = ay;
+
+				SnappedTarget = TargetEndPoints.FirstOrDefault( b => b.ActualBounds.Test( EndPoint ) );
+				if ( SnappedTarget != null )
+				{
+					EndPoint = SnappedTarget.SnapPoint;
+				}
+			}
 		}
 	}
 
@@ -66,24 +95,27 @@ namespace GFlow.Controls.GraphElements
 			ActualBounds.YH = Parent.ActualBounds.YH;
 			ActualBounds.X = Parent.ActualBounds.X - 20;
 
-			float HH = Parent.ActualBounds.Y + 0.5f * Parent.ActualBounds.H;
-			float MX = ActualBounds.X + 15;
+			Vector2 M0 = new Vector2(
+				ActualBounds.X + 15
+				, Parent.ActualBounds.Y + 0.5f * Parent.ActualBounds.H
+			);
 
-			ds.DrawLine( MX, HH, MX + 5, HH, SNFill );
-			ds.DrawLine( MX, HH, MX - 5, HH - 5, SNFill );
-			ds.DrawLine( MX, HH, MX - 5, HH + 5, SNFill );
+			ds.DrawLine( M0, M0.MoveX( 5 ), SNFill );
+			ds.DrawLine( M0, M0.Move( -5 ), SNFill );
+			ds.DrawLine( M0, M0.Move( -5, 5 ), SNFill );
+
+			SnapPoint = M0.MoveX( -5 );
 
 			if ( DrawConnector )
 			{
-				MX -= 5;
-
-				float S = ( MX < ( EndPoint.X + 20 ) )
-					? MX - 20
-					: 0.5f * ( MX + EndPoint.X );
-
-				ds.DrawLine( MX, HH, S, HH, SNFill );
-				ds.DrawLine( S, HH, S, EndPoint.Y, SNFill );
-				ds.DrawLine( S, EndPoint.Y, EndPoint.X, EndPoint.Y, SNFill );
+				if ( SnappedTarget == null )
+				{
+					GFLink.Draw( ds, SnapPoint, EndPoint, SNFill );
+				}
+				else
+				{
+					GFLink.Draw( ds, SnapPoint, SnappedTarget.SnapPoint, SNFill );
+				}
 			}
 		}
 	}
@@ -96,25 +128,29 @@ namespace GFlow.Controls.GraphElements
 			ActualBounds.YH = Parent.ActualBounds.YH;
 			ActualBounds.X = Parent.ActualBounds.XWs;
 
-			float HH = Parent.ActualBounds.Y + 0.5f * Parent.ActualBounds.H;
-			float MX = Parent.ActualBounds.XWs + 5;
+			Vector2 M0 = new Vector2(
+				Parent.ActualBounds.XWs + 5
+				, Parent.ActualBounds.Y + 0.5f * Parent.ActualBounds.H
+			);
 
-			ds.DrawLine( MX, HH, MX - 5, HH, SNFill );
-			ds.DrawLine( MX, HH, MX + 5, HH - 5, SNFill );
-			ds.DrawLine( MX, HH, MX + 5, HH + 5, SNFill );
+			ds.DrawLine( M0, M0.MoveX( -5 ), SNFill );
+			ds.DrawLine( M0, M0.Move( 5, -5 ), SNFill );
+			ds.DrawLine( M0, M0.Move( 5 ), SNFill );
+
+			SnapPoint = M0.MoveX( 5 );
 
 			if ( DrawConnector )
 			{
-				MX += 5;
-
-				float S = ( ( EndPoint.X - 20 ) < MX )
-					? MX + 20
-					: 0.5f * ( MX + EndPoint.X );
-
-				ds.DrawLine( MX, HH, S, HH, SNFill );
-				ds.DrawLine( S, HH, S, EndPoint.Y, SNFill );
-				ds.DrawLine( S, EndPoint.Y, EndPoint.X, EndPoint.Y, SNFill );
+				if ( SnappedTarget == null )
+				{
+					GFLink.Draw( ds, EndPoint, SnapPoint, SNFill );
+				}
+				else
+				{
+					GFLink.Draw( ds, SnappedTarget.SnapPoint, SnapPoint, SNFill );
+				}
 			}
 		}
 	}
+
 }

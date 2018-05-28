@@ -58,7 +58,7 @@ namespace GFlow.Controls.BasicElements
 	interface IGFDraggable
 	{
 		GFButton DragHandle { get; }
-		void Drag( float x, float y );
+		void Drag( float x, float y, float ax, float ay );
 	}
 
 	class GFPanel : GFElement, IGFContainer

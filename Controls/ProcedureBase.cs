@@ -16,7 +16,7 @@ namespace GFlow.Controls
 	{
 		public GFButton DragHandle { get; set; } = new GFButton();
 
-		public void Drag( float dx, float dy )
+		public void Drag( float dx, float dy, float ax, float ay )
 		{
 			Bounds.X += dx;
 			Bounds.Y += dy;

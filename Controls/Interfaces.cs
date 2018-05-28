@@ -65,6 +65,11 @@ namespace GFlow.Controls
 		{
 			return ( X <= p.X && p.X <= ( X + W ) ) && ( Y <= p.Y && p.Y <= ( Y + H ) );
 		}
+
+		public bool Test( float _x, float _y )
+		{
+			return ( X <= _x && _x <= ( X + W ) ) && ( Y <= _y && _y <= ( Y + H ) );
+		}
 	}
 
 	abstract class GFElement

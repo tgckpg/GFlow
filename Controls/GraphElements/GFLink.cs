@@ -37,7 +37,7 @@ namespace GFlow.Controls.GraphElements
 
 		public static void Draw( CanvasDrawingSession ds, Vector2 L, Vector2 R, Color LineBrush )
 		{
-			if ( L.X - 20 < R.X + 20 )
+			if ( L.X < R.X )
 			{
 				float MY = 0.5f * ( L.Y + R.Y );
 

@@ -16,12 +16,37 @@
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
-        <msc:CanvasControl x:Name="DrawBoard"/>
+        <msc:CanvasControl x:Name="DrawBoard"
+                           AllowDrop="True"
+                           DragOver="DrawBoard_DragOver"
+                           DragLeave="DrawBoard_DragLeave"/>
 
-        <GridView x:Name="ProceduresList" Grid.Column="0" Grid.Row="1"/>
-        <Frame x:Name="PropertyPanel" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"/>
+        <Rectangle Height="10" Grid.Row="1" Fill="#444" />
 
+        <GridView x:Name="ProceduresList"
+                  Grid.Column="0" Grid.Row="2"
+                  ItemsSource="{Binding ProcChoices}"
+                  CanDragItems="True"
+                  DragItemsStarting="ProceduresList_DragItemsStarting"
+                  DragItemsCompleted="ProceduresList_DragItemsCompleted"
+                  ScrollViewer.VerticalScrollMode="Disabled"
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                  ScrollViewer.HorizontalScrollMode="Enabled"
+                  Height="155"
+                  DisplayMemberPath="Value" SelectedValuePath="Key"
+                  Background="#222">
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsWrapGrid Orientation="Vertical" ItemWidth="200" />
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
+        </GridView>
+        <Frame x:Name="PropertyPanel"
+               Background="#AAA"
+               Width="300"
+               Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"/>
     </Grid>
 </Page>

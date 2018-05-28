@@ -42,24 +42,14 @@ namespace GFlow.Controls
 			Left = Right = LeftRight;
 		}
 
-		public Vector2 XY => new Vector2( X, Y );
-		public Vector2 WH => new Vector2( W, H );
-		public Vector4 XYWH => new Vector4( X, Y, W, H );
-
-		public Vector2 XW
-		{
-			get => new Vector2( X, W );
-			set { X = value.X; W = value.Y; }
-		}
+		public Vector2 XY { get => new Vector2( X, Y ); set { X = value.X; Y = value.Y; } }
+		public Vector2 XW { get => new Vector2( X, W ); set { X = value.X; W = value.Y; } }
+		public Vector2 WH { get => new Vector2( W, H ); set { W = value.X; H = value.Y; } }
+		public Vector2 YH { get => new Vector2( Y, H ); set { Y = value.X; H = value.Y; } }
+		public Vector4 XYWH { get => new Vector4( X, Y, W, H ); set { X = value.X; Y = value.Y; W = value.Z; H = value.W; } }
 
 		public float XWs => X + W;
 		public float YHs => Y + H;
-
-		public Vector2 YH
-		{
-			get => new Vector2( Y, H );
-			set { Y = value.X; H = value.Y; }
-		}
 
 		public bool Test( Vector2 p )
 		{

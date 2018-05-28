@@ -134,10 +134,11 @@ namespace GFlow.Controls.GraphElements
 			);
 
 			ds.DrawLine( M0, M0.MoveX( -5 ), SNFill );
-			ds.DrawLine( M0, M0.Move( 5, -5 ), SNFill );
-			ds.DrawLine( M0, M0.Move( 5 ), SNFill );
 
 			SnapPoint = M0.MoveX( 5 );
+
+			ds.DrawLine( M0.MoveY( 5 ), SnapPoint, SNFill );
+			ds.DrawLine( M0.MoveY( -5 ), SnapPoint, SNFill );
 
 			if ( DrawConnector )
 			{

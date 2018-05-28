@@ -94,6 +94,8 @@ namespace GFlow.Models.Procedure
 			}
 		}
 
+		virtual public Type PropertyPage { get; }
+
 		protected static StringResources ProcStrRes = StringResources.Load( "/GFlow/ProcItems" );
 
 		public Procedure( ProcType P )

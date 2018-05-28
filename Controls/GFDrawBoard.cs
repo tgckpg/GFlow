@@ -19,6 +19,11 @@ namespace GFlow.Controls
 	{
 		private CanvasControl Stage;
 
+		private GFElement HitTarget;
+
+		private Vector2 PrevDragPos;
+		private IGFDraggable DragTarget;
+
 		public IList<GFElement> Children { get; set; } = new List<GFElement>();
 
 		public GFDrawBoard( CanvasControl Canvas )
@@ -107,11 +112,6 @@ namespace GFlow.Controls
 			} );
 		}
 
-		private GFElement HitTarget;
-
-		private Vector2 PrevDragPos;
-		private IGFDraggable DragTarget;
-
 		private void Stage_PointerMoved( object sender, PointerRoutedEventArgs e )
 		{
 			Vector2 Pos = e.GetCurrentPoint( Stage ).Position.ToVector2();
@@ -125,6 +125,7 @@ namespace GFlow.Controls
 				return;
 			}
 
+			PrevDragPos = Pos;
 			GFElement Hit = HitTests( Pos, this );
 
 			if ( HitTarget != Hit )

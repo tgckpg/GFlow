@@ -6,11 +6,16 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
+using Net.Astropenguin.Messaging;
+
 namespace GFlow.Controls
 {
 	using BasicElements;
+	using Controls.EventsArgs;
 	using GraphElements;
 	using Models.Procedure;
+
+	delegate void ShowProperty( GFProcedure sender );
 
 	class GFProcedure : GFPanel, IGFDraggable
 	{
@@ -29,6 +34,8 @@ namespace GFlow.Controls
 
 		public Procedure Properties { get; private set; }
 
+		public event ShowProperty OnShowProperty;
+
 		private GFNode PropNode;
 		private GFNode InputNode;
 		private GFNode OutputNode;
@@ -45,6 +52,7 @@ namespace GFlow.Controls
 			OutputNode.Children.Add( new GFSynapseR() );
 
 			PropNode = CreatePropNode( "Properties" );
+			PropNode.MousePress = ( s, e ) => OnShowProperty?.Invoke( this );
 
 			Children.Add( InputNode );
 			Children.Add( OutputNode );

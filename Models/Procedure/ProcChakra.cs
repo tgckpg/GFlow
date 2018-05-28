@@ -53,6 +53,8 @@ namespace GFlow.Models.Procedure
 		protected override Color BgColor { get { return Colors.DodgerBlue; } }
 		protected override IconBase Icon { get { return new IconScript() { AutoScale = true }; } }
 
+		public override Type PropertyPage => typeof( Dialogs.EditProcChakra );
+
 		public ProcChakra()
 			: base( ProcType.CHAKRA )
 		{
@@ -223,7 +225,7 @@ namespace GFlow.Models.Procedure
 
 		public override async Task Edit()
 		{
-			await Popups.ShowDialog( new Dialogs.EditProcChakra( this ) );
+			// await Popups.ShowDialog( new Dialogs.EditProcChakra( this ) );
 		}
 
 		public override void ReadParam( XParameter Param )

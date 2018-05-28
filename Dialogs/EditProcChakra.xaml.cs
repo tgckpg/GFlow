@@ -8,7 +8,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 using Net.Astropenguin.IO;
-using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Messaging;
 
 namespace GFlow.Dialogs
@@ -16,8 +15,9 @@ namespace GFlow.Dialogs
 	using Models.Procedure;
 	using Pages;
 	using Resources;
+	using Windows.UI.Xaml.Navigation;
 
-	sealed partial class EditProcChakra : ContentDialog
+	sealed partial class EditProcChakra : Page
 	{
 		private ProcChakra EditTarget;
 
@@ -29,9 +29,6 @@ namespace GFlow.Dialogs
 
 		private void SetTemplate()
 		{
-			StringResources stx = StringResources.Load( "/GFlow/Message" );
-			PrimaryButtonText = stx.Str( "OK" );
-
 			MessageBus.Subscribe( this, MessageBus_OnDelivery );
 		}
 
@@ -40,6 +37,16 @@ namespace GFlow.Dialogs
 		{
 			this.EditTarget = EditTarget;
 			ScriptInput.DataContext = EditTarget;
+		}
+
+		protected override void OnNavigatedTo( NavigationEventArgs e )
+		{
+			base.OnNavigatedTo( e );
+
+			if( e.Parameter is ProcChakra )
+			{
+				EditTarget = ( ProcChakra ) e.Parameter;
+			}
 		}
 
 		private void RunTilHere( object sender, RoutedEventArgs e )

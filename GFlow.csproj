@@ -132,6 +132,7 @@
     <Compile Include="Controls\DrawLinq.cs" />
     <Compile Include="Controls\GFDrawBoard.cs" />
     <Compile Include="Controls\EventArgs\GFPointerEventArgs.cs" />
+    <Compile Include="Controls\GFProcedureList.cs" />
     <Compile Include="Controls\GraphElements\GFLink.cs" />
     <Compile Include="Controls\GraphElements\GFNode.cs" />
     <Compile Include="Controls\GraphElements\GFSynapse.cs" />

@@ -66,9 +66,9 @@ namespace GFlow.Controls
 		{
 			Logger.Log( ID, Mesg, LogLevel );
 			MessageBus.Send(
-				typeof( ProceduresPanel )
+				typeof( GFEditor )
 				, Mesg
-				, new ProceduresPanel.PanelLog() { LogType = LogLevel, ID = ID }
+				, new PanelLog() { LogType = LogLevel, ID = ID }
 			);
 		}
 
@@ -220,4 +220,11 @@ namespace GFlow.Controls
 			return Param;
 		}
 	}
+
+	public class PanelLog
+	{
+		public string ID;
+		public LogType LogType;
+	}
+
 }

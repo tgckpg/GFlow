@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Numerics;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -14,6 +15,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+using Net.Astropenguin.Logging;
 using Net.Astropenguin.Messaging;
 
 namespace GFlow.Pages
@@ -26,8 +28,14 @@ namespace GFlow.Pages
 		GFDrawBoard DBoard;
 		ProcManager PM;
 
+		Button ActiveTab;
+
 		ProcType DragProc;
 		ProcType DropProc;
+
+		bool Running = false;
+
+		ObservableCollection<LogArgs> Logs = new ObservableCollection<LogArgs>();
 
 		public GFEditor()
 		{
@@ -37,13 +45,18 @@ namespace GFlow.Pages
 
 		private void SetTemplate()
 		{
-			PM = new ProcManager();
+			ActiveTab = BtnProcList;
 
+			PM = new ProcManager();
 			DBoard = new GFDrawBoard( DrawBoard );
 
 			// GFPropertyPanel PropertyPanel = new GFPropertyPanel():
 			GFProcedureList CompPanel = new GFProcedureList();
 			ProceduresList.DataContext = CompPanel;
+
+			RunLog.ItemsSource = Logs;
+
+			MessageBus.Subscribe( this, MessageBus_OnDelivery );
 		}
 
 		private void ProceduresList_DragItemsStarting( object sender, DragItemsStartingEventArgs e )
@@ -82,6 +95,79 @@ namespace GFlow.Pages
 		}
 
 		private void DrawBoard_DragLeave( object sender, DragEventArgs e ) { DropProc = 0; }
+
+		private void ProcList_Click( object sender, RoutedEventArgs e )
+		{
+			if ( sender is Button Btn )
+			{
+				ActivateTab( Btn );
+				ProceduresList.Visibility = Visibility.Visible;
+			}
+		}
+
+		private void Preview_Click( object sender, RoutedEventArgs e )
+		{
+			if ( sender is Button Btn )
+			{
+				ActivateTab( Btn );
+				Preview.Visibility = Visibility.Visible;
+			}
+		}
+
+		private void Output_Click( object sender, RoutedEventArgs e )
+		{
+			if ( sender is Button Btn )
+			{
+				ActivateTab( Btn );
+				RunLog.Visibility = Visibility.Visible;
+			}
+		}
+
+		private void ActivateTab( Button Btn )
+		{
+			if ( ActiveTab != null )
+			{
+				Brush Bg = Btn.Background;
+				Btn.Background = ActiveTab.Background;
+				ActiveTab.Background = Bg;
+			}
+
+			ProceduresList.Visibility
+				= RunLog.Visibility
+				= Preview.Visibility
+				= Visibility.Collapsed;
+
+			ActiveTab = Btn;
+		}
+
+		private void MessageBus_OnDelivery( Message Mesg )
+		{
+			if ( Mesg.TargetType != GetType() ) return;
+
+			// Procedure Run
+			if( Mesg.Content == "RUN" )
+			{
+				if ( Running ) return;
+				PM.ActiveRange( 0, PM.ProcList.IndexOf( Mesg.Payload as Procedure ) + 1 );
+				// ProcRun( true );
+			}
+			// Append Logs
+			else if ( Mesg.Payload is PanelLog PLog )
+			{
+				PanelLogItem( PLog.ID, Mesg.Content, PLog.LogType );
+			}
+		}
+
+		private void PanelLogItem( string id, string content, LogType level )
+		{
+			var j = Dispatcher.RunIdleAsync( x => {
+				Logs.Add( new LogArgs( id, content, level, Signal.LOG ) );
+				while ( 1000 < Logs.Count )
+				{
+					Logs.RemoveAt( 0 );
+				}
+			} );
+		}
 
 	}
 }

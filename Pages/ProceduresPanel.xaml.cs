@@ -399,11 +399,5 @@ namespace GFlow.Pages
 			RunLog.ScrollIntoView( RunLog.SelectedItem );
 		}
 
-		public class PanelLog
-		{
-			public string ID;
-			public LogType LogType;
-		}
-
 	}
 }

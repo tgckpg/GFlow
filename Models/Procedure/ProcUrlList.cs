@@ -15,7 +15,6 @@ using Net.Astropenguin.UI.Icons;
 namespace GFlow.Models.Procedure
 {
 	using Controls;
-	using Crawler;
 	using Models.Interfaces;
 
 	class ProcUrlList : Procedure
@@ -26,6 +25,8 @@ namespace GFlow.Models.Procedure
 		public bool Incoming { get; set; }
 		public bool Delimited { get; set; }
 		public string Prefix { get; set; }
+
+		public override Type PropertyPage => typeof( Dialogs.EditProcUrlList );
 
 		protected override IconBase Icon { get { return new IconTOC() { AutoScale = true }; } }
 		protected override Color BgColor { get { return Colors.Brown; } }
@@ -131,7 +132,7 @@ namespace GFlow.Models.Procedure
 
 		public override async Task Edit()
 		{
-			await Popups.ShowDialog( new Dialogs.EditProcUrlList( this ) );
+			// await Popups.ShowDialog( new Dialogs.EditProcUrlList( this ) );
 		}
 
 		public override void ReadParam( XParameter Param )

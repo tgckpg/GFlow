@@ -1,4 +1,4 @@
-﻿<ContentDialog
+﻿<Page
     x:Class="GFlow.Dialogs.EditProcUrlList"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -6,94 +6,50 @@
     xmlns:i="using:Net.Astropenguin.UI.Icons"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Style="{StaticResource ScrollContentDialog}"
-    Background="#111"
-    PrimaryButtonText="Button1"
-    PrimaryButtonClick="AddRemainingUrl"
-    IsSecondaryButtonEnabled="False">
-    <ContentDialog.Title>
-        <TextBlock x:Uid="/GFlow/Resources/UrlList"
-                   Text="Edit UrlList" Foreground="White" />
-    </ContentDialog.Title>
+    mc:Ignorable="d">
 
-    <Grid>
+    <Grid Margin="5">
+        <Grid.Resources>
+            <MenuFlyout x:Key="UrlContext">
+                <MenuFlyoutItem Text="Preview" Click="PreviewUrl" />
+                <MenuFlyoutItem Text="Remove" Click="RemoveUrl" />
+            </MenuFlyout>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel>
             <TextBox x:Name="PrefixInput" x:Uid="/GFlow/Resources/Prefix"
-                     Margin="0,10"
                      PlaceholderText="Prefix" LostFocus="SetPrefix" />
-            <CheckBox x:Name="IncomingCheck" Foreground="White"
-                      Unchecked="SetIncoming" Checked="SetIncoming" >
-                <TextBlock x:Uid="/GFlow/Resources/Incoming" Foreground="White" Text="Incoming" />
-            </CheckBox>
-            <CheckBox x:Name="DelimitedCheck" Foreground="White"
-                      Unchecked="SetDelimited" Checked="SetDelimited" >
-                <TextBlock x:Uid="/GFlow/Resources/Delimited" Foreground="White" Text="Delimited by line breaks" />
-            </CheckBox>
+            <ToggleSwitch x:Name="IncomingCheck" Toggled="SetIncoming">
+                <TextBlock x:Uid="/GFlow/Resources/Incoming" Text="Incoming" />
+            </ToggleSwitch>
+            <ToggleSwitch x:Name="DelimitedCheck" Toggled="SetDelimited">
+                <TextBlock x:Uid="/GFlow/Resources/Delimited" Text="Delimited by line breaks" />
+            </ToggleSwitch>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBox x:Name="UrlInput"
-                         Grid.Column="0" Margin="10,0,10,10" />
-                <Button Style="{StaticResource IconButton}"
-                        Grid.Column="1"
+                         Grid.Column="0" />
+                <Button Grid.Column="1"
                         HorizontalAlignment="Center" VerticalAlignment="Center"
-                        Width="40" Height="40"
                         Click="AddUrl">
-                    <i:IconPlusSign AutoScale="True"/>
+                    <SymbolIcon Symbol="Add" />
                 </Button>
             </Grid>
         </StackPanel>
         <ListView x:Name="UrlList" Grid.Row="1">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Button Style="{StaticResource IconButton}"
-                                Grid.Column="0"
-                                HorizontalAlignment="Center" VerticalAlignment="Center"
-                                Width="30" Height="30"
-                                Click="PreviewUrl">
-                            <i:IconSearch AutoScale="True"/>
-                        </Button>
-
-                        <Button Style="{StaticResource IconButton}"
-                                Grid.Column="1"
-                                HorizontalAlignment="Center" VerticalAlignment="Center"
-                                Width="30" Height="30"
-                                Click="RemoveUrl">
-                            <i:IconCross AutoScale="True"/>
-                        </Button>
-
-                        <TextBlock Grid.Column="2" Foreground="White"
-                                   Text="{Binding}" Margin="5"
-                                   TextTrimming="WordEllipsis"
-                                   VerticalAlignment="Center"/>
-                    </Grid>
+                    <Border RightTapped="Border_RightTapped" FlyoutBase.AttachedFlyout="{StaticResource UrlContext}">
+                        <TextBlock Text="{Binding}" TextTrimming="WordEllipsis" />
+                    </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Grid x:Name="FrameContainer" Grid.Row="1" Visibility="Collapsed">
-            <Frame x:Name="Frame" />
-            <Button Style="{StaticResource IconButton}"
-                    Grid.Column="1"
-                    HorizontalAlignment="Right" VerticalAlignment="Top"
-                    Width="30" Height="30"
-                    Margin="5"
-                    Click="CloseFrame">
-                <i:IconCross AutoScale="True"/>
-            </Button>
-        </Grid>
     </Grid>
-</ContentDialog>
+</Page>

@@ -81,7 +81,7 @@ namespace GFlow.Dialogs
 				IEnumerable<IStorageFile> ISF = Convoy.Payload as IEnumerable<IStorageFile>;
 				if( ISF != null )
 				{
-					Preview.Navigate( Shared.SourceView, ISF.First() );
+					// Preview.Navigate( Shared.SourceView, ISF.First() );
 				}
 			}
 		}

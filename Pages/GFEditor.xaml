@@ -7,6 +7,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+    <Page.Resources>
+        <Style x:Key="LogStyle" TargetType="ListViewItem">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="MinWidth" Value="0"/>
+            <Setter Property="MinHeight" Value="0"/>
+        </Style>
+    </Page.Resources>
 
     <Grid Background="#FF666666">
         <Grid.ColumnDefinitions>
@@ -24,29 +31,58 @@
                            DragOver="DrawBoard_DragOver"
                            DragLeave="DrawBoard_DragLeave"/>
 
-        <Rectangle Height="10" Grid.Row="1" Fill="#444" />
+        <StackPanel Grid.Row="1" Orientation="Horizontal"
+                    Background="#222"
+                    BorderThickness="0,0,0,3" BorderBrush="{ThemeResource SystemControlForegroundAccentBrush}">
+            <Button x:Name="BtnProcList" Click="ProcList_Click" Background="{ThemeResource SystemControlForegroundAccentBrush}">
+                <TextBlock Text="Procedures" />
+            </Button>
+            <Button x:Name="BtnPreview" Click="Preview_Click">
+                <TextBlock Text="Preview" />
+            </Button>
+            <Button x:Name="BtnOutput" Click="Output_Click">
+                <TextBlock Text="Output" />
+            </Button>
+        </StackPanel>
 
-        <GridView x:Name="ProceduresList"
-                  Grid.Column="0" Grid.Row="2"
-                  ItemsSource="{Binding ProcChoices}"
-                  CanDragItems="True"
-                  DragItemsStarting="ProceduresList_DragItemsStarting"
-                  DragItemsCompleted="ProceduresList_DragItemsCompleted"
-                  ScrollViewer.VerticalScrollMode="Disabled"
-                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                  ScrollViewer.HorizontalScrollMode="Enabled"
-                  Height="155"
-                  DisplayMemberPath="Value" SelectedValuePath="Key"
-                  Background="#222">
-            <GridView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <ItemsWrapGrid Orientation="Vertical" ItemWidth="200" />
-                </ItemsPanelTemplate>
-            </GridView.ItemsPanel>
-        </GridView>
-        <Frame x:Name="PropertyPanel"
-               Background="#AAA"
-               Width="300"
-               Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"/>
+        <Grid Grid.Column="0" Grid.Row="2"
+              Background="#222" Height="155">
+            <GridView x:Name="ProceduresList"
+                      ItemsSource="{Binding ProcChoices}"
+                      CanDragItems="True"
+                      DragItemsStarting="ProceduresList_DragItemsStarting"
+                      DragItemsCompleted="ProceduresList_DragItemsCompleted"
+                      ScrollViewer.VerticalScrollMode="Disabled"
+                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                      ScrollViewer.HorizontalScrollMode="Enabled"
+                      DisplayMemberPath="Value" SelectedValuePath="Key">
+                <GridView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsWrapGrid Orientation="Vertical" ItemWidth="200" />
+                    </ItemsPanelTemplate>
+                </GridView.ItemsPanel>
+            </GridView>
+
+            <Frame x:Name="Preview" Visibility="Collapsed" />
+
+            <ListView x:Name="RunLog" Margin="5"
+                      Visibility="Collapsed"
+                      ItemContainerStyle="{StaticResource LogStyle}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock FontFamily="Lucida Console"
+                                   TextWrapping="Wrap"
+                                   Text="{Binding LogLine}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+
+        <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"
+                Background="#222"
+                BorderThickness="5,0,0,0" BorderBrush="#444">
+            <Frame x:Name="PropertyPanel" Width="250" />
+        </Border>
+
     </Grid>
 </Page>

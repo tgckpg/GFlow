@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Margin="5">
+    <Grid>
         <Grid.Resources>
             <MenuFlyout x:Key="UrlContext">
                 <MenuFlyoutItem Text="Preview" Click="PreviewUrl" />
@@ -20,24 +20,35 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel>
+            <TextBlock x:Uid="/GFlow/Resources/UrlListPrefixDesc" TextWrapping="Wrap" />
             <TextBox x:Name="PrefixInput" x:Uid="/GFlow/Resources/Prefix"
+                     BorderThickness="1"
                      PlaceholderText="Prefix" LostFocus="SetPrefix" />
-            <ToggleSwitch x:Name="IncomingCheck" Toggled="SetIncoming">
-                <TextBlock x:Uid="/GFlow/Resources/Incoming" Text="Incoming" />
+            <ToggleSwitch x:Name="IncomingCheck" Margin="0,10,0,0" Toggled="SetIncoming">
+                <StackPanel>
+                    <TextBlock x:Uid="/GFlow/Resources/Incoming" Text="Incoming" />
+                    <TextBlock x:Uid="/GFlow/Resources/IncomingDesc"
+                               Foreground="#AAA" TextWrapping="Wrap"
+                               Text="IncomingDesc" />
+                </StackPanel>
             </ToggleSwitch>
             <ToggleSwitch x:Name="DelimitedCheck" Toggled="SetDelimited">
                 <TextBlock x:Uid="/GFlow/Resources/Delimited" Text="Delimited by line breaks" />
             </ToggleSwitch>
+            <TextBlock x:Uid="/GFlow/Resources/Parameters"
+                       Margin="0,10,0,0" Text="Parameters" />
+            <TextBlock x:Uid="/GFlow/Resources/UrlList_Param_Desc"
+                       TextWrapping="Wrap"
+                       Foreground="#AAA" Text="UrlList_Param_Desc" />
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="UrlInput"
-                         Grid.Column="0" />
-                <Button Grid.Column="1"
+                <TextBox x:Name="UrlInput" BorderThickness="1" Grid.Column="0" />
+                <Button Grid.Column="1" Style="{ThemeResource TextBlockButtonStyle}"
                         HorizontalAlignment="Center" VerticalAlignment="Center"
-                        Click="AddUrl">
+                        Foreground="#AAA" Click="AddUrl">
                     <SymbolIcon Symbol="Add" />
                 </Button>
             </Grid>
@@ -46,7 +57,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Border RightTapped="Border_RightTapped" FlyoutBase.AttachedFlyout="{StaticResource UrlContext}">
-                        <TextBlock Text="{Binding}" TextTrimming="WordEllipsis" />
+                        <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" />
                     </Border>
                 </DataTemplate>
             </ListView.ItemTemplate>

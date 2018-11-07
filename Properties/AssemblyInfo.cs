@@ -31,3 +31,4 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("wenku10")]
 [assembly: InternalsVisibleTo("GR")]
 [assembly: InternalsVisibleTo("Tasks")]
+[assembly: InternalsVisibleTo("GFlowDev")]

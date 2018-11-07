@@ -21,9 +21,9 @@
             <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition />
+            <RowDefinition x:Name="MasterGrid_R0" />
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
+            <RowDefinition x:Name="MasterGrid_R2" Height="auto" />
         </Grid.RowDefinitions>
 
         <msc:CanvasControl x:Name="DrawBoard"
@@ -45,7 +45,16 @@
             </Button>
         </StackPanel>
 
-        <Grid Grid.Column="0" Grid.Row="2"
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" >
+            <Button x:Name="BtnToggleFull"
+                    Style="{ThemeResource ButtonRevealStyle}"
+                    Background="Transparent" VerticalAlignment="Stretch"
+                    Click="ToggleFull_Click">
+                <FontIcon FontSize="17" Glyph="&#xE1D9;"/>
+            </Button>
+        </StackPanel>
+
+        <Grid x:Name="ContentGrid" Grid.Column="0" Grid.Row="2"
               Background="#222" Height="155">
             <GridView x:Name="ProceduresList"
                       ItemsSource="{Binding ProcChoices}"
@@ -68,6 +77,9 @@
             <ListView x:Name="RunLog" Margin="5"
                       Visibility="Collapsed"
                       ItemContainerStyle="{StaticResource LogStyle}">
+                <ListView.ItemContainerTransitions>
+                    <TransitionCollection />
+                </ListView.ItemContainerTransitions>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock FontFamily="Lucida Console"
@@ -78,11 +90,12 @@
             </ListView>
         </Grid>
 
-        <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"
-                Background="#222"
-                BorderThickness="5,0,0,0" BorderBrush="#444">
-            <Frame x:Name="PropertyPanel" Width="250" />
-        </Border>
+        <!-- Property Panel -->
+        <ScrollViewer Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"
+                      Background="#222"
+                      BorderThickness="5,0,0,0" BorderBrush="#444">
+            <Frame x:Name="PropertyPanel" Margin="10" Width="300" />
+        </ScrollViewer>
 
     </Grid>
 </Page>

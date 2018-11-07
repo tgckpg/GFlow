@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
+using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -21,6 +22,7 @@ using Net.Astropenguin.Messaging;
 namespace GFlow.Pages
 {
 	using Controls;
+	using Resources;
 	using Models.Procedure;
 
 	public sealed partial class GFEditor : Page
@@ -120,6 +122,23 @@ namespace GFlow.Pages
 			{
 				ActivateTab( Btn );
 				RunLog.Visibility = Visibility.Visible;
+				BtnOutput.FontWeight = FontWeights.Normal;
+			}
+		}
+
+		private void ToggleFull_Click( object sender, RoutedEventArgs e )
+		{
+			if ( MasterGrid_R0.Height.IsStar )
+			{
+				MasterGrid_R0.Height = new GridLength( 0 );
+				MasterGrid_R2.Height = new GridLength( 1, GridUnitType.Star );
+				ContentGrid.Height = double.NaN;
+			}
+			else
+			{
+				MasterGrid_R0.Height = new GridLength( 1, GridUnitType.Star );
+				MasterGrid_R2.Height = GridLength.Auto;
+				ContentGrid.Height = 155;
 			}
 		}
 
@@ -145,11 +164,20 @@ namespace GFlow.Pages
 			if ( Mesg.TargetType != GetType() ) return;
 
 			// Procedure Run
-			if( Mesg.Content == "RUN" )
+			if ( Mesg.Content == "RUN" )
 			{
 				if ( Running ) return;
 				PM.ActiveRange( 0, PM.ProcList.IndexOf( Mesg.Payload as Procedure ) + 1 );
 				// ProcRun( true );
+			}
+			else if ( Mesg.Content == "PREVIEW" )
+			{
+				var j = Dispatcher.RunIdleAsync( x =>
+				{
+					ActivateTab( BtnPreview );
+					Preview.Visibility = Visibility.Visible;
+					Preview.Navigate( Shared.SourceView, Mesg.Payload );
+				} );
 			}
 			// Append Logs
 			else if ( Mesg.Payload is PanelLog PLog )
@@ -162,6 +190,12 @@ namespace GFlow.Pages
 		{
 			var j = Dispatcher.RunIdleAsync( x => {
 				Logs.Add( new LogArgs( id, content, level, Signal.LOG ) );
+
+				if ( RunLog.Visibility != Visibility.Visible )
+				{
+					BtnOutput.FontWeight = FontWeights.Bold;
+				}
+
 				while ( 1000 < Logs.Count )
 				{
 					Logs.RemoveAt( 0 );

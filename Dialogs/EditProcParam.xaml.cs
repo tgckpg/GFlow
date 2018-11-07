@@ -22,50 +22,46 @@ using GFlow.Models.Procedure;
 
 namespace GFlow.Dialogs
 {
-	sealed partial class EditProcParam : ContentDialog
+	sealed partial class EditProcParam : Page
 	{
 		public static readonly string ID = typeof( EditProcParam ).Name;
 
 		private ProcParameter EditTarget;
 		private ProceduralSpider MCrawler;
 
-		private EditProcParam()
+		public EditProcParam()
 		{
-			this.InitializeComponent();
+			InitializeComponent();
 			MCrawler = new ProceduralSpider( new Procedure[ 0 ] );
-			SetTemplate();
 		}
 
-		private void SetTemplate()
+		protected override void OnNavigatedTo( NavigationEventArgs e )
 		{
-			StringResources stx = StringResources.Load( "/GFlow/Message" );
-			PrimaryButtonText = stx.Str( "OK" );
-		}
-
-		public EditProcParam( ProcParameter EditTarget )
-			: this()
-		{
-			this.EditTarget = EditTarget;
-
-			if ( EditTarget.ParamDefs.Count == 0 )
+			base.OnNavigatedTo( e );
+			if ( e.Parameter is ProcParameter EditTarget )
 			{
-				EditTarget.ParamDefs.Add( new ProcParameter.ParamDef( "", "" ) );
+				this.EditTarget = EditTarget;
+
+				if ( EditTarget.ParamDefs.Count == 0 )
+				{
+					EditTarget.ParamDefs.Add( new ProcParameter.ParamDef( "", "" ) );
+				}
+
+				ParamControl.DataContext = EditTarget;
+				IncomingCheck.IsOn = EditTarget.Incoming;
+
+				if ( !string.IsNullOrEmpty( EditTarget.TemplateStr ) )
+				{
+					TemplateStr.Text = EditTarget.TemplateStr;
+				}
+
+				if ( !string.IsNullOrEmpty( EditTarget.Caption ) )
+				{
+					Caption.Text = EditTarget.Caption;
+				}
+
+				FormattedOutput.Text = EditTarget.ApplyParams( MCrawler );
 			}
-
-			ParamControl.DataContext = EditTarget;
-			IncomingCheck.IsChecked = EditTarget.Incoming;
-
-			if ( !string.IsNullOrEmpty( EditTarget.TemplateStr ) )
-			{
-				TemplateStr.Text = EditTarget.TemplateStr;
-			}
-
-			if( !string.IsNullOrEmpty( EditTarget.Caption ) )
-			{
-				Caption.Text = EditTarget.Caption;
-			}
-
-			FormattedOutput.Text = EditTarget.ApplyParams( MCrawler );
 		}
 
 		private void AddDef( object sender, RoutedEventArgs e )
@@ -103,7 +99,7 @@ namespace GFlow.Dialogs
 
 		private void SetIncoming( object sender, RoutedEventArgs e )
 		{
-			EditTarget.Incoming = ( bool ) IncomingCheck.IsChecked;
+			EditTarget.Incoming = IncomingCheck.IsOn;
 		}
 
 		private void SetTemplateStr( object sender, RoutedEventArgs e )

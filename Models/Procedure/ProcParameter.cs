@@ -26,6 +26,7 @@ namespace GFlow.Models.Procedure
 	class ProcParameter : Procedure
 	{
 		public static readonly string ID = typeof( ProcParameter ).Name;
+		public override Type PropertyPage => typeof( Dialogs.EditProcParam );
 
 		public RunMode Mode { get; set; }
 
@@ -215,7 +216,7 @@ namespace GFlow.Models.Procedure
 
 		public override async Task Edit()
 		{
-			await Popups.ShowDialog( new Dialogs.EditProcParam( this ) );
+			// await Popups.ShowDialog( new Dialogs.EditProcParam( this ) );
 		}
 
 		private async Task<ProcConvoy> IncomingTemplates( ICrawler Crawler, ProcConvoy UsableConvoy )

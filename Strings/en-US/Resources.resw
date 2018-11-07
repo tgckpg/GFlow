@@ -159,6 +159,9 @@
   <data name="Incoming.Text" xml:space="preserve">
     <value>Incoming</value>
   </data>
+  <data name="IncomingDesc.Text" xml:space="preserve">
+    <value>This procedure will take incoming messages as it's parameters.</value>
+  </data>
   <data name="Key.Text" xml:space="preserve">
     <value>Key</value>
   </data>
@@ -179,6 +182,15 @@
   </data>
   <data name="ParamDefinitions.Text" xml:space="preserve">
     <value>Param Definitions</value>
+  </data>
+  <data name="Parameters.Text" xml:space="preserve">
+    <value>Parameters</value>
+  </data>
+  <data name="ParamSourceMode.Text" xml:space="preserve">
+    <value>Source mode</value>
+  </data>
+  <data name="ParamTmplStrDesc.Text" xml:space="preserve">
+    <value>Input will be combine with this templated string and output to the next procedure.</value>
   </data>
   <data name="Pattern.PlaceholderText" xml:space="preserve">
     <value>Pattern</value>
@@ -212,5 +224,11 @@
   </data>
   <data name="UrlList.Text" xml:space="preserve">
     <value>Url List</value>
+  </data>
+  <data name="UrlListPrefixDesc.Text" xml:space="preserve">
+    <value>For all incoming / defined messages. Prefix all Urls with the following string.</value>
+  </data>
+  <data name="UrlList_Param_Desc.Text" xml:space="preserve">
+    <value>Resources will be downloaded for each defined Urls and passed to the next procedure.</value>
   </data>
 </root>

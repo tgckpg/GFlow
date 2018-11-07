@@ -12,6 +12,15 @@ namespace GFlow.Models.Interfaces
 	interface ISubProcedure
 	{
 		ProcManager SubProcedures { get; set; }
-		void SubEditComplete();
+	}
+
+	interface IProcessNode : ISubProcedure
+	{
+		string Key { get; }
+	}
+
+	interface IProcessList
+	{
+		IList<IProcessNode> ProcessNodes { get; }
 	}
 }

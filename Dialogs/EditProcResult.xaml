@@ -40,7 +40,7 @@
                 <SymbolIcon Symbol="Add" />
             </Button>
         </Grid>
-        <ItemsControl ItemsSource="{Binding OutputDefs}"
+        <ItemsControl ItemsSource="{Binding ProcessNodes}"
                       Visibility="{Binding IsOutput, Converter={StaticResource DataVisConverter}}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>

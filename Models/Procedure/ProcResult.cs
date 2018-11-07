@@ -17,21 +17,12 @@ namespace GFlow.Models.Procedure
 {
 	using Controls;
 	using Interfaces;
-	using Pages;
 
-	class ProcResult : Procedure, ISubProcedure
+	class ProcResult : Procedure, IProcessList
 	{
 		public static readonly string ID = typeof( ProcResult ).Name;
 
-		public OutputDef SubEdit { get; set; }
-
-		public ProcManager SubProcedures
-		{
-			get { return SubEdit.SubProc; } 
-			set { throw new InvalidOperationException(); }
-		}
-
-		public ObservableCollection<OutputDef> OutputDefs { get; private set; }
+		public IList<IProcessNode> ProcessNodes { get; set; }
 
 		public RunMode Mode { get; set; }
 		public bool IsOutput { get { return Mode == RunMode.OUTPUT; } }
@@ -50,7 +41,7 @@ namespace GFlow.Models.Procedure
 			: base( ProcType.RESULT )
 		{
 			Key = "Key-1";
-			OutputDefs = new ObservableCollection<OutputDef>();
+			ProcessNodes = new ObservableCollection<IProcessNode>();
 			SetMode( RunMode.DEFINE );
 		}
 
@@ -86,7 +77,7 @@ namespace GFlow.Models.Procedure
 			if ( Mode == RunMode.OUTPUT )
 			{
 				ProcConvoy UsableConvoy;
-				foreach ( OutputDef Def in OutputDefs )
+				foreach ( OutputDef Def in ProcessNodes )
 				{
 					if ( Def.Key == Key && HasUsableConvoy )
 					{
@@ -141,10 +132,10 @@ namespace GFlow.Models.Procedure
 
 		private async Task<object> SubprocRun( ICrawler Crawler, OutputDef Def, object Input )
 		{
-			if ( Def != null && Def.SubProc.HasProcedures )
+			if ( Def != null && Def.SubProcedures.HasProcedures )
 			{
 				Crawler.PLog( this, Res.RSTR( "SubProcRun" ), LogType.INFO );
-				ProcConvoy SubConvoy = await Def.SubProc.CreateSpider( Crawler ).Crawl( new ProcConvoy( null, Input ) );
+				ProcConvoy SubConvoy = await Def.SubProcedures.CreateSpider( Crawler ).Crawl( new ProcConvoy( null, Input ) );
 
 				// Process ReceivedConvoy
 				if ( SubConvoy.Payload is string
@@ -159,16 +150,6 @@ namespace GFlow.Models.Procedure
 
 		public override async Task Edit()
 		{
-			// await Popups.ShowDialog( new Dialogs.EditProcResult( this ) );
-			if ( SubEdit != null )
-			{
-				MessageBus.Send( typeof( ProceduresPanel ), "SubEdit", this );
-			}
-		}
-
-		public void SubEditComplete()
-		{
-			SubEdit = null;
 		}
 
 		public override void ReadParam( XParameter Param )
@@ -180,7 +161,7 @@ namespace GFlow.Models.Procedure
 			XParameter[] ExtParams = Param.Parameters( "i" );
 			foreach ( XParameter ExtParam in ExtParams )
 			{
-				OutputDefs.Add( new OutputDef( ExtParam ) );
+				ProcessNodes.Add( new OutputDef( ExtParam ) );
 			}
 
 			SetMode( Param.GetValue( "Mode" ) );
@@ -196,7 +177,7 @@ namespace GFlow.Models.Procedure
 			} );
 
 			int i = 0;
-			foreach( OutputDef Extr in OutputDefs )
+			foreach( OutputDef Extr in ProcessNodes )
 			{
 				XParameter ExtParam = Extr.ToXParam();
 				ExtParam.Id += i;
@@ -229,16 +210,18 @@ namespace GFlow.Models.Procedure
 			NotifyChanged( "RawModeName", "ModeName", "IsOutput" );
 		}
 
-		public class OutputDef
+		public class OutputDef : IProcessNode, IGFLabelOwner
 		{
-			public ProcManager SubProc { get; set; }
+			public ProcManager SubProcedures { get; set; }
+
+			public string Label => Key;
 
 			public string Key { get; set; }
-			public bool HasSubProcs { get { return SubProc.HasProcedures; } }
+			public bool HasSubProcs => SubProcedures.HasProcedures;
 
 			public OutputDef()
 			{
-				SubProc = new ProcManager();
+				SubProcedures = new ProcManager();
 				Key = "Key-1";
 			}
 
@@ -248,7 +231,7 @@ namespace GFlow.Models.Procedure
 				Key = Param.GetValue( "Key" ) ?? "Key-1";
 
 				XParameter Sub = Param.Parameter( "SubProc" );
-				if ( Sub != null ) SubProc.ReadParam( Sub );
+				if ( Sub != null ) SubProcedures.ReadParam( Sub );
 			}
 
 			public XParameter ToXParam()
@@ -257,7 +240,7 @@ namespace GFlow.Models.Procedure
 
 				Param.SetValue( new XKey( "Key", Key ) );
 
-				XParameter SubParam = SubProc.ToXParam();
+				XParameter SubParam = SubProcedures.ToXParam();
 				SubParam.Id = "SubProc";
 				Param.SetParameter( SubParam );
 

@@ -179,6 +179,10 @@ namespace GFlow.Pages
 					Preview.Navigate( Shared.SourceView, Mesg.Payload );
 				} );
 			}
+			else if ( Mesg.Content == "REDRAW" )
+			{
+				DrawBoard.Invalidate();
+			}
 			// Append Logs
 			else if ( Mesg.Payload is PanelLog PLog )
 			{

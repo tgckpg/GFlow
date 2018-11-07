@@ -69,7 +69,17 @@ namespace GFlow.Controls
 
 		public Vector2 DrawOffset { get; set; }
 
+		public WeakReference<Action<bool>> CCRefresh { get; } = new WeakReference<Action<bool>>( null );
+
 		abstract public void Draw( CanvasDrawingSession ds, GFElement Parent, GFElement Prev );
+
+		protected void TriggerRedraw( bool IntegrityCheck )
+		{
+			if ( CCRefresh.TryGetTarget( out Action<bool> Redraw ) )
+			{
+				Redraw( IntegrityCheck );
+			}
+		}
 	}
 
 	interface IBorder
@@ -80,6 +90,7 @@ namespace GFlow.Controls
 
 	interface IForeground { Color FGFill { get; set; } }
 	interface IBackground { Color BGFill { get; set; } }
+	interface IGFLabelOwner { string Label { get; } }
 
 	interface IGFContainer
 	{

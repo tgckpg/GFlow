@@ -13,6 +13,9 @@ namespace GFlow.Controls.GraphElements
 	{
 		public Color LineBrush { get; set; } = Colors.Black;
 
+		public GFSynapse From => L is GFSynapseL ? L : R;
+		public GFSynapse To => L is GFSynapseR ? L : R;
+
 		private GFSynapse L;
 		private GFSynapse R;
 
@@ -28,6 +31,11 @@ namespace GFlow.Controls.GraphElements
 				L = To;
 				R = From;
 			}
+		}
+
+		public bool IsBetween( GFSynapse L, GFSynapse R )
+		{
+			return ( L == this.L && R == this.R ) || ( L == this.R && R == this.L );
 		}
 
 		public override void Draw( CanvasDrawingSession ds, GFElement Parent, GFElement Prev )

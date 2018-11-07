@@ -96,6 +96,25 @@ namespace GFlow.Controls
 			} );
 		}
 
+		private void Refresh( bool IntegrityCheck )
+		{
+			if ( IntegrityCheck )
+			{
+				// Get all synapses
+				List<GFElement> DrawElements = new List<GFElement>();
+				WalkElements( this, DrawElements, x => x is GraphElements.GFSynapse );
+
+				// Link is broken if it contains synapse that is not drawn, remove them
+				Children
+					.OfType<GraphElements.GFLink>()
+					.Where( x => !( DrawElements.Contains( x.From ) && DrawElements.Contains( x.To ) ) )
+					.ToArray()
+					.ExecEach( x => Children.Remove( x ) );
+			}
+
+			Stage.Invalidate();
+		}
+
 		private void DrawR( CanvasDrawingSession ds, IGFContainer Container )
 		{
 			GFElement GCElem = Container as GFElement;
@@ -103,6 +122,7 @@ namespace GFlow.Controls
 			{
 				if ( s < 2 )
 				{
+					b.CCRefresh.SetTarget( Refresh );
 					b.Draw( ds, GCElem, a );
 					if ( b is IGFContainer GFC )
 					{
@@ -110,6 +130,22 @@ namespace GFlow.Controls
 					}
 				}
 			} );
+		}
+
+		private void WalkElements( IGFContainer Container, List<GFElement> Elements, Func<GFElement, bool> Filter )
+		{
+			foreach ( GFElement b in Container.Children )
+			{
+				if ( Filter( b ) )
+				{
+					Elements.Add( b );
+				}
+
+				if ( b is IGFContainer GFC )
+				{
+					WalkElements( GFC, Elements, Filter );
+				}
+			}
 		}
 
 		private void Stage_PointerMoved( object sender, PointerRoutedEventArgs e )

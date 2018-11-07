@@ -6,16 +6,11 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-using Net.Astropenguin.Helpers;
-using Net.Astropenguin.IO;
-using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Messaging;
 
 namespace GFlow.Dialogs
 {
 	using Models.Procedure;
-	using Pages;
-	using Resources;
 
 	sealed partial class EditProcResult : Page
 	{
@@ -32,19 +27,10 @@ namespace GFlow.Dialogs
 			if ( e.Parameter is ProcResult EditTarget )
 			{
 				this.EditTarget = EditTarget;
-				EditTarget.SubEditComplete();
 
 				LayoutRoot.DataContext = EditTarget;
-
 				KeyInput.Text = EditTarget.Key;
 			}
-		}
-
-		private void Subprocess( object sender, RoutedEventArgs e )
-		{
-			ProcResult.OutputDef PropDef = ( ProcResult.OutputDef ) ( sender as Button ).DataContext;
-			EditTarget.SubEdit = PropDef;
-			Popups.CloseDialog();
 		}
 
 		private void ToggleMode( object sender, RoutedEventArgs e )
@@ -59,13 +45,13 @@ namespace GFlow.Dialogs
 
 		private void AddOutputDef( object sender, RoutedEventArgs e )
 		{
-			EditTarget.OutputDefs.Add( new ProcResult.OutputDef() );
+			EditTarget.ProcessNodes.Add( new ProcResult.OutputDef() );
 		}
 
 		private void RemoveOutputDef( object sender, RoutedEventArgs e )
 		{
 			Button B = ( Button ) sender;
-			EditTarget.OutputDefs.Remove( ( ProcResult.OutputDef ) B.DataContext );
+			EditTarget.ProcessNodes.Remove( ( ProcResult.OutputDef ) B.DataContext );
 		}
 
 		private void SetDefKey( object sender, RoutedEventArgs e )
@@ -73,6 +59,7 @@ namespace GFlow.Dialogs
 			TextBox Input = ( TextBox ) sender;
 			ProcResult.OutputDef Item = ( ProcResult.OutputDef ) Input.DataContext;
 			Item.Key = Input.Text;
+			MessageBus.Send( typeof( Pages.GFEditor ), "REDRAW" );
 		}
 
 	}

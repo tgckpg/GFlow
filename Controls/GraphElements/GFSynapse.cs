@@ -55,9 +55,16 @@ namespace GFlow.Controls.GraphElements
 			DrawConnector = false;
 			TargetEndPoints = null;
 
-			if( SnappedTarget != null )
+			if ( SnappedTarget != null )
 			{
-				( ( GFDrawBoard ) sender ).Children.Add( new GFLink( this, SnappedTarget ) );
+				GFDrawBoard DrawBoard = ( GFDrawBoard ) sender;
+
+				if ( DrawBoard.FilterElements<GFLink>().Any( x => x.IsBetween( this, SnappedTarget ) ) )
+				{
+					return;
+				}
+
+				DrawBoard.Children.Add( new GFLink( this, SnappedTarget ) );
 			}
 		}
 

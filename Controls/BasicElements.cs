@@ -21,7 +21,13 @@ namespace GFlow.Controls.BasicElements
 		public Boundary Padding { get; set; } = new Boundary( 5, 10 );
 
 		public CanvasTextFormat LabelFormat { get; set; } = new CanvasTextFormat() { FontSize = 18 };
-		public string Label { get; set; } = "Text Label";
+
+		protected string _Label = "Text Label";
+		public string Label
+		{
+			get { return LabelOwner?.Label ?? _Label; }
+			set { _Label = value; }
+		}
 
 		public Action<object, GFPointerEventArgs> MouseOver { get; set; }
 		public Action<object, GFPointerEventArgs> MouseOut { get; set; }
@@ -29,10 +35,17 @@ namespace GFlow.Controls.BasicElements
 		public Action<object, GFPointerEventArgs> MousePress { get; set; }
 		public Action<object, GFPointerEventArgs> MouseRelease { get; set; }
 
+		private IGFLabelOwner LabelOwner;
+
 		public GFButton()
 		{
 			Bounds.W = 200;
 			Bounds.H = 24;
+		}
+
+		public void SetLabelOwner( IGFLabelOwner LabelOwner )
+		{
+			this.LabelOwner = LabelOwner;
 		}
 
 		public override void Draw( CanvasDrawingSession ds, GFElement Parent, GFElement Prev )

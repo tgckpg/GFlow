@@ -28,6 +28,7 @@ namespace GFlow.Models.Procedure
 		public int CodePage { get; set; }
 		public bool DecodeHtml { get; set; }
 
+		public override Type PropertyPage => typeof( Dialogs.EditProcEncoding );
 		protected override IconBase Icon { get { return new IconRetract() { AutoScale = true }; } }
 		protected override Color BgColor { get { return Colors.MidnightBlue; } }
 
@@ -127,7 +128,7 @@ namespace GFlow.Models.Procedure
 
 		public override async Task Edit()
 		{
-			await Popups.ShowDialog( new Dialogs.EditProcEncoding( this ) );
+			// await Popups.ShowDialog( new Dialogs.EditProcEncoding( this ) );
 		}
 
 		public override void ReadParam( XParameter Param )

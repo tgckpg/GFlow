@@ -9,54 +9,21 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
     <Page.Resources>
-        <v:DataBoolConverter x:Name="DataBoolConverter" />
+        <v:DataVisConverter x:Name="DataVisConverter" />
     </Page.Resources>
 
-    <ScrollViewer x:Name="LayoutRoot">
-        <StackPanel Margin="5">
-            <TextBlock x:Uid="/GFlow/Resources/Script" Text="Edit Script" />
-            <Button Style="{StaticResource IconButton}"
-                    HorizontalAlignment="Left" VerticalAlignment="Center"
-                    Click="RunTilHere">
-                <Grid Height="30">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="30" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <ProgressRing x:Name="TestRunning" Width="30" Height="30" />
-                    <i:IconTestTube AutoScale="True" />
-                    <TextBlock Grid.Column="1" x:Uid="/GFlow/Resources/Test"
-                               Margin="5" Foreground="White"
-                               VerticalAlignment="Center" HorizontalAlignment="Center"
-                               Text="Test" />
-                </Grid>
+    <StackPanel x:Name="ScriptInput">
+        <StackPanel Background="#111"
+                    Visibility="{Binding ShortScript, Converter={StaticResource DataVisConverter}}">
+            <TextBlock Margin="10" Text="{Binding ShortScript}" FontFamily="Consolas" />
+            <Button Style="{ThemeResource TextBlockButtonStyle}"
+                    HorizontalAlignment="Right" Foreground="#AAA"
+                    Click="ExportScript">
+                <SymbolIcon Symbol="View" />
             </Button>
-            <Grid Grid.Row="2" x:Name="ScriptInput">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding ShortScript}" Grid.Row="0" />
-                <Button Style="{StaticResource IconButton}"
-                        Grid.Row="0" Grid.Column="1"
-                        Width="30" Height="30"
-                        HorizontalAlignment="Left" VerticalAlignment="Top"
-                        Click="OpenScript">
-                    <SymbolIcon Symbol="Download" />
-                </Button>
-                <Button Style="{StaticResource IconButton}"
-                        Grid.Row="0" Grid.Column="2"
-                        Width="30" Height="30"
-                        IsEnabled="{Binding ShortScript, Converter={StaticResource DataBoolConverter}}"
-                        HorizontalAlignment="Left" VerticalAlignment="Top"
-                        Click="ExportScript">
-                    <SymbolIcon Symbol="Save" />
-                </Button>
-            </Grid>
         </StackPanel>
-    </ScrollViewer>
+        <Button Click="OpenScript" Margin="10" HorizontalAlignment="Center">
+            <TextBlock Text="Open script file" />
+        </Button>
+    </StackPanel>
 </Page>

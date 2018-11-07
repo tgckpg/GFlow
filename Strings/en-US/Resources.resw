@@ -123,11 +123,20 @@
   <data name="Caption.PlaceholderText" xml:space="preserve">
     <value>Caption</value>
   </data>
+  <data name="CodePage.Text" xml:space="preserve">
+    <value>Code page</value>
+  </data>
+  <data name="CodePageDesc.Text" xml:space="preserve">
+    <value>Contents maybe encoded in different code pages. Setting this will make sure contents are correctly decoded to printable text for further processing.</value>
+  </data>
   <data name="ContinueIf.Text" xml:space="preserve">
     <value>Continue if match with url</value>
   </data>
   <data name="DecodeHtml.Text" xml:space="preserve">
     <value>Decode Html</value>
+  </data>
+  <data name="DecodeHtmlDesc.Text" xml:space="preserve">
+    <value>Translates Html encoded characters back to it's printing form. Such as "&amp;#x0416;" to "Ж".</value>
   </data>
   <data name="Default.PlaceholderText" xml:space="preserve">
     <value>Default value</value>
@@ -225,10 +234,10 @@
   <data name="UrlList.Text" xml:space="preserve">
     <value>Url List</value>
   </data>
+  <data name="UrlListParamDesc.Text" xml:space="preserve">
+    <value>Resources will be downloaded for each defined Urls and passed to the next procedure.</value>
+  </data>
   <data name="UrlListPrefixDesc.Text" xml:space="preserve">
     <value>For all incoming / defined messages. Prefix all Urls with the following string.</value>
-  </data>
-  <data name="UrlList_Param_Desc.Text" xml:space="preserve">
-    <value>Resources will be downloaded for each defined Urls and passed to the next procedure.</value>
   </data>
 </root>

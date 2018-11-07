@@ -56,6 +56,7 @@ namespace GFlow.Models.Procedure
 
 		private bool FirstStopped = false;
 
+		public override Type PropertyPage => typeof( Dialogs.EditProcGenerator );
 		protected override Color BgColor { get { return Colors.OrangeRed; } }
 
 		public ProcGenerator()
@@ -260,7 +261,7 @@ namespace GFlow.Models.Procedure
 
 		public override async Task Edit()
 		{
-			await Popups.ShowDialog( new Dialogs.EditProcGenerator( this ) );
+			// await Popups.ShowDialog( new Dialogs.EditProcGenerator( this ) );
 		}
 	}
 }

@@ -36,6 +36,7 @@ namespace GFlow.Models.Procedure
 		public string RawModeName { get; private set; }
 		public string ModeName { get { return ProcStrRes.Str( RawModeName ); } }
 
+		public override Type PropertyPage => typeof( Dialogs.EditProcFind );
 		protected override IconBase Icon { get { return new IconSearch() { AutoScale = true }; } }
 		protected override Color BgColor { get { return Colors.Purple; } }
 
@@ -92,7 +93,7 @@ namespace GFlow.Models.Procedure
 
 		public override async Task Edit()
 		{
-			await Popups.ShowDialog( new Dialogs.EditProcFind( this ) );
+			// await Popups.ShowDialog( new Dialogs.EditProcFind( this ) );
 		}
 
 		public async Task<IStorageFile> FilterContent( ICrawler Crawler, IStorageFile Src )

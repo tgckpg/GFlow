@@ -4,6 +4,7 @@ using System.Linq;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
 using Net.Astropenguin.Helpers;
 using Net.Astropenguin.IO;
@@ -16,35 +17,27 @@ namespace GFlow.Dialogs
 	using Pages;
 	using Resources;
 
-	sealed partial class EditProcResult : ContentDialog
+	sealed partial class EditProcResult : Page
 	{
 		private ProcResult EditTarget;
 
-		private IStorageFile TestResult;
-
-		private EditProcResult()
+		public EditProcResult()
 		{
 			this.InitializeComponent();
-			SetTemplate();
 		}
 
-		private void SetTemplate()
+		protected override void OnNavigatedTo( NavigationEventArgs e )
 		{
-			StringResources stx = StringResources.Load( "/GFlow/Message" );
-			PrimaryButtonText = stx.Str( "OK" );
+			base.OnNavigatedTo( e );
+			if ( e.Parameter is ProcResult EditTarget )
+			{
+				this.EditTarget = EditTarget;
+				EditTarget.SubEditComplete();
 
-			MessageBus.Subscribe( this, MessageBus_OnDelivery );
-		}
+				LayoutRoot.DataContext = EditTarget;
 
-		public EditProcResult( ProcResult EditTarget )
-			: this()
-		{
-			this.EditTarget = EditTarget;
-			EditTarget.SubEditComplete();
-
-			LayoutRoot.DataContext = EditTarget;
-
-			KeyInput.Text = EditTarget.Key;
+				KeyInput.Text = EditTarget.Key;
+			}
 		}
 
 		private void Subprocess( object sender, RoutedEventArgs e )
@@ -82,38 +75,5 @@ namespace GFlow.Dialogs
 			Item.Key = Input.Text;
 		}
 
-		private void RunTilHere( object sender, RoutedEventArgs e )
-		{
-			TestRunning.IsActive = true;
-			MessageBus.SendUI( typeof( ProceduresPanel ), "RUN", EditTarget );
-		}
-
-		private async void SaveResult( object sender, RoutedEventArgs e )
-		{
-			if( TestResult != null )
-			{
-				IStorageFile SaveTarget = await AppStorage.SaveFileAsync( "Test Result", new string[] { ".txt", ".html" } );
-				if ( SaveTarget == null ) return;
-
-				await TestResult.CopyAndReplaceAsync( SaveTarget );
-			}
-		}
-
-		private void MessageBus_OnDelivery( Message Mesg )
-		{
-			ProcConvoy Convoy = Mesg.Payload as ProcConvoy;
-			if ( Mesg.Content == "RUN_RESULT"
-				&& Convoy != null
-				&& Convoy.Dispatcher == EditTarget )
-			{
-				TestRunning.IsActive = false;
-
-				IEnumerable<IStorageFile> ISF = Convoy.Payload as IEnumerable<IStorageFile>;
-				if( ISF != null )
-				{
-					Preview.Navigate( Shared.SourceView, TestResult = ISF.First() );
-				}
-			}
-		}
 	}
 }

@@ -42,6 +42,7 @@ namespace GFlow.Models.Procedure
 		public string Key { get; set; }
 		public Dictionary<string, string> PrefixMap { get; set; }
 
+		public override Type PropertyPage => typeof( Dialogs.EditProcResult );
 		protected override Color BgColor { get { return Colors.Black; } }
 		protected override IconBase Icon { get { return new IconEEye() { AutoScale = true }; } }
 
@@ -158,7 +159,7 @@ namespace GFlow.Models.Procedure
 
 		public override async Task Edit()
 		{
-			await Popups.ShowDialog( new Dialogs.EditProcResult( this ) );
+			// await Popups.ShowDialog( new Dialogs.EditProcResult( this ) );
 			if ( SubEdit != null )
 			{
 				MessageBus.Send( typeof( ProceduresPanel ), "SubEdit", this );

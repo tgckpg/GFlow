@@ -26,7 +26,6 @@ namespace GFlow.Models.Procedure
 	class ProcParameter : Procedure
 	{
 		public static readonly string ID = typeof( ProcParameter ).Name;
-		public override Type PropertyPage => typeof( Dialogs.EditProcParam );
 
 		public RunMode Mode { get; set; }
 
@@ -40,6 +39,7 @@ namespace GFlow.Models.Procedure
 		public string RawModeName { get; private set; }
 		public string ModeName { get { return ProcStrRes.Str( RawModeName ); } }
 
+		public override Type PropertyPage => typeof( Dialogs.EditProcParam );
 		protected override IconBase Icon { get { return new IconInfo() { AutoScale = true }; } }
 		protected override Color BgColor { get { return Colors.RoyalBlue; } }
 

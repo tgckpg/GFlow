@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
+using Net.Astropenguin.Messaging;
 
 using GFlow.Crawler;
 using GFlow.Models.Procedure;
@@ -24,7 +25,7 @@ using GFlow.Resources;
 
 namespace GFlow.Dialogs
 {
-	sealed partial class EditProcFind : ContentDialog
+	sealed partial class EditProcFind : Page
 	{
 		public static readonly string ID = typeof( EditProcFind ).Name;
 
@@ -33,33 +34,29 @@ namespace GFlow.Dialogs
 		private ProcFind EditTarget;
 		private ProceduralSpider MCrawler;
 
-		private EditProcFind()
+		public EditProcFind()
 		{
-			this.InitializeComponent();
+			InitializeComponent();
 			MCrawler = new ProceduralSpider( new Procedure[ 0 ] );
-			SetTemplate();
 		}
 
-		private void SetTemplate()
+		protected override void OnNavigatedTo( NavigationEventArgs e )
 		{
-			StringResources stx = StringResources.Load( "/GFlow/Message" );
-			PrimaryButtonText = stx.Str( "OK" );
-		}
-
-		public EditProcFind( ProcFind EditTarget )
-			:this()
-		{
-			this.EditTarget = EditTarget;
-
-			if( EditTarget.RegexPairs.Count == 0 )
+			base.OnNavigatedTo( e );
+			if ( e.Parameter is ProcFind EditTarget )
 			{
-				EditTarget.RegexPairs.Add( new ProcFind.RegItem() );
-			}
+				this.EditTarget = EditTarget;
 
-			RegexControl.DataContext = EditTarget;
-			if ( !string.IsNullOrEmpty( EditTarget.TestLink ) )
-			{
-				TestLink.Text = EditTarget.TestLink;
+				if ( EditTarget.RegexPairs.Count == 0 )
+				{
+					EditTarget.RegexPairs.Add( new ProcFind.RegItem() );
+				}
+
+				RegexControl.DataContext = EditTarget;
+				if ( !string.IsNullOrEmpty( EditTarget.TestLink ) )
+				{
+					TestLink.Text = EditTarget.TestLink;
+				}
 			}
 		}
 
@@ -137,9 +134,7 @@ namespace GFlow.Dialogs
 		{
 			if ( TestContent == null ) return;
 			IStorageFile ISF = await EditTarget.FilterContent( MCrawler, TestContent );
-
-			Frame.Navigate( Shared.SourceView, ISF );
-			FrameContainer.Visibility = Visibility.Visible;
+			MessageBus.Send( typeof( Pages.GFEditor ), "PREVIEW", ISF );
 		}
 	}
 }

@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Messaging;
@@ -15,7 +16,6 @@ namespace GFlow.Dialogs
 	using Models.Procedure;
 	using Pages;
 	using Resources;
-	using Windows.UI.Xaml.Navigation;
 
 	sealed partial class EditProcChakra : Page
 	{
@@ -32,27 +32,15 @@ namespace GFlow.Dialogs
 			MessageBus.Subscribe( this, MessageBus_OnDelivery );
 		}
 
-		public EditProcChakra( ProcChakra EditTarget )
-			:this()
-		{
-			this.EditTarget = EditTarget;
-			ScriptInput.DataContext = EditTarget;
-		}
-
 		protected override void OnNavigatedTo( NavigationEventArgs e )
 		{
 			base.OnNavigatedTo( e );
 
-			if( e.Parameter is ProcChakra )
+			if ( e.Parameter is ProcChakra )
 			{
 				EditTarget = ( ProcChakra ) e.Parameter;
+				ScriptInput.DataContext = EditTarget;
 			}
-		}
-
-		private void RunTilHere( object sender, RoutedEventArgs e )
-		{
-			TestRunning.IsActive = true;
-			MessageBus.SendUI( typeof( ProceduresPanel ), "RUN", EditTarget );
 		}
 
 		private async void OpenScript( object sender, RoutedEventArgs e )
@@ -64,9 +52,15 @@ namespace GFlow.Dialogs
 
 		private async void ExportScript( object sender, RoutedEventArgs e )
 		{
-			IStorageFile ISF = await AppStorage.SaveFileAsync( "script", new string[] { ".js" } );
-			if ( ISF == null ) return;
+			IStorageFile ISF = await AppStorage.MkTemp();
 			await ISF.WriteString( EditTarget.Script );
+			MessageBus.Send( typeof( GFEditor ), "PREVIEW", new Tuple<IStorageFile, string>( ISF, "js" ) );
+		}
+
+		private void RunTilHere( object sender, RoutedEventArgs e )
+		{
+			// TestRunning.IsActive = true;
+			MessageBus.SendUI( typeof( ProceduresPanel ), "RUN", EditTarget );
 		}
 
 		private void MessageBus_OnDelivery( Message Mesg )
@@ -76,7 +70,7 @@ namespace GFlow.Dialogs
 				&& Convoy != null
 				&& Convoy.Dispatcher == EditTarget )
 			{
-				TestRunning.IsActive = false;
+				// TestRunning.IsActive = false;
 
 				IEnumerable<IStorageFile> ISF = Convoy.Payload as IEnumerable<IStorageFile>;
 				if( ISF != null )

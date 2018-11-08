@@ -7,17 +7,28 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
 
+using Net.Astropenguin.Linq;
+
 namespace GFlow.Controls.GraphElements
 {
-	class GFLink : GFElement
+	using EventsArgs;
+
+	class GFLink : GFElement, IGFInteractive
 	{
 		public Color LineBrush { get; set; } = Colors.Black;
 
 		public GFSynapse From => L is GFSynapseL ? L : R;
 		public GFSynapse To => L is GFSynapseR ? L : R;
 
+		public Action<object, GFPointerEventArgs> MouseOver { get; set; }
+		public Action<object, GFPointerEventArgs> MouseOut { get; set; }
+		public Action<object, GFPointerEventArgs> MousePress { get; set; }
+		public Action<object, GFPointerEventArgs> MouseRelease => null;
+
 		private GFSynapse L;
 		private GFSynapse R;
+
+		private Vector2[] LinePoints = new Vector2[ 0 ];
 
 		public GFLink( GFSynapse From, GFSynapse To )
 		{
@@ -31,6 +42,26 @@ namespace GFlow.Controls.GraphElements
 				L = To;
 				R = From;
 			}
+
+			MouseOver = _MouseOver;
+			MouseOut = _MouseOut;
+			MousePress = _MousePress;
+		}
+
+		private void _MouseOver( object sender, GFPointerEventArgs e )
+		{
+			LineBrush = Colors.OrangeRed;
+		}
+
+		private void _MouseOut( object sender, GFPointerEventArgs e )
+		{
+			LineBrush = Colors.Black;
+		}
+
+		private void _MousePress( object sender, GFPointerEventArgs e )
+		{
+			( ( GFDrawBoard ) sender ).Remove( this );
+			TriggerRedraw( false );
 		}
 
 		public bool IsBetween( GFSynapse L, GFSynapse R )
@@ -40,10 +71,10 @@ namespace GFlow.Controls.GraphElements
 
 		public override void Draw( CanvasDrawingSession ds, GFElement Parent, GFElement Prev )
 		{
-			Draw( ds, L.SnapPoint, R.SnapPoint, LineBrush );
+			LinePoints = Draw( ds, L.SnapPoint, R.SnapPoint, LineBrush );
 		}
 
-		public static void Draw( CanvasDrawingSession ds, Vector2 L, Vector2 R, Color LineBrush )
+		public static Vector2[] Draw( CanvasDrawingSession ds, Vector2 L, Vector2 R, Color LineBrush )
 		{
 			if ( L.X < R.X )
 			{
@@ -59,6 +90,8 @@ namespace GFlow.Controls.GraphElements
 				ds.DrawLine( M1, M2, LineBrush );
 				ds.DrawLine( M2, M3, LineBrush );
 				ds.DrawLine( M3, L, LineBrush );
+
+				return new Vector2[] { R, M0, M1, M2, M3, L };
 			}
 			else
 			{
@@ -69,8 +102,27 @@ namespace GFlow.Controls.GraphElements
 				ds.DrawLine( R, M0, LineBrush );
 				ds.DrawLine( M0, M1, LineBrush );
 				ds.DrawLine( M1, L, LineBrush );
+
+				return new Vector2[] { R, M0, M1, L };
 			}
 		}
 
+		public bool HitTest( Vector2 p )
+		{
+			return LinePoints.AggAny( ( P0, P1, s ) =>
+			{
+				if ( s == 1 )
+				{
+					Boundary B = new Boundary( P0, P1 );
+					B.XY = B.XY - 5 * Vector2.One;
+					B.WH = B.WH + 10 * Vector2.One;
+					return B.Test( p );
+				}
+
+				return false;
+			} );
+		}
+
+		public bool HitTest( float x, float y ) => HitTest( new Vector2( x, y ) );
 	}
 }

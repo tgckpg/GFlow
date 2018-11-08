@@ -9,6 +9,8 @@ using Windows.UI;
 
 namespace GFlow.Controls
 {
+	using EventsArgs;
+
 	class Boundary
 	{
 		public float X, Y, W, H;
@@ -42,6 +44,31 @@ namespace GFlow.Controls
 			Left = Right = LeftRight;
 		}
 
+		public Boundary( Vector2 P0, Vector2 P1 )
+		{
+			if ( P0.X < P1.X )
+			{
+				X = P0.X;
+				W = P1.X - P0.X;
+			}
+			else
+			{
+				X = P1.X;
+				W = P0.X - P1.X;
+			}
+
+			if ( P0.Y < P1.Y )
+			{
+				Y = P0.Y;
+				H = P1.Y - P0.Y;
+			}
+			else
+			{
+				Y = P1.Y;
+				H = P0.Y - P1.Y;
+			}
+		}
+
 		public Vector2 XY { get => new Vector2( X, Y ); set { X = value.X; Y = value.Y; } }
 		public Vector2 XW { get => new Vector2( X, W ); set { X = value.X; W = value.Y; } }
 		public Vector2 WH { get => new Vector2( W, H ); set { W = value.X; H = value.Y; } }
@@ -51,12 +78,12 @@ namespace GFlow.Controls
 		public float XWs => X + W;
 		public float YHs => Y + H;
 
-		public bool Test( Vector2 p )
+		virtual public bool Test( Vector2 p )
 		{
 			return ( X <= p.X && p.X <= ( X + W ) ) && ( Y <= p.Y && p.Y <= ( Y + H ) );
 		}
 
-		public bool Test( float _x, float _y )
+		virtual public bool Test( float _x, float _y )
 		{
 			return ( X <= _x && _x <= ( X + W ) ) && ( Y <= _y && _y <= ( Y + H ) );
 		}
@@ -91,6 +118,18 @@ namespace GFlow.Controls
 	interface IForeground { Color FGFill { get; set; } }
 	interface IBackground { Color BGFill { get; set; } }
 	interface IGFLabelOwner { string Label { get; } }
+
+	interface IGFInteractive
+	{
+		Action<object, GFPointerEventArgs> MouseOver { get; }
+		Action<object, GFPointerEventArgs> MouseOut { get; }
+
+		Action<object, GFPointerEventArgs> MousePress { get; }
+		Action<object, GFPointerEventArgs> MouseRelease { get; }
+
+		bool HitTest( Vector2 p );
+		bool HitTest( float x, float y );
+	}
 
 	interface IGFContainer
 	{

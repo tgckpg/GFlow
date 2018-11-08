@@ -170,9 +170,9 @@ namespace GFlow.Controls
 				{
 					Draggable.DragHandle.MouseOut?.Invoke( this, new GFPointerEventArgs() { Target = Draggable.DragHandle } );
 				}
-				else if ( HitTarget is GFButton Btn )
+				else if ( HitTarget is IGFInteractive Btn )
 				{
-					Btn.MouseOut?.Invoke( this, new GFPointerEventArgs() { Target = Btn } );
+					Btn.MouseOut?.Invoke( this, new GFPointerEventArgs() { Target = HitTarget } );
 				}
 
 				HitTarget = Hit;
@@ -182,9 +182,9 @@ namespace GFlow.Controls
 
 		private void Stage_PointerReleased( object sender, PointerRoutedEventArgs e )
 		{
-			if ( HitTarget is GFButton Button )
+			if ( HitTarget is IGFInteractive Button )
 			{
-				Button.MouseRelease?.Invoke( this, new GFPointerEventArgs() { Target = Button } );
+				Button.MouseRelease?.Invoke( this, new GFPointerEventArgs() { Target = HitTarget } );
 			}
 
 			if ( DragTarget != null )
@@ -203,9 +203,9 @@ namespace GFlow.Controls
 				DragTarget = Draggable;
 			}
 
-			if ( HitTarget is GFButton Button )
+			if ( HitTarget is IGFInteractive Button )
 			{
-				Button.MousePress?.Invoke( this, new GFPointerEventArgs() { Target = Button, Pos = PrevDragPos } );
+				Button.MousePress?.Invoke( this, new GFPointerEventArgs() { Target = HitTarget, Pos = PrevDragPos } );
 			}
 		}
 
@@ -215,16 +215,16 @@ namespace GFlow.Controls
 			{
 				foreach ( GFElement Child in GFC.Children )
 				{
-					if ( Child is IGFDraggable Draggable && Draggable.DragHandle.ActualBounds.Test( P ) )
+					if ( Child is IGFDraggable Draggable && Draggable.DragHandle.HitTest( P ) )
 					{
 						Draggable.DragHandle.MouseOver?.Invoke( this, new GFPointerEventArgs() { Target = Draggable.DragHandle } );
 						return Child;
 					}
 
-					if ( Child is GFButton Btn && Btn.ActualBounds.Test( P ) )
+					if ( Child is IGFInteractive Btn && Btn.HitTest( P ) )
 					{
-						Btn.MouseOver?.Invoke( this, new GFPointerEventArgs() { Target = Btn } );
-						return Btn;
+						Btn.MouseOver?.Invoke( this, new GFPointerEventArgs() { Target = Child } );
+						return Child;
 					}
 
 					if ( Child is IGFContainer GFC2 )

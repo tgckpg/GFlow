@@ -13,7 +13,7 @@ using Net.Astropenguin.Linq;
 namespace GFlow.Controls.BasicElements
 {
 	using EventsArgs;
-	class GFButton : GFElement, IForeground, IBackground
+	class GFButton : GFElement, IForeground, IBackground, IGFInteractive
 	{
 		public Color FGFill { get; set; } = Colors.Black;
 		public Color BGFill { get; set; } = Color.FromArgb( 0xFF, 0xA0, 0xA0, 0xA0 );
@@ -47,6 +47,9 @@ namespace GFlow.Controls.BasicElements
 		{
 			this.LabelOwner = LabelOwner;
 		}
+
+		public bool HitTest( Vector2 p ) => ActualBounds.Test( p );
+		public bool HitTest( float x, float y ) => ActualBounds.Test( x, y );
 
 		public override void Draw( CanvasDrawingSession ds, GFElement Parent, GFElement Prev )
 		{

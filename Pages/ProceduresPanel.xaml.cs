@@ -132,7 +132,7 @@ namespace GFlow.Pages
 			if ( ProcComboBox.SelectedItem == null ) return;
 
 			KeyValuePair<ProcType, string> p = ( KeyValuePair<ProcType, string> ) ProcComboBox.SelectedItem;
-			PM.NewProcedure( p.Key );
+			GFProcedureList.Create( p.Key.ToString() );
 		}
 
 		private void RemoveProcedure( object sender, RoutedEventArgs e )

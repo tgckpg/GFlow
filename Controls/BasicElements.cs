@@ -1,5 +1,4 @@
 ﻿using Microsoft.Graphics.Canvas;
-using Microsoft.Graphics.Canvas.Text;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,27 +6,21 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
 
 using Net.Astropenguin.Linq;
 
 namespace GFlow.Controls.BasicElements
 {
 	using EventsArgs;
+
 	class GFButton : GFElement, IForeground, IBackground, IGFInteractive
 	{
-		public Color FGFill { get; set; } = Colors.Black;
-		public Color BGFill { get; set; } = Color.FromArgb( 0xFF, 0xA0, 0xA0, 0xA0 );
+		public Color FgFill { get; set; } = Colors.Black;
+		public Color BgFill { get; set; } = Color.FromArgb( 0xFF, 0xA0, 0xA0, 0xA0 );
 
 		public Boundary Padding { get; set; } = new Boundary( 5, 10 );
-
-		public CanvasTextFormat LabelFormat { get; set; } = new CanvasTextFormat() { FontSize = 18 };
-
-		protected string _Label = "Text Label";
-		public string Label
-		{
-			get { return LabelOwner?.Label ?? _Label; }
-			set { _Label = value; }
-		}
 
 		public Action<object, GFPointerEventArgs> MouseOver { get; set; }
 		public Action<object, GFPointerEventArgs> MouseOut { get; set; }
@@ -35,17 +28,12 @@ namespace GFlow.Controls.BasicElements
 		public Action<object, GFPointerEventArgs> MousePress { get; set; }
 		public Action<object, GFPointerEventArgs> MouseRelease { get; set; }
 
-		private IGFLabelOwner LabelOwner;
+		public HorizontalAlignment HAlign { get; set; } = HorizontalAlignment.Left;
 
 		public GFButton()
 		{
 			Bounds.W = 200;
 			Bounds.H = 24;
-		}
-
-		public void SetLabelOwner( IGFLabelOwner LabelOwner )
-		{
-			this.LabelOwner = LabelOwner;
 		}
 
 		public bool HitTest( Vector2 p ) => ActualBounds.Test( p );
@@ -59,15 +47,26 @@ namespace GFlow.Controls.BasicElements
 				pXY = Parent.Bounds.XY;
 			}
 
-			CanvasTextLayout TL = new CanvasTextLayout( ds, Label, LabelFormat, Bounds.W, Bounds.H );
-
+			// Default is Left
 			ActualBounds.X = DrawOffset.X + pXY.X + Bounds.X;
-			ActualBounds.Y = DrawOffset.Y + pXY.Y + Bounds.Y;
 			ActualBounds.W = Padding.LRs + Bounds.W;
+
+			if ( !( Parent == null || Prev == null ) )
+			{
+				if ( HAlign == HorizontalAlignment.Right )
+				{
+					ActualBounds.X += Prev.ActualBounds.W - Bounds.W - Padding.LRs;
+				}
+				else if ( HAlign == HorizontalAlignment.Stretch )
+				{
+					ActualBounds.W = Prev.ActualBounds.W;
+				}
+			}
+
+			ActualBounds.Y = DrawOffset.Y + pXY.Y + Bounds.Y;
 			ActualBounds.H = Padding.TBs + Bounds.H;
 
-			ds.FillRectangle( ActualBounds.X, ActualBounds.Y, ActualBounds.W, ActualBounds.H, BGFill );
-			ds.DrawTextLayout( TL, ActualBounds.X + Padding.Left, ActualBounds.Y + Padding.Top, FGFill );
+			ds.FillRectangle( ActualBounds.X, ActualBounds.Y, ActualBounds.W, ActualBounds.H, BgFill );
 		}
 	}
 
@@ -80,6 +79,8 @@ namespace GFlow.Controls.BasicElements
 	class GFPanel : GFElement, IGFContainer
 	{
 		public IList<GFElement> Children { get; set; } = new List<GFElement>();
+
+		public Orientation Orientation { get; set; } = Orientation.Vertical;
 
 		public GFPanel()
 		{
@@ -97,11 +98,30 @@ namespace GFlow.Controls.BasicElements
 
 		public override void Draw( CanvasDrawingSession ds, GFElement Parent, GFElement Prev )
 		{
-			Vector2 VH = Vector2.Zero;
+			if ( Orientation == Orientation.Vertical )
+			{
+				DrawV( ds, Parent, Prev );
+			}
+			else
+			{
+				DrawH( ds, Parent, Prev );
+			}
+		}
+
+		private void DrawH( CanvasDrawingSession ds, GFElement Parent, GFElement Prev )
+		{
+			float MovBound = 0;
+			float MaxBound = 0;
 
 			if ( Prev != null )
 			{
-				VH.Y = Prev.ActualBounds.H;
+				Bounds.X = Prev.ActualBounds.X;
+				Bounds.Y = Prev.ActualBounds.YHs;
+				MaxBound = Prev.ActualBounds.H;
+			}
+			else if ( Parent != null )
+			{
+				Bounds.XY = Parent.Bounds.XY;
 			}
 
 			lock ( Children )
@@ -110,16 +130,53 @@ namespace GFlow.Controls.BasicElements
 				{
 					if ( PState < 2 )
 					{
-						C2.DrawOffset = VH;
+						C2.DrawOffset = new Vector2( MovBound, 0 );
 						C2.Draw( ds, this, C1 );
-
-						VH.Y += C2.ActualBounds.H;
+						MovBound += C2.ActualBounds.W;
+						MaxBound = Math.Max( MaxBound, C2.ActualBounds.H );
 					}
 				} );
 			}
 
-			ActualBounds = new Boundary( Bounds.X, Bounds.Y, Bounds.W, VH.Y );
+			ActualBounds.XY = Bounds.XY;
+			ActualBounds.W = MovBound;
+			ActualBounds.H = MaxBound;
 		}
-	}
 
+		private void DrawV( CanvasDrawingSession ds, GFElement Parent, GFElement Prev )
+		{
+			float MovBound = 0;
+			float MaxBound = 0;
+
+			if ( Prev != null )
+			{
+				Bounds.X = Prev.ActualBounds.X;
+				Bounds.Y = Prev.ActualBounds.YHs;
+				MaxBound = Prev.ActualBounds.W;
+			}
+			else if ( Parent != null )
+			{
+				Bounds.XY = Parent.Bounds.XY;
+			}
+
+			lock ( Children )
+			{
+				Children.AggExec( ( C1, C2, PState ) =>
+				{
+					if ( PState < 2 )
+					{
+						C2.DrawOffset = new Vector2( 0, MovBound );
+						C2.Draw( ds, this, C1 );
+						MovBound += C2.ActualBounds.H;
+						MaxBound = Math.Max( MaxBound, C2.ActualBounds.W );
+					}
+				} );
+			}
+
+			ActualBounds.XY = Bounds.XY;
+			ActualBounds.W = MaxBound;
+			ActualBounds.H = MovBound;
+		}
+
+	}
 }

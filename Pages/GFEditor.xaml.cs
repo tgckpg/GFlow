@@ -28,12 +28,10 @@ namespace GFlow.Pages
 	public sealed partial class GFEditor : Page
 	{
 		GFDrawBoard DBoard;
-		ProcManager PM;
-
 		Button ActiveTab;
 
-		ProcType DragProc;
-		ProcType DropProc;
+		string DragProc;
+		string DropProc;
 
 		bool Running = false;
 
@@ -48,8 +46,6 @@ namespace GFlow.Pages
 		private void SetTemplate()
 		{
 			ActiveTab = BtnProcList;
-
-			PM = new ProcManager();
 			DBoard = new GFDrawBoard( DrawBoard );
 
 			// GFPropertyPanel PropertyPanel = new GFPropertyPanel():
@@ -63,7 +59,7 @@ namespace GFlow.Pages
 
 		private void ProceduresList_DragItemsStarting( object sender, DragItemsStartingEventArgs e )
 		{
-			if ( e.Items[ 0 ] is KeyValuePair<ProcType, string> PType )
+			if ( e.Items[ 0 ] is KeyValuePair<string, string> PType )
 			{
 				DragProc = PType.Key;
 			}
@@ -77,9 +73,9 @@ namespace GFlow.Pages
 
 		private void ProceduresList_DragItemsCompleted( ListViewBase sender, DragItemsCompletedEventArgs args )
 		{
-			if ( 0 < DropProc )
+			if ( DropProc != null )
 			{
-				GFProcedure GFP = new GFProcedure( PM.NewProcedure( DropProc ) );
+				GFProcedure GFP = new GFProcedure( GFProcedureList.Create( DropProc ) );
 
 				Vector2 P = Windows.UI.Core.CoreWindow.GetForCurrentThread().PointerPosition.ToVector2();
 				Vector2 B = new Vector2( ( float ) Window.Current.Bounds.X, ( float ) Window.Current.Bounds.Y );
@@ -87,7 +83,7 @@ namespace GFlow.Pages
 				GFP.OnShowProperty += GFP_OnShowProperty;
 
 				DBoard.Add( GFP );
-				DropProc = 0;
+				DropProc = null;
 			}
 		}
 
@@ -96,7 +92,7 @@ namespace GFlow.Pages
 			PropertyPanel.Navigate( sender.Properties.PropertyPage, sender.Properties );
 		}
 
-		private void DrawBoard_DragLeave( object sender, DragEventArgs e ) { DropProc = 0; }
+		private void DrawBoard_DragLeave( object sender, DragEventArgs e ) { DropProc = null; }
 
 		private void ProcList_Click( object sender, RoutedEventArgs e )
 		{
@@ -167,6 +163,8 @@ namespace GFlow.Pages
 			if ( Mesg.Content == "RUN" )
 			{
 				if ( Running ) return;
+
+				ProcManager PM = new ProcManager();
 				PM.ActiveRange( 0, PM.ProcList.IndexOf( Mesg.Payload as Procedure ) + 1 );
 				// ProcRun( true );
 			}

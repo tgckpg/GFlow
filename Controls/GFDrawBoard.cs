@@ -60,7 +60,15 @@ namespace GFlow.Controls
 			{
 				using ( CanvasDrawingSession ds = args.DrawingSession )
 				{
-					DrawR( ds, this );
+					foreach ( GFElement x in Children )
+					{
+						x.CCRefresh.SetTarget( Refresh );
+						x.Draw( ds, null, null );
+						if ( x is IGFContainer GFC )
+						{
+							DrawR( ds, GFC );
+						}
+					}
 				}
 			}
 		}
@@ -213,7 +221,7 @@ namespace GFlow.Controls
 		{
 			lock ( GFC.Children )
 			{
-				foreach ( GFElement Child in GFC.Children )
+				foreach ( GFElement Child in GFC.Children.Reverse() )
 				{
 					if ( Child is IGFDraggable Draggable && Draggable.DragHandle.HitTest( P ) )
 					{

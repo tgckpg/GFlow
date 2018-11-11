@@ -26,13 +26,7 @@ namespace GFlow.Controls
 		public ObservableCollection<Procedure> ProcList { get; private set; }
 		public bool HasProcedures { get { return 0 < ProcList.Count; } }
 		public bool Async { get; set; }
-
-		private string _Id;
-		public string GUID
-		{
-			get { return _Id; }
-			set { _Id = value; }
-		}
+		public string GUID { get; set; }
 
 		// Used to locate specific procedure in chain
 		private int From = 0;
@@ -85,7 +79,7 @@ namespace GFlow.Controls
 		public ProcManager()
 		{
 			ProcList = new ObservableCollection<Procedure>();
-			_Id = Guid.NewGuid().ToString();
+			GUID = Guid.NewGuid().ToString();
 			Async = false;
 		}
 
@@ -94,41 +88,6 @@ namespace GFlow.Controls
 		{
 			if ( Param == null ) return;
 			ReadParam( Param );
-		}
-
-		public Procedure NewProcedure( ProcType P )
-		{
-			Procedure Proc = null;
-			switch ( P )
-			{
-				case ProcType.URLLIST:
-					Proc = new ProcUrlList();
-					break;
-				case ProcType.FIND:
-					Proc = new ProcFind();
-					break;
-				case ProcType.GENERATOR:
-					Proc = new ProcGenerator();
-					break;
-				case ProcType.RESULT:
-					Proc = new ProcResult();
-					break;
-				case ProcType.CHAKRA:
-					Proc = new ProcChakra();
-					break;
-				case ProcType.ENCODING:
-					Proc = new ProcEncoding();
-					break;
-				case ProcType.PARAMETER:
-					Proc = new ProcParameter();
-					break;
-				default:
-					Proc = Resources.Shared.ProcCreate( P );
-					break;
-			}
-
-			ProcList.Add( Proc );
-			return Proc;
 		}
 
 		public void ActiveRange( int From = 0, int To = 0 )
@@ -193,9 +152,7 @@ namespace GFlow.Controls
 			foreach( XParameter Param in ProcParams )
 			{
 				string ProcName = Param.GetValue( "ProcType" );
-				ProcType Proc = P.First( x => Enum.GetName( PType, x ) == ProcName );
-
-				Procedure NProc = NewProcedure( Proc );
+				Procedure NProc = GFProcedureList.Create( ProcName );
 				NProc.ReadParam( Param );
 			}
 		}

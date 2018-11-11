@@ -37,9 +37,9 @@
             </ToggleSwitch>
             <TextBlock x:Uid="/GFlow/Resources/Parameters"
                        Margin="0,10,0,0" Text="Parameters" />
-            <TextBlock x:Uid="/GFlow/Resources/UrlList_Param_Desc"
+            <TextBlock x:Uid="/GFlow/Resources/UrlListParamDesc"
                        TextWrapping="Wrap"
-                       Foreground="#AAA" Text="UrlList_Param_Desc" />
+                       Foreground="#AAA" Text="UrlListParamDesc" />
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />

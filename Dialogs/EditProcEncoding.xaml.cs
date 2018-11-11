@@ -23,7 +23,6 @@ using Net.Astropenguin.Messaging;
 namespace GFlow.Dialogs
 {
 	using Models.Procedure;
-	using Pages;
 
 	sealed partial class EditProcEncoding : Page
 	{

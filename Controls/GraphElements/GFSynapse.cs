@@ -12,10 +12,17 @@ namespace GFlow.Controls.GraphElements
 	using BasicElements;
 	using EventsArgs;
 
+	public enum SynapseType : byte { TRUNK, BRANCH }
+
 	class GFSynapse : GFButton, IGFDraggable
 	{
+		public object Nucleus { get; protected set; }
+		public object Dendrite00 { get; set; }
+
 		public Color SNFill { get; set; } = Colors.Black;
 		public GFButton DragHandle => this;
+
+		public SynapseType SynapseType = SynapseType.TRUNK;
 
 		public Vector2 SnapPoint;
 
@@ -25,8 +32,10 @@ namespace GFlow.Controls.GraphElements
 		protected IEnumerable<GFSynapse> TargetEndPoints;
 		protected GFSynapse SnappedTarget;
 
-		public GFSynapse()
+		public GFSynapse( object Nucleus )
 		{
+			this.Nucleus = Nucleus;
+
 			ActualBounds.W = 20;
 			MouseOver = _MouseOver;
 			MouseOut = _MouseOut;
@@ -40,31 +49,40 @@ namespace GFlow.Controls.GraphElements
 			EndPoint = e.Pos;
 			DrawConnector = true;
 
-			if ( this is GFSynapseL )
+			if ( this is GFReceptor )
 			{
-				TargetEndPoints = ( ( GFDrawBoard ) sender ).FilterElements<GFSynapseR>().Cast<GFSynapse>();
+				TargetEndPoints = ( ( GFDrawBoard ) sender ).Find<GFTransmitter>().Cast<GFSynapse>();
 			}
-			else if ( this is GFSynapseR )
+			else if ( this is GFTransmitter )
 			{
-				TargetEndPoints = ( ( GFDrawBoard ) sender ).FilterElements<GFSynapseL>().Cast<GFSynapse>();
+				TargetEndPoints = ( ( GFDrawBoard ) sender ).Find<GFReceptor>().Cast<GFSynapse>();
 			}
 		}
 
 		private void EndDrag( object sender, GFPointerEventArgs e )
 		{
-			DrawConnector = false;
-			TargetEndPoints = null;
-
-			if ( SnappedTarget != null )
+			try
 			{
-				GFDrawBoard DrawBoard = ( GFDrawBoard ) sender;
+				DrawConnector = false;
+				TargetEndPoints = null;
 
-				if ( DrawBoard.FilterElements<GFLink>().Any( x => x.IsBetween( this, SnappedTarget ) ) )
+				if ( SnappedTarget != null )
 				{
-					return;
-				}
+					GFDrawBoard DrawBoard = ( GFDrawBoard ) sender;
 
-				DrawBoard.Children.Add( new GFLink( this, SnappedTarget ) );
+					// NOTE: GFLink should only appear at the top level
+					if ( DrawBoard.Find<GFLink>( 1 ).Any( x => x.IsBetween( this, SnappedTarget ) ) )
+					{
+						return;
+					}
+
+					DrawBoard.Children.Add( new GFLink( this, SnappedTarget ) );
+				}
+			}
+			finally
+			{
+				EndPoint = Vector2.Zero;
+				SnappedTarget = null;
 			}
 		}
 
@@ -94,8 +112,11 @@ namespace GFlow.Controls.GraphElements
 		}
 	}
 
-	class GFSynapseL : GFSynapse
+	// This is the receiving end ">-"
+	class GFReceptor : GFSynapse
 	{
+		public GFReceptor( object Nucleus ) : base( Nucleus ) { }
+
 		// This assumes Parent is always present
 		public override void Draw( CanvasDrawingSession ds, GFElement Parent, GFElement Prev )
 		{
@@ -127,8 +148,11 @@ namespace GFlow.Controls.GraphElements
 		}
 	}
 
-	class GFSynapseR : GFSynapse
+	// This is the giving end "->"
+	class GFTransmitter : GFSynapse
 	{
+		public GFTransmitter( object Nucleus ) : base( Nucleus ) { }
+
 		// This assumes Parent is always present
 		public override void Draw( CanvasDrawingSession ds, GFElement Parent, GFElement Prev )
 		{

@@ -10,12 +10,9 @@ using Net.Astropenguin.Loaders;
 
 namespace GFlow.Resources
 {
-	using Models.Procedure;
 	class Shared
 	{
 		public static Type SourceView;
-		public static Type RenameDialog;
-
 		public static Func<Uri, HttpRequest> CreateRequest = x => new HttpRequest( x ) { EN_UITHREAD = false };
 	}
 }

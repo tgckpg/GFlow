@@ -15,8 +15,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-using Net.Astropenguin.Loaders;
-
 using GFlow.Crawler;
 using GFlow.Models.Procedure;
 
@@ -31,7 +29,7 @@ namespace GFlow.Dialogs
 
 		public EditProcParam()
 		{
-			InitializeComponent();
+			this.InitializeComponent();
 			MCrawler = new ProceduralSpider( new Procedure[ 0 ] );
 		}
 

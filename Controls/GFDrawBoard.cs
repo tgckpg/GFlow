@@ -17,14 +17,15 @@ namespace GFlow.Controls
 
 	class GFDrawBoard : IGFContainer
 	{
+		public IList<GFElement> Children { get; set; } = new List<GFElement>();
+		public Vector2 PanOffset { get; set; } = Vector2.Zero;
+
 		private CanvasControl Stage;
-
 		private GFElement HitTarget;
-
-		private Vector2 PrevDragPos;
 		private IGFDraggable DragTarget;
 
-		public IList<GFElement> Children { get; set; } = new List<GFElement>();
+		private Vector2 PrevDragPos;
+		private bool IsPanning = false;
 
 		public GFDrawBoard( CanvasControl Canvas )
 		{
@@ -60,6 +61,7 @@ namespace GFlow.Controls
 			{
 				using ( CanvasDrawingSession ds = args.DrawingSession )
 				{
+					ds.Transform = Matrix3x2.CreateTranslation( PanOffset );
 					foreach ( GFElement x in Children )
 					{
 						x.CCRefresh.SetTarget( Refresh );
@@ -73,18 +75,24 @@ namespace GFlow.Controls
 			}
 		}
 
-		public IList<T> FilterElements<T>()
+		/// <summary>
+		/// Find and returns the list of elements for the specified type.
+		/// </summary>
+		/// <typeparam name="T">Type of element</typeparam>
+		/// <param name="Depth">Maximum depth to search. Default(0) is as deep as possible.</param>
+		/// <returns></returns>
+		public IList<T> Find<T>( int Depth = 0 )
 			where T : GFElement
 		{
 			lock ( Children )
 			{
 				List<T> Pool = new List<T>();
-				_FilterElement( this, Pool );
+				_Find( this, Pool, 0, Depth );
 				return Pool;
 			}
 		}
 
-		private void _FilterElement<T>( IGFContainer Container, List<T> Pool )
+		private void _Find<T>( IGFContainer Container, List<T> Pool, int CurrDepth, int MaxDepth )
 			where T : GFElement
 		{
 			Container.Children.AggExec( ( a, b, s ) =>
@@ -96,9 +104,9 @@ namespace GFlow.Controls
 						Pool.Add( ( T ) b );
 					}
 
-					if ( b is IGFContainer GFC )
+					if ( b is IGFContainer GFC && ( CurrDepth < MaxDepth || MaxDepth == 0 ) )
 					{
-						_FilterElement( GFC, Pool );
+						_Find( GFC, Pool, CurrDepth + +1, MaxDepth );
 					}
 				}
 			} );
@@ -160,17 +168,26 @@ namespace GFlow.Controls
 		{
 			Vector2 Pos = e.GetCurrentPoint( Stage ).Position.ToVector2();
 
-			if ( DragTarget != null )
+			if ( IsPanning || DragTarget != null )
 			{
 				Vector2 Delta = Pos - PrevDragPos;
 				PrevDragPos = Pos;
-				DragTarget.Drag( Delta.X, Delta.Y, Pos.X, Pos.Y );
+				if ( IsPanning )
+				{
+					PanOffset += Delta;
+				}
+				else
+				{
+					Pos = Pos - PanOffset;
+					DragTarget.Drag( Delta.X, Delta.Y, Pos.X, Pos.Y );
+				}
+
 				Stage.Invalidate();
 				return;
 			}
 
 			PrevDragPos = Pos;
-			GFElement Hit = HitTests( Pos, this );
+			GFElement Hit = HitTests( Pos - PanOffset, this );
 
 			if ( HitTarget != Hit )
 			{
@@ -190,6 +207,12 @@ namespace GFlow.Controls
 
 		private void Stage_PointerReleased( object sender, PointerRoutedEventArgs e )
 		{
+			if( IsPanning )
+			{
+				IsPanning = false;
+				return;
+			}
+
 			if ( HitTarget is IGFInteractive Button )
 			{
 				Button.MouseRelease?.Invoke( this, new GFPointerEventArgs() { Target = HitTarget } );
@@ -205,6 +228,12 @@ namespace GFlow.Controls
 		private void Stage_PointerPressed( object sender, PointerRoutedEventArgs e )
 		{
 			PrevDragPos = e.GetCurrentPoint( Stage ).Position.ToVector2();
+
+			if( HitTarget == null )
+			{
+				IsPanning = true;
+				return;
+			}
 
 			if ( HitTarget is IGFDraggable Draggable )
 			{

@@ -101,12 +101,17 @@ namespace GFlow.Controls.GraphElements
 			FgFill = IdleFgFill;
 		}
 
-		public void SetRed()
+		public void SetLightThemeAlt( uint C )
 		{
+			byte A = ( byte ) ( C >> 24 & 0xFF );
+			byte R = ( byte ) ( C >> 16 & 0xFF );
+			byte G = ( byte ) ( C >> 8 & 0xFF );
+			byte B = ( byte ) ( C & 0xFF );
+
 			IdleBgFill = Color.FromArgb( 0xFF, 0xF0, 0xF0, 0xF0 );
 			IdleFgFill = Colors.Black;
 
-			ActiveBgFill = Color.FromArgb( 0xFF, 0xAA, 0x00, 0x00 );
+			ActiveBgFill = Color.FromArgb( A, R, G, B );
 			ActiveFgFill = Colors.White;
 
 			BgFill = IdleBgFill;

@@ -31,7 +31,7 @@ namespace GFlow.Dialogs
 
 		public EditProcUrlList()
 		{
-			InitializeComponent();
+			this.InitializeComponent();
 		}
 
 		protected override void OnNavigatedTo( NavigationEventArgs e )

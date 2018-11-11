@@ -132,6 +132,7 @@
     <Compile Include="Controls\DrawLinq.cs" />
     <Compile Include="Controls\GFDrawBoard.cs" />
     <Compile Include="Controls\EventArgs\GFPointerEventArgs.cs" />
+    <Compile Include="Controls\GFPathTracer.cs" />
     <Compile Include="Controls\GFProcedureList.cs" />
     <Compile Include="Controls\GraphElements\GFLink.cs" />
     <Compile Include="Controls\GraphElements\GFNode.cs" />
@@ -182,9 +183,6 @@
     <Compile Include="Pages\GFEditor.xaml.cs">
       <DependentUpon>GFEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ProceduresPanel.xaml.cs">
-      <DependentUpon>ProceduresPanel.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Shared.cs" />
     <EmbeddedResource Include="Properties\GFlow.rd.xml" />
@@ -223,10 +221,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\GFEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\ProceduresPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
@@ -79,17 +80,47 @@ namespace GFlow.Pages
 
 				Vector2 P = Windows.UI.Core.CoreWindow.GetForCurrentThread().PointerPosition.ToVector2();
 				Vector2 B = new Vector2( ( float ) Window.Current.Bounds.X, ( float ) Window.Current.Bounds.Y );
-				GFP.Bounds.XY = P - B;
+				GFP.Bounds.XY = P - B - DBoard.PanOffset;
 				GFP.OnShowProperty += GFP_OnShowProperty;
+				GFP.OnTestRun += GFP_OnTestRun;
+				GFP.OnRemove += GFP_OnRemove;
 
 				DBoard.Add( GFP );
 				DropProc = null;
 			}
 		}
 
-		private void GFP_OnShowProperty( GFProcedure sender )
+		private void GFP_OnRemove( GFProcedure Target )
 		{
-			PropertyPanel.Navigate( sender.Properties.PropertyPage, sender.Properties );
+			Target.OnRemove -= GFP_OnRemove;
+			Target.OnTestRun -= GFP_OnTestRun;
+			Target.OnShowProperty -= GFP_OnShowProperty;
+		}
+
+		private void GFP_OnShowProperty( GFProcedure Target )
+		{
+			PropertyPanel.Navigate( Target.Properties.PropertyPage, Target.Properties );
+		}
+
+		private async void GFP_OnTestRun( GFProcedure Target )
+		{
+			if ( Running ) return;
+			Running = true;
+
+			ActivateTab( BtnOutput );
+			RunLog.Visibility = Visibility.Visible;
+
+			GFProcedure StartProc = DBoard.Find<GFProcedure>( 1 ).FirstOrDefault( x => x.IsStart ) ?? Target;
+			GFPathTracer Tracer = new GFPathTracer( DBoard );
+			ProcManager PM = Tracer.CreateProcManager( StartProc, Target, Target );
+
+			ProcConvoy Convoy = await PM.CreateSpider().Crawl();
+			Running = false;
+
+			if ( Convoy != null )
+			{
+				MessageBus.SendUI( typeof( GFEditor ), "PREVIEW", Convoy.Payload );
+			}
 		}
 
 		private void DrawBoard_DragLeave( object sender, DragEventArgs e ) { DropProc = null; }

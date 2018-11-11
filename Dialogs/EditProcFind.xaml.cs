@@ -15,13 +15,11 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
 using Net.Astropenguin.Messaging;
 
 using GFlow.Crawler;
 using GFlow.Models.Procedure;
-using GFlow.Resources;
 
 namespace GFlow.Dialogs
 {
@@ -36,7 +34,7 @@ namespace GFlow.Dialogs
 
 		public EditProcFind()
 		{
-			InitializeComponent();
+			this.InitializeComponent();
 			MCrawler = new ProceduralSpider( new Procedure[ 0 ] );
 		}
 

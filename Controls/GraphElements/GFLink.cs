@@ -17,8 +17,8 @@ namespace GFlow.Controls.GraphElements
 	{
 		public Color LineBrush { get; set; } = Colors.Black;
 
-		public GFSynapse From => L is GFSynapseL ? L : R;
-		public GFSynapse To => L is GFSynapseR ? L : R;
+		public GFSynapse From => L is GFTransmitter ? L : R;
+		public GFSynapse To => L is GFReceptor ? L : R;
 
 		public Action<object, GFPointerEventArgs> MouseOver { get; set; }
 		public Action<object, GFPointerEventArgs> MouseOut { get; set; }
@@ -32,7 +32,7 @@ namespace GFlow.Controls.GraphElements
 
 		public GFLink( GFSynapse From, GFSynapse To )
 		{
-			if ( From is GFSynapseL )
+			if ( From is GFReceptor )
 			{
 				L = From;
 				R = To;

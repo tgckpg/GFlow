@@ -28,6 +28,8 @@ namespace GFlow.Pages
 
 	public sealed partial class GFEditor : Page
 	{
+		private static readonly string ID = typeof( GFEditor ).Name;
+
 		GFDrawBoard DBoard;
 		Button ActiveTab;
 
@@ -49,7 +51,6 @@ namespace GFlow.Pages
 			ActiveTab = BtnProcList;
 			DBoard = new GFDrawBoard( DrawBoard );
 
-			// GFPropertyPanel PropertyPanel = new GFPropertyPanel():
 			GFProcedureList CompPanel = new GFProcedureList();
 			ProceduresList.DataContext = CompPanel;
 
@@ -112,9 +113,18 @@ namespace GFlow.Pages
 
 			GFProcedure StartProc = DBoard.Find<GFProcedure>( 1 ).FirstOrDefault( x => x.IsStart ) ?? Target;
 			GFPathTracer Tracer = new GFPathTracer( DBoard );
-			ProcManager PM = Tracer.CreateProcManager( StartProc, Target, Target );
+			ProcConvoy Convoy = null;
 
-			ProcConvoy Convoy = await PM.CreateSpider().Crawl();
+			try
+			{
+				ProcManager PM = Tracer.CreateProcManager( StartProc, Target, Target );
+				Convoy = await PM.CreateSpider().Crawl();
+			}
+			catch( Exception ex )
+			{
+				ProcManager.PanelMessage( ID, ex.Message, LogType.ERROR );
+			}
+
 			Running = false;
 
 			if ( !( Convoy == null || Convoy.Payload == null ) )

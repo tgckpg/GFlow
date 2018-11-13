@@ -133,7 +133,7 @@
     <value>Invalid XML?</value>
   </data>
   <data name="NoUsablePayload" xml:space="preserve">
-    <value>Unable to find a usable payload, skipping this ste</value>
+    <value>Unable to find a usable payload, skipping this step.</value>
   </data>
   <data name="ParseOK" xml:space="preserve">
     <value>Parse Success</value>
@@ -196,7 +196,7 @@
     <value>Entry point not found, skipping this step.</value>
   </data>
   <data name="NotAFeedRun" xml:space="preserve">
-    <value>Not a feedback operation, skipping this step</value>
+    <value>Not a feedback operation, skipping this step.</value>
   </data>
   <data name="RunMode" xml:space="preserve">
     <value>Run mode: {0}</value>

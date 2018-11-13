@@ -76,7 +76,14 @@ namespace GFlow.Controls.GraphElements
 						return;
 					}
 
-					DrawBoard.Children.Add( new GFLink( this, SnappedTarget ) );
+					GFLink NewLink = new GFLink( this, SnappedTarget );
+
+					// Remove the old link
+					GFLink OldLink = DrawBoard.Find<GFLink>( 1 ).FirstOrDefault( x => x.From == NewLink.From );
+					if ( OldLink != null )
+						DrawBoard.Remove( OldLink );
+
+					DrawBoard.Children.Add( NewLink );
 				}
 			}
 			finally

@@ -135,7 +135,7 @@ namespace GFlow.Models.Procedure
 			if ( Def != null && Def.SubProcedures.HasProcedures )
 			{
 				Crawler.PLog( this, Res.RSTR( "SubProcRun" ), LogType.INFO );
-				ProcConvoy SubConvoy = await Def.SubProcedures.CreateSpider( Crawler ).Crawl( new ProcConvoy( null, Input ) );
+				ProcConvoy SubConvoy = await Def.SubProcedures.CreateSpider( Crawler ).Crawl( new ProcConvoy( this, Input ) );
 
 				// Process ReceivedConvoy
 				if ( SubConvoy.Payload is string

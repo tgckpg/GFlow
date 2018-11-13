@@ -15,6 +15,7 @@ namespace GFlow.Controls
 	class GFPathTracer
 	{
 		private GFDrawBoard DrawBoard;
+		private IList<GFLink> AllLinks;
 
 		public GFPathTracer( GFDrawBoard DrawBoard )
 		{
@@ -23,7 +24,15 @@ namespace GFlow.Controls
 
 		public ProcManager CreateProcManager( GFProcedure From, GFProcedure To, GFProcedure OnBroken )
 		{
-			IList<GFLink> AllLinks = DrawBoard.Find<GFLink>( 1 );
+			lock ( this )
+			{
+				AllLinks = DrawBoard.Find<GFLink>( 1 );
+				return Unsafe_CreateProcManager( From, To, OnBroken );
+			}
+		}
+
+		private ProcManager Unsafe_CreateProcManager( GFProcedure From, GFProcedure To, GFProcedure OnBroken )
+		{
 			ProcManager PM = new ProcManager();
 
 			List<GFLink> Chains = new List<GFLink>();
@@ -44,7 +53,7 @@ namespace GFlow.Controls
 				Link = AllLinks.FirstOrDefault( x => x.To.Nucleus.Equals( LFrom ) );
 			}
 
-			if( From == To )
+			if ( From == To )
 			{
 				PM.ProcList.Add( RealizeProcedure( From, LoopGuard ) );
 			}
@@ -73,7 +82,7 @@ namespace GFlow.Controls
 
 		private Procedure RealizeProcedure( GFProcedure GFP, List<GFProcedure> LoopGuard )
 		{
-			if( LoopGuard.Contains( GFP ) )
+			if ( LoopGuard.Contains( GFP ) )
 			{
 				throw new OverflowException( "Infinite loop detected" );
 			}
@@ -81,22 +90,36 @@ namespace GFlow.Controls
 			LoopGuard.Add( GFP );
 
 			Procedure P = GFP.GetProcedure();
-			if( P is IProcessList LProc )
+			if ( P is IProcessList LProc )
 			{
 				DrawBoard.Find<GFLink>( 1 )
 					.Where( x => x.From.Nucleus.Equals( GFP ) && x.From.Dendrite00 is IProcessNode )
 					.ExecEach( x =>
 					{
 						string PKey = ( ( IProcessNode ) x.From.Dendrite00 ).Key;
-						LProc.ProcessNodes
-							.First( b => b.Key == PKey )
-							.SubProcedures
-							.ProcList
-							.Add( RealizeProcedure( ( GFProcedure ) x.To.Nucleus, LoopGuard ) );
+						List<GFProcedure> SubGuard = new List<GFProcedure>( LoopGuard );
+						ChainSubProcs(
+							LProc.ProcessNodes.First( b => b.Key == PKey ).SubProcedures.ProcList
+							, ( GFProcedure ) x.To.Nucleus
+							, SubGuard
+						);
 					} );
 			}
 
 			return P;
+		}
+
+		private void ChainSubProcs( IList<Procedure> ProcList, GFProcedure From, List<GFProcedure> LoopGuard )
+		{
+			ProcList.Add( RealizeProcedure( From, LoopGuard ) );
+
+			GFLink Link = AllLinks.FirstOrDefault( x => x.From.Nucleus.Equals( From ) );
+			while ( Link != null )
+			{
+				GFProcedure To = ( GFProcedure ) Link.To.Nucleus;
+				ProcList.Add( RealizeProcedure( To, LoopGuard ) );
+				Link = AllLinks.FirstOrDefault( x => x.From.Nucleus.Equals( To ) );
+			}
 		}
 
 	}

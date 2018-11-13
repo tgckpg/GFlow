@@ -140,7 +140,5 @@ namespace GFlow.Models.Procedure
 
 			return Param;
 		}
-
-		abstract public Task Edit();
 	}
 }

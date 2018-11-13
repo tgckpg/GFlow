@@ -130,11 +130,6 @@ namespace GFlow.Models.Procedure
 			}
 		}
 
-		public override async Task Edit()
-		{
-			// await Popups.ShowDialog( new Dialogs.EditProcUrlList( this ) );
-		}
-
 		public override void ReadParam( XParameter Param )
 		{
 			base.ReadParam( Param );

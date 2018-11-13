@@ -126,11 +126,6 @@ namespace GFlow.Models.Procedure
 			return ( CodePage == Encoding.UTF8.CodePage ) && !DecodeHtml;
 		}
 
-		public override async Task Edit()
-		{
-			// await Popups.ShowDialog( new Dialogs.EditProcEncoding( this ) );
-		}
-
 		public override void ReadParam( XParameter Param )
 		{
 			base.ReadParam( Param );

@@ -13,10 +13,5 @@ namespace GFlow.Models.Procedure
 	{
 		public ProcDummy() :base( ProcType.DUMMY ) { }
 		public ProcDummy( ProcType PType ) : base( ProcType.DUMMY | PType ) { }
-
-		public override Task Edit()
-		{
-			throw new NotImplementedException();
-		}
 	}
 }

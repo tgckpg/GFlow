@@ -117,8 +117,14 @@ namespace GFlow.Pages
 			ProcConvoy Convoy = await PM.CreateSpider().Crawl();
 			Running = false;
 
-			if ( Convoy != null )
+			if ( !( Convoy == null || Convoy.Payload == null ) )
 			{
+				// Do nothing if is IEnumerator but it's empty
+				if( Convoy.Payload is System.Collections.IEnumerable x && !x.GetEnumerator().MoveNext() )
+				{
+					return;
+				}
+
 				MessageBus.SendUI( typeof( GFEditor ), "PREVIEW", Convoy.Payload );
 			}
 		}
@@ -233,6 +239,8 @@ namespace GFlow.Pages
 				{
 					Logs.RemoveAt( 0 );
 				}
+
+				RunLog.ScrollIntoView( Logs.Last() );
 			} );
 		}
 

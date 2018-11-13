@@ -91,11 +91,6 @@ namespace GFlow.Models.Procedure
 			return new ProcConvoy( this, TargetFiles );
 		}
 
-		public override async Task Edit()
-		{
-			// await Popups.ShowDialog( new Dialogs.EditProcFind( this ) );
-		}
-
 		public async Task<IStorageFile> FilterContent( ICrawler Crawler, IStorageFile Src )
 		{
 			return await FilterContent( Crawler, await AppStorage.MkTemp(), await Src.ReadString() );

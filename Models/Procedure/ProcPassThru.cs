@@ -30,10 +30,5 @@ namespace GFlow.Models.Procedure
 			this.Convoy = Convoy;
 		}
 
-		public override Task Edit()
-		{
-			throw new InvalidOperationException();
-		}
-
 	}
 }

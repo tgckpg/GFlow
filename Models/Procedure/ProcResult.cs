@@ -148,10 +148,6 @@ namespace GFlow.Models.Procedure
 			return Input;
 		}
 
-		public override async Task Edit()
-		{
-		}
-
 		public override void ReadParam( XParameter Param )
 		{
 			base.ReadParam( Param );

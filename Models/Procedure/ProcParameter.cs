@@ -214,11 +214,6 @@ namespace GFlow.Models.Procedure
 			foreach ( ParamDef P in ParamDefs ) P.Index = null;
 		}
 
-		public override async Task Edit()
-		{
-			// await Popups.ShowDialog( new Dialogs.EditProcParam( this ) );
-		}
-
 		private async Task<ProcConvoy> IncomingTemplates( ICrawler Crawler, ProcConvoy UsableConvoy )
 		{
 			if ( UsableConvoy.Payload is string )

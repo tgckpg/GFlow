@@ -259,9 +259,5 @@ namespace GFlow.Models.Procedure
 			return Param;
 		}
 
-		public override async Task Edit()
-		{
-			// await Popups.ShowDialog( new Dialogs.EditProcGenerator( this ) );
-		}
 	}
 }

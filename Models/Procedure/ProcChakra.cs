@@ -223,11 +223,6 @@ namespace GFlow.Models.Procedure
 			w.LongRunningScriptDetected += LongScript;
 		}
 
-		public override async Task Edit()
-		{
-			// await Popups.ShowDialog( new Dialogs.EditProcChakra( this ) );
-		}
-
 		public override void ReadParam( XParameter Param )
 		{
 			base.ReadParam( Param );

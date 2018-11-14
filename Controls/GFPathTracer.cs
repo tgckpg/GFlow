@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,6 +23,15 @@ namespace GFlow.Controls
 			this.DrawBoard = DrawBoard;
 		}
 
+		public IList<SDataGFProcTarget> ProcsLinkFrom( GFProcedure From )
+		{
+			lock( this )
+			{
+				AllLinks = DrawBoard.Find<GFLink>( 1 );
+				return Unsafe_ProcsLinkFrom( From );
+			}
+		}
+
 		public ProcManager CreateProcManager( GFProcedure From, GFProcedure To, GFProcedure OnBroken )
 		{
 			lock ( this )
@@ -29,6 +39,58 @@ namespace GFlow.Controls
 				AllLinks = DrawBoard.Find<GFLink>( 1 );
 				return Unsafe_CreateProcManager( From, To, OnBroken );
 			}
+		}
+
+		public void RestoreLinks( GFProcedure From, IList<SDataGFProcTarget> Targets )
+		{
+			lock( this )
+			{
+				IEnumerator<SDataGFProcTarget> GEnum = Targets.GetEnumerator();
+
+				GEnum.MoveNext();
+				SDataGFProcTarget GOutput = GEnum.Current;
+
+				if ( GOutput.Target != null )
+				{
+					DrawBoard.Add( new GFLink( From.Transmitter, GOutput.Target.Receptor ) );
+				}
+
+				while ( GEnum.MoveNext() )
+				{
+					SDataGFProcTarget To = GEnum.Current;
+					if ( To.Target != null )
+					{
+						DrawBoard.Add( new GFLink( From.GetTransmitter( To.Key ), To.Target.Receptor ) );
+					}
+				}
+			}
+		}
+
+		private IList<SDataGFProcTarget> Unsafe_ProcsLinkFrom( GFProcedure From )
+		{
+			GFLink OutputLink = AllLinks.FirstOrDefault( x => x.From.Nucleus.Equals( From ) && x.From.Dendrite00 == null );
+
+			List<SDataGFProcTarget> GFProcs = new List<SDataGFProcTarget>() {
+				new SDataGFProcTarget()
+				{
+					Key = "Output"
+					, Target = OutputLink?.To.Nucleus as GFProcedure
+				}
+			};
+
+			IEnumerable<SDataGFProcTarget> SubProcs
+				= AllLinks
+					.Where( x => x.From.Nucleus.Equals( From ) && x != OutputLink )
+					.Select( x => new SDataGFProcTarget()
+					{
+						Key = ( ( IProcessNode ) x.From.Dendrite00 ).Key
+						, Target = ( GFProcedure ) x.To.Nucleus
+					} );
+
+			if ( SubProcs.Any() )
+				GFProcs.AddRange( SubProcs );
+
+			return GFProcs;
 		}
 
 		private ProcManager Unsafe_CreateProcManager( GFProcedure From, GFProcedure To, GFProcedure OnBroken )
@@ -121,6 +183,19 @@ namespace GFlow.Controls
 				Link = AllLinks.FirstOrDefault( x => x.From.Nucleus.Equals( To ) );
 			}
 		}
+	}
 
+	[DataContract]
+	class SDataGFProcRel
+	{
+		[DataMember] public GFProcedure Source;
+		[DataMember] public IList<SDataGFProcTarget> Targets; 
+	}
+
+	[DataContract]
+	class SDataGFProcTarget
+	{
+		[DataMember] public string Key;
+		[DataMember] public GFProcedure Target;
 	}
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
@@ -11,8 +12,10 @@ namespace GFlow.Controls
 {
 	using EventsArgs;
 
+	[DataContract]
 	class Boundary
 	{
+		[DataMember]
 		public float X, Y, W, H;
 
 		public float Top { get => X; set => X = value; }
@@ -89,14 +92,17 @@ namespace GFlow.Controls
 		}
 	}
 
+	[DataContract, KnownType( typeof( GFProcedure ) ) ]
 	abstract class GFElement
 	{
-		virtual public Boundary Bounds { get; set; } = new Boundary();
-		virtual public Boundary ActualBounds { get; protected set; } = new Boundary();
+		[DataMember]
+		virtual public Boundary Bounds { get; set; }
+		virtual public Boundary ActualBounds { get; protected set; }
 
 		public Vector2 DrawOffset { get; set; }
+		public WeakReference<Action<bool>> CCRefresh { get; private set; }
 
-		public WeakReference<Action<bool>> CCRefresh { get; } = new WeakReference<Action<bool>>( null );
+		public GFElement() => SetDefaults();
 
 		abstract public void Draw( CanvasDrawingSession ds, GFElement Parent, GFElement Prev );
 
@@ -106,6 +112,16 @@ namespace GFlow.Controls
 			{
 				Redraw( IntegrityCheck );
 			}
+		}
+
+		[OnDeserializing]
+		protected void OnDeserializing( StreamingContext s ) => SetDefaults();
+
+		virtual protected void SetDefaults()
+		{
+			Bounds = new Boundary();
+			ActualBounds = new Boundary();
+			CCRefresh = new WeakReference<Action<bool>>( null );
 		}
 	}
 
@@ -136,7 +152,6 @@ namespace GFlow.Controls
 		IList<GFElement> Children { get; set; }
 		void Add( GFElement e );
 		void Remove( GFElement e );
-
 	}
 
 	interface IGFProperty<T>

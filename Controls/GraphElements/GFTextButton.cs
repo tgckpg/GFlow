@@ -31,15 +31,6 @@ namespace GFlow.Controls.GraphElements
 
 		private IGFLabelOwner LabelOwner;
 
-		public GFTextButton()
-			:base()
-		{
-			BgFill = IdleBgFill;
-			IdleFgFill = ActiveFgFill = FgFill;
-			MouseOver = _MouseOver;
-			MouseOut = _MouseOut;
-		}
-
 		private static void _MouseOver( object sender, GFPointerEventArgs e )
 		{
 			GFTextButton Target = ( GFTextButton ) e.Target;
@@ -117,5 +108,15 @@ namespace GFlow.Controls.GraphElements
 			BgFill = IdleBgFill;
 			FgFill = IdleFgFill;
 		}
+
+		protected override void SetDefaults()
+		{
+			base.SetDefaults();
+			BgFill = IdleBgFill;
+			IdleFgFill = ActiveFgFill = FgFill;
+			MouseOver = _MouseOver;
+			MouseOut = _MouseOut;
+		}
+
 	}
 }

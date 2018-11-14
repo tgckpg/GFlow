@@ -4,8 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Devices.Input;
+using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 
 using Net.Astropenguin.Linq;
@@ -15,9 +18,12 @@ namespace GFlow.Controls
 	using BasicElements;
 	using EventsArgs;
 
+	[DataContract]
 	class GFDrawBoard : IGFContainer
 	{
 		public IList<GFElement> Children { get; set; } = new List<GFElement>();
+
+		[DataMember]
 		public Vector2 PanOffset { get; set; } = Vector2.Zero;
 
 		private CanvasControl Stage;
@@ -29,12 +35,24 @@ namespace GFlow.Controls
 
 		public GFDrawBoard( CanvasControl Canvas )
 		{
-			Stage = Canvas;
+			SetStage( Canvas );
+		}
 
-			Stage.Draw += Stage_Draw;
-			Stage.PointerMoved += Stage_PointerMoved;
-			Stage.PointerPressed += Stage_PointerPressed;
-			Stage.PointerReleased += Stage_PointerReleased;
+		public void SetStage( CanvasControl Canvas )
+		{
+			if ( Stage == null )
+			{
+				Stage = Canvas;
+
+				Stage.Draw += Stage_Draw;
+				Stage.PointerMoved += Stage_PointerMoved;
+				Stage.PointerPressed += Stage_PointerPressed;
+				Stage.PointerReleased += Stage_PointerReleased;
+			}
+			else
+			{
+				throw new InvalidOperationException();
+			}
 		}
 
 		public void Add( GFElement Elem )
@@ -42,7 +60,7 @@ namespace GFlow.Controls
 			lock ( Children )
 			{
 				Children.Add( Elem );
-				Stage.Invalidate();
+				Stage?.Invalidate();
 			}
 		}
 
@@ -51,7 +69,7 @@ namespace GFlow.Controls
 			lock ( Children )
 			{
 				Children.Remove( Elem );
-				Stage.Invalidate();
+				Stage?.Invalidate();
 			}
 		}
 
@@ -128,7 +146,7 @@ namespace GFlow.Controls
 					.ExecEach( x => Children.Remove( x ) );
 			}
 
-			Stage.Invalidate();
+			Stage?.Invalidate();
 		}
 
 		private void DrawR( CanvasDrawingSession ds, IGFContainer Container )
@@ -207,7 +225,7 @@ namespace GFlow.Controls
 
 		private void Stage_PointerReleased( object sender, PointerRoutedEventArgs e )
 		{
-			if( IsPanning )
+			if ( IsPanning )
 			{
 				IsPanning = false;
 				return;
@@ -227,9 +245,15 @@ namespace GFlow.Controls
 
 		private void Stage_PointerPressed( object sender, PointerRoutedEventArgs e )
 		{
-			PrevDragPos = e.GetCurrentPoint( Stage ).Position.ToVector2();
+			PointerPoint PP = e.GetCurrentPoint( Stage );
+			if ( e.Pointer.PointerDeviceType == PointerDeviceType.Mouse && PP.Properties.IsRightButtonPressed )
+			{
+				return;
+			}
 
-			if( HitTarget == null )
+			PrevDragPos = PP.Position.ToVector2();
+
+			if ( HitTarget == null )
 			{
 				IsPanning = true;
 				return;
@@ -276,6 +300,41 @@ namespace GFlow.Controls
 			}
 
 			return null;
+		}
+
+		[DataMember]
+		private IList<GFElement> SDataChildren
+		{
+			get => Find<GFProcedure>().Cast<GFElement>().ToArray();
+			set => Children = new List<GFElement>( value );
+		}
+
+		[DataMember]
+		private IList<SDataGFProcRel> SDataLinks
+		{
+			get
+			{
+				List<SDataGFProcRel> Links = new List<SDataGFProcRel>();
+
+				GFPathTracer Tracer = new GFPathTracer( this );
+				foreach( GFProcedure Proc in Find<GFProcedure>() )
+				{
+					Links.Add( new SDataGFProcRel() { Source = Proc, Targets = Tracer.ProcsLinkFrom( Proc ) } );
+				}
+
+				return Links;
+			}
+
+			set
+			{
+				GFPathTracer Tracer = new GFPathTracer( this );
+				foreach( SDataGFProcRel Rel in value )
+				{
+					GFProcedure GFrom = Rel.Source;
+					IEnumerator<SDataGFProcTarget> Targets = Rel.Targets.GetEnumerator();
+					Tracer.RestoreLinks( Rel.Source, Rel.Targets );
+				}
+			}
 		}
 
 	}

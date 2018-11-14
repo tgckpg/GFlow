@@ -10,9 +10,9 @@ namespace GFlow.Controls.GraphElements
 	{
 		public IList<GFElement> Children { get; set; }
 
-		public GFNode()
-			: base()
+		protected override void SetDefaults()
 		{
+			base.SetDefaults();
 			Children = new List<GFElement>();
 		}
 

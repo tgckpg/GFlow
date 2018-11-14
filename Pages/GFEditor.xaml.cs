@@ -5,8 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Runtime.Serialization;
+using System.Text;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
@@ -17,6 +20,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+using Net.Astropenguin.IO;
+using Net.Astropenguin.Linq;
 using Net.Astropenguin.Logging;
 using Net.Astropenguin.Messaging;
 
@@ -49,7 +54,6 @@ namespace GFlow.Pages
 		private void SetTemplate()
 		{
 			ActiveTab = BtnProcList;
-			DBoard = new GFDrawBoard( DrawBoard );
 
 			GFProcedureList CompPanel = new GFProcedureList();
 			ProceduresList.DataContext = CompPanel;
@@ -57,6 +61,16 @@ namespace GFlow.Pages
 			RunLog.ItemsSource = Logs;
 
 			MessageBus.Subscribe( this, MessageBus_OnDelivery );
+			RightTapped += GFEditor_RightTapped;
+
+			ReadFromBackup();
+		}
+
+		private void GFEditor_RightTapped( object sender, RightTappedRoutedEventArgs e )
+		{
+			if ( e.OriginalSource is Windows.UI.Xaml.Shapes.Rectangle )
+				return;
+			GFMenu.IsOpen = !GFMenu.IsOpen;
 		}
 
 		private void ProceduresList_DragItemsStarting( object sender, DragItemsStartingEventArgs e )
@@ -82,13 +96,18 @@ namespace GFlow.Pages
 				Vector2 P = Windows.UI.Core.CoreWindow.GetForCurrentThread().PointerPosition.ToVector2();
 				Vector2 B = new Vector2( ( float ) Window.Current.Bounds.X, ( float ) Window.Current.Bounds.Y );
 				GFP.Bounds.XY = P - B - DBoard.PanOffset;
-				GFP.OnShowProperty += GFP_OnShowProperty;
-				GFP.OnTestRun += GFP_OnTestRun;
-				GFP.OnRemove += GFP_OnRemove;
+				BindGFPEvents( GFP );
 
 				DBoard.Add( GFP );
 				DropProc = null;
 			}
+		}
+
+		private void BindGFPEvents( GFProcedure Target )
+		{
+			Target.OnShowProperty += GFP_OnShowProperty;
+			Target.OnTestRun += GFP_OnTestRun;
+			Target.OnRemove += GFP_OnRemove;
 		}
 
 		private void GFP_OnRemove( GFProcedure Target )
@@ -182,6 +201,41 @@ namespace GFlow.Pages
 				MasterGrid_R0.Height = new GridLength( 1, GridUnitType.Star );
 				MasterGrid_R2.Height = GridLength.Auto;
 				ContentGrid.Height = 155;
+			}
+		}
+
+		private void SaveBtn_Click( object sender, RoutedEventArgs e )
+		{
+			AppStorage Storage = new AppStorage();
+			using ( Stream s = Storage.GetStream( "Backup-GFlow", FileAccess.Write ) )
+			{
+				s.SetLength( 0 );
+
+				DataContractSerializerSettings Conf = new DataContractSerializerSettings();
+				Conf.PreserveObjectReferences = true;
+
+				DataContractSerializer DCS = new DataContractSerializer( typeof( GFDrawBoard ), Conf );
+				DCS.WriteObject( s, DBoard );
+			}
+		}
+
+		private void ReadFromBackup()
+		{
+			AppStorage Storage = new AppStorage();
+			using ( Stream s = Storage.GetStream( "Backup-GFlow", FileAccess.Read ) )
+			{
+				if ( 0 < s.Length )
+				{
+					DataContractSerializer DCS = new DataContractSerializer( typeof( GFDrawBoard ) );
+					DBoard = DCS.ReadObject( s ) as GFDrawBoard;
+					DBoard.Find<GFProcedure>().ExecEach( ( Action<GFProcedure> ) BindGFPEvents );
+					DBoard.SetStage( DrawBoard );
+				}
+			}
+
+			if ( DBoard == null )
+			{
+				DBoard = new GFDrawBoard( DrawBoard );
 			}
 		}
 

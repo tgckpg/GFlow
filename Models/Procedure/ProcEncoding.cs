@@ -11,7 +11,6 @@ using Windows.Storage;
 using Windows.UI.Xaml.Controls;
 using Windows.UI;
 
-using Net.Astropenguin.Helpers;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
 using Net.Astropenguin.UI.Icons;

@@ -28,9 +28,10 @@ namespace GFlow.Controls.GraphElements
 		private GFSynapse L;
 		private GFSynapse R;
 
-		private Vector2[] LinePoints = new Vector2[ 0 ];
+		private Vector2[] LinePoints;
 
 		public GFLink( GFSynapse From, GFSynapse To )
+			: base()
 		{
 			if ( From is GFReceptor )
 			{
@@ -42,26 +43,6 @@ namespace GFlow.Controls.GraphElements
 				L = To;
 				R = From;
 			}
-
-			MouseOver = _MouseOver;
-			MouseOut = _MouseOut;
-			MousePress = _MousePress;
-		}
-
-		private void _MouseOver( object sender, GFPointerEventArgs e )
-		{
-			LineBrush = Colors.OrangeRed;
-		}
-
-		private void _MouseOut( object sender, GFPointerEventArgs e )
-		{
-			LineBrush = Colors.Black;
-		}
-
-		private void _MousePress( object sender, GFPointerEventArgs e )
-		{
-			( ( GFDrawBoard ) sender ).Remove( this );
-			TriggerRedraw( false );
 		}
 
 		public bool IsBetween( GFSynapse L, GFSynapse R )
@@ -124,5 +105,31 @@ namespace GFlow.Controls.GraphElements
 		}
 
 		public bool HitTest( float x, float y ) => HitTest( new Vector2( x, y ) );
+
+		protected override void SetDefaults()
+		{
+			base.SetDefaults();
+			LinePoints = new Vector2[ 0 ];
+			MouseOver = _MouseOver;
+			MouseOut = _MouseOut;
+			MousePress = _MousePress;
+		}
+
+		private void _MouseOver( object sender, GFPointerEventArgs e )
+		{
+			LineBrush = Colors.OrangeRed;
+		}
+
+		private void _MouseOut( object sender, GFPointerEventArgs e )
+		{
+			LineBrush = Colors.Black;
+		}
+
+		private void _MousePress( object sender, GFPointerEventArgs e )
+		{
+			( ( GFDrawBoard ) sender ).Remove( this );
+			TriggerRedraw( false );
+		}
+
 	}
 }

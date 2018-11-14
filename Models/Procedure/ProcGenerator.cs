@@ -10,14 +10,12 @@ using Windows.Storage;
 using Windows.UI;
 
 using Net.Astropenguin.DataModel;
-using Net.Astropenguin.Helpers;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
 
 namespace GFlow.Models.Procedure
 {
 	using Controls;
-	using Crawler;
 	using Models.Interfaces;
 
 	class ProcGenerator : Procedure

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
@@ -30,8 +31,9 @@ namespace GFlow.Controls.BasicElements
 
 		public HorizontalAlignment HAlign { get; set; } = HorizontalAlignment.Left;
 
-		public GFButton()
+		protected override void SetDefaults()
 		{
+			base.SetDefaults();
 			Bounds.W = 200;
 			Bounds.H = 24;
 		}
@@ -76,14 +78,17 @@ namespace GFlow.Controls.BasicElements
 		void Drag( float x, float y, float ax, float ay );
 	}
 
+	[DataContract]
 	class GFPanel : GFElement, IGFContainer
 	{
-		public IList<GFElement> Children { get; set; } = new List<GFElement>();
+		public IList<GFElement> Children { get; set; }
+		public Orientation Orientation { get; set; }
 
-		public Orientation Orientation { get; set; } = Orientation.Vertical;
-
-		public GFPanel()
+		protected override void SetDefaults()
 		{
+			base.SetDefaults();
+			Children = new List<GFElement>();
+			Orientation = Orientation.Vertical;
 		}
 
 		public void Add( GFElement Elem )

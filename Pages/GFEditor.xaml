@@ -14,6 +14,20 @@
             <Setter Property="MinHeight" Value="0"/>
         </Style>
     </Page.Resources>
+    <Page.TopAppBar>
+        <CommandBar x:Name="GFMenu"
+                    ClosedDisplayMode="Hidden"
+                    DefaultLabelPosition="Right"
+                    LightDismissOverlayMode="On">
+            <AppBarButton Icon="OpenFile" Label="Open" />
+            <AppBarButton Icon="Save" Label="Save" Click="SaveBtn_Click" />
+            <AppBarButton Icon="SaveLocal" Label="Save As" />
+            <AppBarSeparator />
+            <AppBarButton Icon="ZoomIn" Label="Zoom In" />
+            <AppBarButton Label="100%" />
+            <AppBarButton Icon="ZoomOut" Label="Zoom Out" />
+        </CommandBar>
+    </Page.TopAppBar>
 
     <Grid Background="#FF666666">
         <Grid.ColumnDefinitions>

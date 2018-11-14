@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
@@ -33,9 +34,14 @@ namespace GFlow.Controls.GraphElements
 		protected GFSynapse SnappedTarget;
 
 		public GFSynapse( object Nucleus )
+			:base()
 		{
 			this.Nucleus = Nucleus;
+		}
 
+		protected override void SetDefaults()
+		{
+			base.SetDefaults();
 			ActualBounds.W = 20;
 			MouseOver = _MouseOver;
 			MouseOut = _MouseOut;

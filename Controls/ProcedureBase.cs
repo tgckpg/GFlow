@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
+using Net.Astropenguin.IO;
 using Net.Astropenguin.Linq;
 
 namespace GFlow.Controls
@@ -22,6 +24,7 @@ namespace GFlow.Controls
 	delegate void TestRun( GFProcedure Target );
 	delegate void ProcRemove( GFProcedure Target );
 
+	[DataContract]
 	class GFProcedure : GFPanel, IGFDraggable
 	{
 		public GFButton DragHandle => _DragHandle;
@@ -32,10 +35,9 @@ namespace GFlow.Controls
 			Bounds.Y += dy;
 		}
 
-		public IGFConnector<GFProcedure> Input { get; set; }
-		public IGFConnector<GFProcedure> Output { get; set; }
-
 		private bool _IsStart = false;
+
+		[DataMember]
 		public bool IsStart
 		{
 			get => _IsStart;
@@ -50,7 +52,6 @@ namespace GFlow.Controls
 				{
 					SPButton.SetLightThemeAlt( 0xFF111144 );
 				}
-
 			}
 		}
 
@@ -59,6 +60,9 @@ namespace GFlow.Controls
 		public event ShowProperty OnShowProperty;
 		public event TestRun OnTestRun;
 		public event ProcRemove OnRemove;
+
+		public GFSynapse Transmitter => ( GFTransmitter ) OutputNode.Children.First( x => x is GFTransmitter );
+		public GFSynapse Receptor => ( GFReceptor ) InputNode.Children.First( x => x is GFReceptor );
 
 		private Dictionary<IProcessNode, GFNode> ProcessNodes;
 
@@ -73,16 +77,36 @@ namespace GFlow.Controls
 		public GFProcedure( Procedure Proc )
 		{
 			Properties = Proc;
-			SetTemplate();
+			InitProc();
 		}
 
-		protected void SetTemplate()
+		public Procedure GetProcedure()
 		{
+			Procedure Proc = ( Procedure ) Activator.CreateInstance( Properties.GetType() );
+			Proc.ReadParam( Properties.ToXParam() );
+			return Proc;
+		}
+
+		public GFTransmitter GetTransmitter( string Key )
+		{
+			lock ( ProcessNodes )
+			{
+				IProcessNode PN = ProcessNodes.Keys.FirstOrDefault( x => x.Key == Key );
+				if( PN != null )
+				{
+					return ( GFTransmitter ) ProcessNodes[ PN ].Children.First( x => x is GFTransmitter );
+				}
+			}
+			return null;
+		}
+
+		protected override void SetDefaults()
+		{
+			base.SetDefaults();
 			// Drag Title
 			GFPanel TitlePanel = new GFPanel();
 			TitlePanel.Orientation = Orientation.Horizontal;
 			_DragHandle = new GFTextButton();
-			_DragHandle.Label = Properties.Name;
 			_DragHandle.Bounds.W -= 32;
 
 			GFTextButton DeleteBtn = CreateIconButton( "\uE74D", 0xFFAA0000 );
@@ -117,18 +141,16 @@ namespace GFlow.Controls
 			Children.Add( OutputNode );
 			Children.Add( PNPanel );
 			Children.Add( PropNode );
+		}
+
+		private void InitProc()
+		{
+			_DragHandle.Label = Properties.Name;
 
 			if ( Properties is IProcessList ProcList )
 			{
 				BindProcessNodes( ProcList );
 			}
-		}
-
-		public Procedure GetProcedure()
-		{
-			Procedure Proc = ( Procedure ) Activator.CreateInstance( Properties.GetType() );
-			Proc.ReadParam( Properties.ToXParam() );
-			return Proc;
 		}
 
 		private void SelfDestruct( object sender, GFPointerEventArgs e )
@@ -222,6 +244,33 @@ namespace GFlow.Controls
 			Btn.Padding.Bottom = 2;
 			Btn.SetLightThemeAlt( Color );
 			return Btn;
+		}
+
+		private string _SDataProcName;
+
+		[DataMember]
+		private string SDataProcName
+		{
+			get => Properties?.RawName ?? _SDataProcName;
+			set => _SDataProcName = value;
+		}
+
+		[DataMember]
+		private string SDataProcVal
+		{
+			get
+			{
+				XRegistry XReg = new XRegistry( "<SeData />", null, false );
+				XReg.SetParameter( Properties.ToXParam() );
+				return XReg.ToString();
+			}
+
+			set
+			{
+				Properties = GFProcedureList.Create( SDataProcName );
+				Properties.ReadParam( new XRegistry( value, null, false ).Parameter( SDataProcName ) );
+				InitProc();
+			}
 		}
 
 	}

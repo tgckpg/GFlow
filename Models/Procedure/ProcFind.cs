@@ -6,14 +6,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.UI.Xaml.Controls;
-using Windows.UI;
 
 using Net.Astropenguin.DataModel;
 using Net.Astropenguin.Helpers;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
-using Net.Astropenguin.UI.Icons;
 
 namespace GFlow.Models.Procedure
 {
@@ -37,8 +34,6 @@ namespace GFlow.Models.Procedure
 		public string ModeName { get { return ProcStrRes.Str( RawModeName ); } }
 
 		public override Type PropertyPage => typeof( Dialogs.EditProcFind );
-		protected override IconBase Icon { get { return new IconSearch() { AutoScale = true }; } }
-		protected override Color BgColor { get { return Colors.Purple; } }
 
 		public ProcFind()
 			: base( ProcType.FIND )

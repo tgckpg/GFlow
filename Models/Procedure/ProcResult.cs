@@ -5,11 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.UI;
 
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
-using Net.Astropenguin.UI.Icons;
 
 namespace GFlow.Models.Procedure
 {
@@ -32,8 +30,6 @@ namespace GFlow.Models.Procedure
 		public Dictionary<string, string> PrefixMap { get; set; }
 
 		public override Type PropertyPage => typeof( Dialogs.EditProcResult );
-		protected override Color BgColor { get { return Colors.Black; } }
-		protected override IconBase Icon { get { return new IconEEye() { AutoScale = true }; } }
 
 		public ProcResult()
 			: base( ProcType.RESULT )

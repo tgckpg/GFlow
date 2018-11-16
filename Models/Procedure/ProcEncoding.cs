@@ -6,14 +6,10 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Windows.Data.Html;
 using Windows.Storage;
-using Windows.UI.Xaml.Controls;
-using Windows.UI;
 
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
-using Net.Astropenguin.UI.Icons;
 
 namespace GFlow.Models.Procedure
 {
@@ -28,8 +24,6 @@ namespace GFlow.Models.Procedure
 		public bool DecodeHtml { get; set; }
 
 		public override Type PropertyPage => typeof( Dialogs.EditProcEncoding );
-		protected override IconBase Icon { get { return new IconRetract() { AutoScale = true }; } }
-		protected override Color BgColor { get { return Colors.MidnightBlue; } }
 
 		public ProcEncoding()
 			: base( ProcType.ENCODING )

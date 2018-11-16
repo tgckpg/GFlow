@@ -9,11 +9,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
-using Windows.UI;
 using Windows.Storage;
 
 using Net.Astropenguin.Helpers;
-using Net.Astropenguin.UI.Icons;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
 
@@ -49,9 +47,6 @@ namespace GFlow.Models.Procedure
 				NotifyChanged( "ShortScript" );
 			}
 		}
-
-		protected override Color BgColor { get { return Colors.DodgerBlue; } }
-		protected override IconBase Icon { get { return new IconScript() { AutoScale = true }; } }
 
 		public override Type PropertyPage => typeof( Dialogs.EditProcChakra );
 

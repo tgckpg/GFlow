@@ -2,16 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Windows.Storage;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI;
 
 using Net.Astropenguin.DataModel;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
-using Net.Astropenguin.UI.Icons;
 
 namespace GFlow.Models.Procedure
 {
@@ -50,12 +45,6 @@ namespace GFlow.Models.Procedure
 
 		public ProcConvoy Convoy { get; protected set; }
 		public bool Faulted { get; set; }
-
-		virtual protected Color BgColor { get { return Colors.Gray; } }
-		public Brush Background { get { return new SolidColorBrush( BgColor ); } }
-
-		virtual protected IconBase Icon { get { return new IconAtomic() { AutoScale = true }; } }
-		public IconBase BlockIcon { get { return Icon; } }
 
 		private bool _running = false;
 		public bool Running

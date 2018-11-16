@@ -5,11 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Runtime.Serialization;
 using System.Text;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
@@ -20,8 +18,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-using Net.Astropenguin.IO;
-using Net.Astropenguin.Linq;
 using Net.Astropenguin.Logging;
 using Net.Astropenguin.Messaging;
 
@@ -55,6 +51,7 @@ namespace GFlow.Pages
 		{
 			ActiveTab = BtnProcList;
 
+			DBoard = new GFDrawBoard( DrawBoard );
 			GFProcedureList CompPanel = new GFProcedureList();
 			ProceduresList.DataContext = CompPanel;
 
@@ -63,7 +60,7 @@ namespace GFlow.Pages
 			MessageBus.Subscribe( this, MessageBus_OnDelivery );
 			RightTapped += GFEditor_RightTapped;
 
-			ReadFromBackup();
+			StartAutoBackup();
 		}
 
 		private void GFEditor_RightTapped( object sender, RightTappedRoutedEventArgs e )
@@ -204,41 +201,6 @@ namespace GFlow.Pages
 			}
 		}
 
-		private void SaveBtn_Click( object sender, RoutedEventArgs e )
-		{
-			AppStorage Storage = new AppStorage();
-			using ( Stream s = Storage.GetStream( "Backup-GFlow", FileAccess.Write ) )
-			{
-				DataContractSerializerSettings Conf = new DataContractSerializerSettings();
-				Conf.PreserveObjectReferences = true;
-
-				DataContractSerializer DCS = new DataContractSerializer( typeof( GFDrawBoard ), Conf );
-				DCS.WriteObject( s, DBoard );
-
-				s.SetLength( s.Position );
-			}
-		}
-
-		private void ReadFromBackup()
-		{
-			AppStorage Storage = new AppStorage();
-			using ( Stream s = Storage.GetStream( "Backup-GFlow", FileAccess.Read ) )
-			{
-				if ( 0 < s.Length )
-				{
-					DataContractSerializer DCS = new DataContractSerializer( typeof( GFDrawBoard ) );
-					DBoard = DCS.ReadObject( s ) as GFDrawBoard;
-					DBoard.Find<GFProcedure>().ExecEach( ( Action<GFProcedure> ) BindGFPEvents );
-					DBoard.SetStage( DrawBoard );
-				}
-			}
-
-			if ( DBoard == null )
-			{
-				DBoard = new GFDrawBoard( DrawBoard );
-			}
-		}
-
 		private void ActivateTab( Button Btn )
 		{
 			if ( ActiveTab != null )
@@ -260,16 +222,7 @@ namespace GFlow.Pages
 		{
 			if ( Mesg.TargetType != GetType() ) return;
 
-			// Procedure Run
-			if ( Mesg.Content == "RUN" )
-			{
-				if ( Running ) return;
-
-				ProcManager PM = new ProcManager();
-				PM.ActiveRange( 0, PM.ProcList.IndexOf( Mesg.Payload as Procedure ) + 1 );
-				// ProcRun( true );
-			}
-			else if ( Mesg.Content == "PREVIEW" )
+			if ( Mesg.Content == "PREVIEW" )
 			{
 				var j = Dispatcher.RunIdleAsync( x =>
 				{

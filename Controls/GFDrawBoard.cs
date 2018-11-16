@@ -19,8 +19,10 @@ namespace GFlow.Controls
 	using EventsArgs;
 
 	[DataContract]
-	class GFDrawBoard : IGFContainer
+	class GFDrawBoard : IGFContainer, IDisposable
 	{
+		public Guid BoardId { get; private set; } = Guid.NewGuid();
+
 		public IList<GFElement> Children { get; set; } = new List<GFElement>();
 
 		[DataMember]
@@ -53,6 +55,19 @@ namespace GFlow.Controls
 			{
 				throw new InvalidOperationException();
 			}
+		}
+
+		public void Dispose()
+		{
+			try
+			{
+				Stage.Draw -= Stage_Draw;
+				Stage.PointerMoved -= Stage_PointerMoved;
+				Stage.PointerPressed -= Stage_PointerPressed;
+				Stage.PointerReleased -= Stage_PointerReleased;
+				Stage = null;
+			}
+			catch ( Exception ) { };
 		}
 
 		public void Add( GFElement Elem )
@@ -300,6 +315,21 @@ namespace GFlow.Controls
 			}
 
 			return null;
+		}
+
+		[DataMember]
+		private Guid SDataBoardId
+		{
+			get
+			{
+				if ( BoardId.Equals( Guid.Empty ) )
+				{
+					BoardId = Guid.NewGuid();
+				}
+				return BoardId;
+			}
+
+			set => BoardId = value;
 		}
 
 		[DataMember]

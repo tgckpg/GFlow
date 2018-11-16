@@ -120,15 +120,18 @@
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
-  <data name="ConfirmDiscard" xml:space="preserve">
-    <value>Do you want to discard the current document?</value>
-  </data>
   <data name="No" xml:space="preserve">
     <value>No</value>
     <comment>#</comment>
   </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="RestoreBackup" xml:space="preserve">
+    <value>Backup found, restore it?</value>
+  </data>
+  <data name="SaveChanges" xml:space="preserve">
+    <value>Save changes to "{0}"?</value>
   </data>
   <data name="Yes" xml:space="preserve">
     <value>Yes</value>

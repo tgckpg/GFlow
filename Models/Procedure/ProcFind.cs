@@ -255,7 +255,6 @@ namespace GFlow.Models.Procedure
 			}
 
 			private bool _enabled = false;
-
 			virtual public bool Enabled
 			{
 				get
@@ -317,7 +316,7 @@ namespace GFlow.Models.Procedure
 					// Pattern will be the key identifier
 					new XKey( "Pattern", Pattern )
 					, new XKey( "Format", Format )
-					, new XKey( "Enabled", Enabled )
+					, new XKey( "Enabled", _enabled )
 				} );
 
 				return Param;

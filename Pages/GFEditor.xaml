@@ -16,16 +16,21 @@
     </Page.Resources>
     <Page.TopAppBar>
         <CommandBar x:Name="GFMenu"
+                    VerticalContentAlignment="Center"
                     ClosedDisplayMode="Hidden"
                     DefaultLabelPosition="Right"
                     LightDismissOverlayMode="On">
-            <AppBarButton Icon="OpenFile" Label="Open" />
+            <AppBarButton Icon="Add" Label="New file" Click="NewFile_Click" />
+            <AppBarButton Icon="OpenFile" Label="Open" Click="Open_Click" />
             <AppBarButton Icon="Save" Label="Save" Click="SaveBtn_Click" />
-            <AppBarButton Icon="SaveLocal" Label="Save As" />
+            <AppBarButton Icon="SaveLocal" Label="Save As" Click="SaveAsBtn_Click" />
             <AppBarSeparator />
             <AppBarButton Icon="ZoomIn" Label="Zoom In" />
             <AppBarButton Label="100%" />
             <AppBarButton Icon="ZoomOut" Label="Zoom Out" />
+            <CommandBar.Content>
+                <TextBlock Margin="10,0,0,0" x:Name="FileName" Text="Untitled" />
+            </CommandBar.Content>
         </CommandBar>
     </Page.TopAppBar>
 

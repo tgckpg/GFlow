@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -76,7 +77,7 @@ namespace GFlow.Models.Procedure
 					if ( Def.Key == Key && HasUsableConvoy )
 					{
 						object Payload = await SubprocRun( Crawler, Def, ThisUsableConvoy.Payload );
-						await AppendResult( OutputTmp, Payload );
+						await AppendResult( Crawler, OutputTmp, Payload );
 					}
 					else if ( TryGetConvoy( out UsableConvoy, ( P, C ) =>
 						P is ProcResult
@@ -86,7 +87,7 @@ namespace GFlow.Models.Procedure
 					) )
 					{
 						object Payload = await SubprocRun( Crawler, Def, UsableConvoy.Payload );
-						await AppendResult( OutputTmp, Payload );
+						await AppendResult( Crawler, OutputTmp, Payload );
 					}
 					else
 					{
@@ -97,13 +98,13 @@ namespace GFlow.Models.Procedure
 			else
 			{
 				if ( !HasUsableConvoy ) return Convoy;
-				await AppendResult( OutputTmp, ThisUsableConvoy.Payload );
+				await AppendResult( Crawler, OutputTmp, ThisUsableConvoy.Payload );
 			}
 
 			return new ProcConvoy( this, new IStorageFile[] { OutputTmp } );
 		}
 
-		private async Task AppendResult( IStorageFile File, object Result )
+		private async Task AppendResult( ICrawler Crawler, IStorageFile File, object Result )
 		{
 			if ( Result is string )
 			{
@@ -117,10 +118,25 @@ namespace GFlow.Models.Procedure
 			{
 				await File.WriteFile( ( IStorageFile ) Result, true, new byte[] { ( byte ) '\n' } );
 			}
-			else if( Result is IEnumerable<IStorageFile> )
+			else if( Result is IEnumerable<IStorageFile> ISFs )
 			{
-				foreach ( IStorageFile ISF in ( ( IEnumerable<IStorageFile> ) Result ) )
-					await File.WriteFile( ISF, true, new byte[] { ( byte ) '\n' } );
+				await Task.Run( async () =>
+				{
+					int i = 0, l = ISFs.Count();
+					using ( Stream s = await File.OpenStreamForWriteAsync() )
+					{
+						foreach ( IStorageFile ISF in ISFs )
+						{
+							i++;
+							Crawler.PLog( this, Res.RSTR( "WritingFile", ISF.Name ) + string.Format( " {0}/{1}", i, ISFs.Count() ), LogType.INFO );
+							using ( Stream s2 = await ISF.OpenStreamForReadAsync() )
+							{
+								s2.CopyTo( s );
+								s.WriteByte( ( byte ) '\n' );
+							}
+						}
+					}
+				} );
 			}
 		}
 

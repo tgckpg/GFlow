@@ -183,6 +183,9 @@
     <Compile Include="Pages\GFEditor.xaml.cs">
       <DependentUpon>GFEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\GFEditor-TopBarActions.xaml.cs">
+      <DependentUpon>GFEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\Shared.cs" />
     <EmbeddedResource Include="Properties\GFlow.rd.xml" />

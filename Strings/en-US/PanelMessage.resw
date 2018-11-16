@@ -156,8 +156,8 @@
   <data name="SaveFailed" xml:space="preserve">
     <value>Save failed</value>
   </data>
-  <data name="Welcome" xml:space="preserve">
-    <value>Welcome to Procedural Spider's Control Panel</value>
+  <data name="WritingFile" xml:space="preserve">
+    <value>Writing File: {0}</value>
   </data>
   <data name="SCRIPT_LIVE" xml:space="preserve">
     <value>Script has {0} second(s) to live</value>

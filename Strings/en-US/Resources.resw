@@ -240,4 +240,10 @@
   <data name="UrlListPrefixDesc.Text" xml:space="preserve">
     <value>For all incoming / defined messages. Prefix all Urls with the following string.</value>
   </data>
+  <data name="DecodeUrl.Text" xml:space="preserve">
+    <value>Decode Url</value>
+  </data>
+  <data name="DecodeUrlDesc.Text" xml:space="preserve">
+    <value>Translates Url encoded characters back to it's printing form. Such as "%D0%96" to "Ж".</value>
+  </data>
 </root>

@@ -22,6 +22,7 @@ namespace GFlow.Models.Procedure
 
 		public int CodePage { get; set; }
 		public bool DecodeHtml { get; set; }
+		public bool DecodeUrl { get; set; }
 
 		public override Type PropertyPage => typeof( Dialogs.EditProcEncoding );
 
@@ -30,6 +31,7 @@ namespace GFlow.Models.Procedure
 		{
 			CodePage = Encoding.UTF8.CodePage;
 			DecodeHtml = false;
+			DecodeUrl = false;
 		}
 
 		public override async Task<ProcConvoy> Run( ICrawler Crawler, ProcConvoy Convoy )
@@ -72,7 +74,7 @@ namespace GFlow.Models.Procedure
 						{
 							Crawler.PLog( this, Res.SSTR( "ReadEncoding", Enc.EncodingName ), LogType.INFO );
 
-							if ( !DecodeHtml )
+							if ( !( DecodeHtml || DecodeUrl ) )
 							{
 								await ISF.WriteString( await ISF.ReadString( Enc ) );
 								continue;
@@ -82,10 +84,8 @@ namespace GFlow.Models.Procedure
 							Content = await ISF.ReadString( Enc );
 						}
 
-						if ( DecodeHtml )
-						{
-							Content = WebUtility.HtmlDecode( Content );
-						}
+						if ( DecodeHtml ) Content = WebUtility.HtmlDecode( Content );
+						if ( DecodeUrl ) Content = WebUtility.UrlDecode( Content );
 
 						await ISF.WriteString( Content );
 					}
@@ -100,10 +100,10 @@ namespace GFlow.Models.Procedure
 						Crawler.PLog( this, Res.RSTR( "CantConvertStringLiterals" ), LogType.INFO );
 					}
 
-					if ( DecodeHtml )
-					{
-						return new ProcConvoy( this, WebUtility.HtmlDecode( Content ) );
-					}
+					if ( DecodeHtml ) Content = WebUtility.HtmlDecode( Content );
+					if ( DecodeUrl ) Content = WebUtility.UrlDecode( Content );
+
+					return new ProcConvoy( this, Content );
 				}
 			}
 			catch ( Exception ex )
@@ -116,7 +116,7 @@ namespace GFlow.Models.Procedure
 
 		private bool DoNothing()
 		{
-			return ( CodePage == Encoding.UTF8.CodePage ) && !DecodeHtml;
+			return ( CodePage == Encoding.UTF8.CodePage ) && !DecodeHtml && !DecodeUrl;
 		}
 
 		public override void ReadParam( XParameter Param )
@@ -126,6 +126,7 @@ namespace GFlow.Models.Procedure
 			XParameter[] RegParams = Param.Parameters( "i" );
 			CodePage = Param.GetSaveInt( "CodePage" );
 			DecodeHtml = Param.GetBool( "DecodeHtml" );
+			DecodeUrl = Param.GetBool( "DecodeUrl" );
 		}
 
 		public override XParameter ToXParam()
@@ -135,6 +136,7 @@ namespace GFlow.Models.Procedure
 			Param.SetValue( new XKey[] {
 				new XKey( "CodePage", CodePage )
 				, new XKey( "DecodeHtml", DecodeHtml )
+				, new XKey( "DecodeUrl", DecodeUrl )
 			} );
 
 			return Param;

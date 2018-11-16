@@ -41,6 +41,39 @@ namespace GFlow.Controls
 			}
 		}
 
+		public void RestoreLegacy( ProcManager PM )
+		{
+			lock( this )
+			{
+				int i = 0, j = 0;
+				PM.ProcList.Select( x => new GFProcedure( x ) ).AggExec( ( a, b, s ) =>
+				{
+					if( s == 0 )
+					{
+						b.IsStart = true;
+					}
+
+					if ( s < 2 )
+					{
+						DrawBoard.Add( b );
+						b.Bounds.Y = i * 200 + 25;
+						b.Bounds.X = j * 400 + 50;
+
+						if ( 0 < s )
+						{
+							DrawBoard.Add( new GFLink( a.Transmitter, b.Receptor ) );
+						}
+
+						if ( ++i % 3 == 0 )
+						{
+							i = 0;
+							j++;
+						}
+					}
+				} );
+			}
+		}
+
 		public void RestoreLinks( GFProcedure From, IList<SDataGFProcTarget> Targets )
 		{
 			lock( this )

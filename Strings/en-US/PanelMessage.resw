@@ -225,4 +225,10 @@
   <data name="OperationCanceled" xml:space="preserve">
     <value>Operation canceled</value>
   </data>
+  <data name="NotAControlGraph" xml:space="preserve">
+    <value>Not a control graph</value>
+  </data>
+  <data name="LegacyFormat" xml:space="preserve">
+    <value>This file created from an older version of this app. Saving will overwrite data with the new format. Please note that older versions might no be able to read it.</value>
+  </data>
 </root>

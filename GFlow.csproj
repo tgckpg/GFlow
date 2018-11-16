@@ -139,7 +139,10 @@
     <Compile Include="Controls\GraphElements\GFSynapse.cs" />
     <Compile Include="Controls\GraphElements\GFTextButton.cs" />
     <Compile Include="Controls\Interfaces.cs" />
-    <Compile Include="Controls\ProcedureBase.cs" />
+    <Compile Include="Controls\GFProcedure.cs" />
+    <Compile Include="Dialogs\EditProcUnknown.xaml.cs">
+      <DependentUpon>EditProcUnknown.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\InputProcParam.xaml.cs">
       <DependentUpon>InputProcParam.xaml</DependentUpon>
     </Compile>
@@ -174,11 +177,13 @@
     <Compile Include="Models\Procedure\Procedure.cs" />
     <Compile Include="Models\ProcConvoy.cs" />
     <Compile Include="Models\Procedure\ProcEncoding.cs" />
+    <Compile Include="Models\Procedure\ProcExport.cs" />
     <Compile Include="Models\Procedure\ProcParameter.cs" />
     <Compile Include="Models\Procedure\ProcFind.cs" />
     <Compile Include="Models\Procedure\ProcGenerator.cs" />
     <Compile Include="Models\Procedure\ProcPassThru.cs" />
     <Compile Include="Models\Procedure\ProcResult.cs" />
+    <Compile Include="Models\Procedure\ProcUnknown.cs" />
     <Compile Include="Models\Procedure\ProcUrlList.cs" />
     <Compile Include="Pages\GFEditor.xaml.cs">
       <DependentUpon>GFEditor.xaml</DependentUpon>
@@ -191,6 +196,10 @@
     <EmbeddedResource Include="Properties\GFlow.rd.xml" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Dialogs\EditProcUnknown.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\InputProcParam.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -226,10 +235,6 @@
     <Page Include="Pages\GFEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Themes\Button.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>

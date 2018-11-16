@@ -110,11 +110,28 @@
         </Grid>
 
         <!-- Property Panel -->
-        <ScrollViewer Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"
-                      Background="#222"
-                      BorderThickness="5,0,0,0" BorderBrush="#444">
-            <Frame x:Name="PropertyPanel" Margin="10" Width="300" />
-        </ScrollViewer>
+        <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"
+              Width="300" Background="#222"
+              BorderThickness="5,0,0,0" BorderBrush="#444">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackPanel x:Name="ProcMeta">
+                <TextBox Margin="10,10,10,0"
+                         Padding="0"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         LostFocus="ProcName_LostFocus"
+                         TextWrapping="Wrap"
+                         FontSize="25" Text="{Binding Name, Mode=TwoWay}" />
+                <TextBlock Margin="10,0,10,0" Foreground="#AAA" Text="{Binding TypeName}" />
+            </StackPanel>
+
+            <ScrollViewer Grid.Row="1">
+                <Frame x:Name="PropertyPanel" Margin="10" />
+            </ScrollViewer>
+        </Grid>
 
     </Grid>
 </Page>

@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
 
+using Net.Astropenguin.DataModel;
+
 namespace GFlow.Controls.GraphElements
 {
 	using BasicElements;
@@ -25,11 +27,11 @@ namespace GFlow.Controls.GraphElements
 		protected string _Label = "Text Label";
 		public string Label
 		{
-			get { return LabelOwner?.Label ?? _Label; }
+			get { return LabelOwner?.Name ?? _Label; }
 			set { _Label = value; }
 		}
 
-		private IGFLabelOwner LabelOwner;
+		private INamable LabelOwner;
 
 		private static void _MouseOver( object sender, GFPointerEventArgs e )
 		{
@@ -45,7 +47,7 @@ namespace GFlow.Controls.GraphElements
 			Target.FgFill = Target.IdleFgFill;
 		}
 
-		public void SetLabelOwner( IGFLabelOwner LabelOwner )
+		public void SetLabelOwner( INamable LabelOwner )
 		{
 			this.LabelOwner = LabelOwner;
 		}

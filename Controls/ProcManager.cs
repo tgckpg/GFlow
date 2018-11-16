@@ -154,6 +154,7 @@ namespace GFlow.Controls
 				string ProcName = Param.GetValue( "ProcType" );
 				Procedure NProc = GFProcedureList.Create( ProcName );
 				NProc.ReadParam( Param );
+				ProcList.Add( NProc );
 			}
 		}
 

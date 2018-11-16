@@ -31,7 +31,14 @@ namespace GFlow.Controls
 
 		public static Procedure Create( string Name )
 		{
-			return ( Procedure ) Activator.CreateInstance( Registered[ Name ].Item1 );
+			if ( Registered.ContainsKey( Name ) )
+			{
+				return ( Procedure ) Activator.CreateInstance( Registered[ Name ].Item1 );
+			}
+			else
+			{
+				return new ProcUnknown( Name );
+			}
 		}
 
 		public Dictionary<string, string> ProcChoices { get; set; } = new Dictionary<string, string>();

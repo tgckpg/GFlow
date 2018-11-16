@@ -44,6 +44,7 @@ namespace GFlow.Dialogs
 			{
 				this.EditTarget = EditTarget;
 				DecodeHtmlCheck.IsOn = EditTarget.DecodeHtml;
+				DecodeUrlCheck.IsOn = EditTarget.DecodeUrl;
 			}
 		}
 
@@ -92,6 +93,11 @@ namespace GFlow.Dialogs
 		private void SetDecodeHtml( object sender, RoutedEventArgs e )
 		{
 			EditTarget.DecodeHtml = DecodeHtmlCheck.IsOn;
+		}
+
+		private void SetDecodeUrl( object sender, RoutedEventArgs e )
+		{
+			EditTarget.DecodeUrl = DecodeUrlCheck.IsOn;
 		}
 
 		private void ChangeEncoding( object sender, SelectionChangedEventArgs e )

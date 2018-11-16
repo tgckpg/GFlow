@@ -31,7 +31,17 @@ namespace GFlow.Pages
 	{
 		private static readonly string ID = typeof( GFEditor ).Name;
 
-		GFDrawBoard DBoard;
+		GFDrawBoard _DrawBoard;
+		GFDrawBoard DBoard
+		{
+			get => _DrawBoard;
+			set
+			{
+				_DrawBoard?.Dispose();
+				_DrawBoard = value;
+			}
+		}
+
 		Button ActiveTab;
 
 		string DragProc;
@@ -116,6 +126,7 @@ namespace GFlow.Pages
 
 		private void GFP_OnShowProperty( GFProcedure Target )
 		{
+			ProcMeta.DataContext = Target.Properties;
 			PropertyPanel.Navigate( Target.Properties.PropertyPage, Target.Properties );
 		}
 
@@ -153,6 +164,11 @@ namespace GFlow.Pages
 
 				MessageBus.SendUI( typeof( GFEditor ), "PREVIEW", Convoy.Payload );
 			}
+		}
+
+		private void ProcName_LostFocus( object sender, RoutedEventArgs e )
+		{
+			DrawBoard.Invalidate();
 		}
 
 		private void DrawBoard_DragLeave( object sender, DragEventArgs e ) { DropProc = null; }

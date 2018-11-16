@@ -27,6 +27,7 @@ using Net.Astropenguin.Helpers;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Linq;
 using Net.Astropenguin.Loaders;
+using Net.Astropenguin.Logging;
 
 namespace GFlow.Pages
 {
@@ -75,8 +76,34 @@ namespace GFlow.Pages
 			IStorageFile ISF = await AppStorage.OpenFileAsync( ".xml" );
 			if ( ISF == null ) return;
 
+			ProcManager.PanelMessage( ID, Res.SSTR( "Reading", ISF.Name ), LogType.INFO );
 			using ( Stream s = await ISF.OpenStreamForReadAsync() )
-				Unsafe_ReadDrawboard( s );
+			{
+				try
+				{
+					Unsafe_ReadDrawboard( s );
+					goto Success;
+				}
+				catch ( SerializationException )
+				{
+					ProcManager.PanelMessage( ID, Res.RSTR( "NotAControlGraph" ), LogType.INFO );
+				}
+			}
+
+			try
+			{
+				await Unsafe_ReadDrawboardLegacy( ISF );
+
+			}
+			catch( Exception )
+			{
+				ProcManager.PanelMessage( ID, Res.RSTR( "InvalidXML" ), LogType.ERROR );
+				return;
+			}
+
+
+			Success:
+			ProcManager.PanelMessage( ID, Res.RSTR( "ParseOK" ), LogType.INFO );
 
 			FileName.Text = ISF.Name;
 			CurrentFile = ISF;
@@ -220,11 +247,6 @@ namespace GFlow.Pages
 
 		private void Unsafe_ReadDrawboard( Stream s )
 		{
-			if ( DBoard != null )
-			{
-				DBoard.Dispose();
-			}
-
 			if ( 0 < s.Length )
 			{
 				DataContractSerializer DCS = new DataContractSerializer( typeof( GFDrawBoard ) );
@@ -232,9 +254,24 @@ namespace GFlow.Pages
 				DBoard.Find<GFProcedure>().ExecEach( ( Action<GFProcedure> ) BindGFPEvents );
 				DBoard.SetStage( DrawBoard );
 			}
-			else
+		}
+
+		private async Task Unsafe_ReadDrawboardLegacy( IStorageFile ISF )
+		{
+			// Try legacy mode
+			XRegistry XReg = new XRegistry( await ISF.ReadString(), null, false );
+			ProcManager PM = new ProcManager( XReg.Parameters().FirstOrDefault() );
+
+			if ( PM.HasProcedures )
 			{
+				ProcManager.PanelMessage( ID, Res.RSTR( "LegacyFormat" ), LogType.INFO );
+				MessageDialog LegacyWarning = new MessageDialog( Res.RSTR( "LegacyFormat" ) );
+				await Popups.ShowDialog( LegacyWarning );
+
 				DBoard = new GFDrawBoard( DrawBoard );
+				GFPathTracer Tracer = new GFPathTracer( DBoard );
+				Tracer.RestoreLegacy( PM );
+				DBoard.Find<GFProcedure>().ExecEach( ( Action<GFProcedure> ) BindGFPEvents );
 			}
 		}
 

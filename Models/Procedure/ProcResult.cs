@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 
+using Net.Astropenguin.DataModel;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Logging;
 
@@ -58,20 +59,17 @@ namespace GFlow.Models.Procedure
 		{
 			await base.Run( Crawler, Convoy );
 
-			ProcConvoy ThisUsableConvoy;
-
-			bool HasUsableConvoy = TryGetConvoy( out ThisUsableConvoy, ( P, C ) =>
-				C.Payload is IEnumerable<IStorageFile>
-				|| C.Payload is IEnumerable<string>
-				|| C.Payload is IStorageFile
-				|| C.Payload is string
+			bool HasUsableConvoy = TryGetConvoy( out ProcConvoy ThisUsableConvoy, ( P, C ) =>
+				 C.Payload is IEnumerable<IStorageFile>
+				 || C.Payload is IEnumerable<string>
+				 || C.Payload is IStorageFile
+				 || C.Payload is string
 			);
 
 			IStorageFile OutputTmp = await AppStorage.MkTemp();
 
 			if ( Mode == RunMode.OUTPUT )
 			{
-				ProcConvoy UsableConvoy;
 				foreach ( OutputDef Def in ProcessNodes )
 				{
 					if ( Def.Key == Key && HasUsableConvoy )
@@ -79,11 +77,11 @@ namespace GFlow.Models.Procedure
 						object Payload = await SubprocRun( Crawler, Def, ThisUsableConvoy.Payload );
 						await AppendResult( Crawler, OutputTmp, Payload );
 					}
-					else if ( TryGetConvoy( out UsableConvoy, ( P, C ) =>
-						P is ProcResult
-						&& ( ( ProcResult ) P ).Key == Def.Key
-						// Because ProcResult only returns IEnumerable<IStorageFile>
-						&& C.Payload is IEnumerable<IStorageFile>
+					else if ( TryGetConvoy( out ProcConvoy UsableConvoy, ( P, C ) =>
+						 P is ProcResult
+						 && ( ( ProcResult ) P ).Key == Def.Key
+						 // Because ProcResult only returns IEnumerable<IStorageFile>
+						 && C.Payload is IEnumerable<IStorageFile>
 					) )
 					{
 						object Payload = await SubprocRun( Crawler, Def, UsableConvoy.Payload );
@@ -216,13 +214,13 @@ namespace GFlow.Models.Procedure
 			NotifyChanged( "RawModeName", "ModeName", "IsOutput" );
 		}
 
-		public class OutputDef : IProcessNode, IGFLabelOwner
+		public class OutputDef : IProcessNode, INamable
 		{
 			public ProcManager SubProcedures { get; set; }
 
-			public string Label => Key;
-
+			public string Name { get => Key; set => Key = value; }
 			public string Key { get; set; }
+
 			public bool HasSubProcs => SubProcedures.HasProcedures;
 
 			public OutputDef()

@@ -25,6 +25,9 @@ namespace GFlow.Dialogs
 		{
 			Canceled = true;
 
+			Application.Current.Resources.TryGetValue( "ScrollContentDialog", out object StyleObject );
+			Style = StyleObject as Style;
+
 			this.InitializeComponent();
 			this.Param = Param;
 

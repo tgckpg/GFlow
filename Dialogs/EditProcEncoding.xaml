@@ -25,5 +25,13 @@
                            Text="DecodeHtmlDesc" />
             </StackPanel>
         </ToggleSwitch>
+        <ToggleSwitch x:Name="DecodeUrlCheck" Margin="0,10,0,0" Toggled="SetDecodeUrl">
+            <StackPanel>
+                <TextBlock x:Uid="/GFlow/Resources/DecodeUrl" Text="DecodeUrl" />
+                <TextBlock x:Uid="/GFlow/Resources/DecodeUrlDesc"
+                           Foreground="#AAA" TextWrapping="Wrap"
+                           Text="DecodeUrlDesc" />
+            </StackPanel>
+        </ToggleSwitch>
     </StackPanel>
 </Page>

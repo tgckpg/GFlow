@@ -133,7 +133,6 @@ namespace GFlow.Controls
 
 	interface IForeground { Color FgFill { get; set; } }
 	interface IBackground { Color BgFill { get; set; } }
-	interface IGFLabelOwner { string Label { get; } }
 
 	interface IGFInteractive
 	{

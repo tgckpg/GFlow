@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
+using Net.Astropenguin.DataModel;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Linq;
 
@@ -41,7 +42,7 @@ namespace GFlow.Controls
 		public bool IsStart
 		{
 			get => _IsStart;
-			private set
+			set
 			{
 				_IsStart = value;
 				if ( value )
@@ -144,7 +145,7 @@ namespace GFlow.Controls
 
 		private void InitProc()
 		{
-			_DragHandle.Label = Properties.Name;
+			_DragHandle.SetLabelOwner( Properties );
 
 			if ( Properties is IProcessList ProcList )
 			{
@@ -209,8 +210,8 @@ namespace GFlow.Controls
 						GFNode GNode = CreatePropNode( PN.Key );
 						GNode.SetDarkTheme( 0xFF101020 );
 
-						if ( PN is IGFLabelOwner )
-							GNode.SetLabelOwner( ( IGFLabelOwner ) PN );
+						if ( PN is INamable )
+							GNode.SetLabelOwner( ( INamable ) PN );
 
 						GNode.Children.Add( new GFTransmitter( this )
 						{

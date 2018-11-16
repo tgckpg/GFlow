@@ -209,13 +209,13 @@ namespace GFlow.Pages
 			AppStorage Storage = new AppStorage();
 			using ( Stream s = Storage.GetStream( "Backup-GFlow", FileAccess.Write ) )
 			{
-				s.SetLength( 0 );
-
 				DataContractSerializerSettings Conf = new DataContractSerializerSettings();
 				Conf.PreserveObjectReferences = true;
 
 				DataContractSerializer DCS = new DataContractSerializer( typeof( GFDrawBoard ), Conf );
 				DCS.WriteObject( s, DBoard );
+
+				s.SetLength( s.Position );
 			}
 		}
 

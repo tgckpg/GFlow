@@ -55,12 +55,15 @@ namespace GFlow.Controls
 					DrawBoard.Add( new GFLink( From.Transmitter, GOutput.Target.Receptor ) );
 				}
 
-				while ( GEnum.MoveNext() )
+				if ( From.Properties is IProcessList LProc )
 				{
-					SDataGFProcTarget To = GEnum.Current;
-					if ( To.Target != null )
+					for ( int i = 0; GEnum.MoveNext(); i++ )
 					{
-						DrawBoard.Add( new GFLink( From.GetTransmitter( To.Key ), To.Target.Receptor ) );
+						SDataGFProcTarget To = GEnum.Current;
+						if ( To.Target != null )
+						{
+							DrawBoard.Add( new GFLink( From.GetTransmitter( LProc.ProcessNodes[ i ] ), To.Target.Receptor ) );
+						}
 					}
 				}
 			}
@@ -78,17 +81,15 @@ namespace GFlow.Controls
 				}
 			};
 
-			IEnumerable<SDataGFProcTarget> SubProcs
-				= AllLinks
-					.Where( x => x.From.Nucleus.Equals( From ) && x != OutputLink )
-					.Select( x => new SDataGFProcTarget()
-					{
-						Key = ( ( IProcessNode ) x.From.Dendrite00 ).Key
-						, Target = ( GFProcedure ) x.To.Nucleus
-					} );
-
-			if ( SubProcs.Any() )
-				GFProcs.AddRange( SubProcs );
+			if ( From.Properties is IProcessList LProc )
+			{
+				IEnumerable<GFLink> SubProcs = AllLinks.Where( x => x.From.Nucleus.Equals( From ) && x != OutputLink ).ToArray();
+				LProc.ProcessNodes.ExecEach( ( PN, i ) =>
+				{
+					GFProcedure GTarget = SubProcs.FirstOrDefault( x => x.From.Dendrite00.Equals( PN ) )?.To.Nucleus as GFProcedure;
+					GFProcs.Add( new SDataGFProcTarget() { Key = PN.Key, Target = GTarget } );
+				} );
+			}
 
 			return GFProcs;
 		}
@@ -154,14 +155,15 @@ namespace GFlow.Controls
 			Procedure P = GFP.GetProcedure();
 			if ( P is IProcessList LProc )
 			{
+				IProcessList SrcProcList = ( IProcessList ) GFP.Properties;
 				DrawBoard.Find<GFLink>( 1 )
 					.Where( x => x.From.Nucleus.Equals( GFP ) && x.From.Dendrite00 is IProcessNode )
 					.ExecEach( x =>
 					{
-						string PKey = ( ( IProcessNode ) x.From.Dendrite00 ).Key;
+						int Index = SrcProcList.ProcessNodes.IndexOf( ( IProcessNode ) x.From.Dendrite00 );
 						List<GFProcedure> SubGuard = new List<GFProcedure>( LoopGuard );
 						ChainSubProcs(
-							LProc.ProcessNodes.First( b => b.Key == PKey ).SubProcedures.ProcList
+							LProc.ProcessNodes[ Index ].SubProcedures.ProcList
 							, ( GFProcedure ) x.To.Nucleus
 							, SubGuard
 						);

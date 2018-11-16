@@ -87,12 +87,11 @@ namespace GFlow.Controls
 			return Proc;
 		}
 
-		public GFTransmitter GetTransmitter( string Key )
+		public GFTransmitter GetTransmitter( IProcessNode PN )
 		{
 			lock ( ProcessNodes )
 			{
-				IProcessNode PN = ProcessNodes.Keys.FirstOrDefault( x => x.Key == Key );
-				if( PN != null )
+				if ( ProcessNodes.ContainsKey( PN ) )
 				{
 					return ( GFTransmitter ) ProcessNodes[ PN ].Children.First( x => x is GFTransmitter );
 				}

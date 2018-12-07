@@ -1,137 +1,105 @@
-﻿<ContentDialog
-    x:Class="libtaotu.Dialogs.EditProcFind"
+﻿<Page
+    x:Class="GFlow.Dialogs.EditProcFind"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:libtaotu.Dialogs"
+    xmlns:local="using:GFlow.Dialogs"
     xmlns:p="using:Net.Astropenguin.UI"
     xmlns:i="using:Net.Astropenguin.UI.Icons"
     xmlns:v="using:Net.Astropenguin.UI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Style="{StaticResource ScrollContentDialog}"
-    Background="#111"
-    IsSecondaryButtonEnabled="False">
-    <ContentDialog.Resources>
-        <Style x:Key="StretchListItem" TargetType="ListViewItem">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="Padding" Value="0" />
-        </Style>
-        <v:DataStateConverter x:Key="DataStateConverter" />
-    </ContentDialog.Resources>
-    <ContentDialog.Title>
-        <TextBlock x:Uid="/libtaotu/Resources/FindConditions"
-                   Text="Edit Find Conditions" Foreground="White" />
-    </ContentDialog.Title>
-
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <Grid x:Name="RegexControl" Grid.Row="0" Margin="5">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Orientation="Horizontal"
-                        VerticalAlignment="Center" HorizontalAlignment="Right">
-                <Button Style="{StaticResource IconButton}"
-                        Height="30"
-                        Click="ToggleMode">
-                    <TextBlock Text="{Binding ModeName}"
-                               Foreground="White" />
-                </Button>
-                <Button Style="{StaticResource IconButton}"
-                        Width="30" Height="30"
-                        Click="AddRegex">
-                    <i:IconPlusSign AutoScale="True" />
-                </Button>
-            </StackPanel>
-            <ListView Grid.Row="1" ItemsSource="{Binding RegexPairs}"
-                      ItemContainerStyle="{StaticResource StretchListItem}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <TextBox Grid.Column="0"
-                                     x:Uid="/libtaotu/Resources/Pattern"
-                                     PlaceholderText="Pattern" Margin="3"
-                                     Text="{Binding Pattern}"
-                                     FontFamily="Lucida Console"
-                                     LostFocus="SetPattern"/>
-
-                            <TextBox Grid.Column="1"
-                                     x:Uid="/libtaotu/Resources/Format"
-                                     PlaceholderText="Format" Margin="3"
-                                     Text="{Binding Format}"
-                                     FontFamily="Lucida Console"
-                                     LostFocus="SetFormat"/>
-
-                            <Button Style="{StaticResource IconButton}"
-                                    Grid.Column="2"
-                                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                                    Width="30" Height="30"
-                                    Click="ApplyRegex">
-                                <Grid>
-                                    <i:IconLogin AutoScale="True" Direction="Rotate270"/>
-                                    <p:StateControl State="{Binding Enabled, Converter={StaticResource DataStateConverter}}">
-                                        <i:IconLogin AutoScale="True" Foreground="DodgerBlue" Direction="Rotate270"/>
-                                    </p:StateControl>
-                                </Grid>
-                            </Button>
-                            <Button Style="{StaticResource IconButton}"
-                                    Grid.Column="3"
-                                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                                    Width="30" Height="30"
-                                    Click="RemoveRegex">
-                                <i:IconCross AutoScale="True" />
-                            </Button>
-
-                            <p:StateControl Grid.Column="2"
-                                            State="{Binding Valid, Converter={StaticResource DataStateConverter}, ConverterParameter=1}">
-                                <Border Width="30" Height="30" Background="OrangeRed">
-                                    <TextBlock Text="!" Foreground="White" FontWeight="Bold" FontSize="20"
-                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                </Border>
-                            </p:StateControl>
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </Grid>
-
-        <Grid Grid.Row="1" Margin="5">
+    mc:Ignorable="d">
+    <Page.Resources>
+        <v:DataVisConverter x:Key="DataVisConverter" />
+    </Page.Resources>
+    <StackPanel>
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-
-            <TextBox x:Name="TestLink" PlaceholderText="Test Link"
-                     LostFocus="SetTestLink"
-                     Grid.Column="0" />
-            <Button Style="{StaticResource IconButton}"
+            <TextBox x:Name="TestLink" Grid.Column="0"
+                     BorderThickness="1"
+                     PlaceholderText="Test Link"
+                     LostFocus="SetTestLink" />
+            <Button Style="{ThemeResource TextBlockButtonStyle}"
                     Grid.Column="1"
-                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                    Width="30" Height="30"
+                    Foreground="#AAA"
                     Click="PreviewProcess">
-                <i:IconSearch AutoScale="True"/>
+                <SymbolIcon Symbol="Globe" />
             </Button>
-
         </Grid>
 
-        <Border x:Name="FrameContainer"
-                Grid.Row="2" Margin="5">
-            <Frame x:Name="Frame"/>
-        </Border>
-    </Grid>
-</ContentDialog>
+        <StackPanel x:Name="RegexControl">
+            <TextBlock Margin="0,10,0,0" Text="Mode" />
+            <Button Click="ToggleMode">
+                <TextBlock Text="{Binding ModeName}" />
+            </Button>
+
+            <TextBlock Margin="0,10,0,0" Text="Replacements" />
+            <ItemsControl ItemsSource="{Binding RegexPairs}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBox Grid.Row="0" Grid.Column="0"
+                                     x:Uid="/GFlow/Resources/Pattern"
+                                     BorderThickness="1" Margin="3"
+                                     PlaceholderText="Pattern"
+                                     Text="{Binding Pattern}"
+                                     FontFamily="Consolas"
+                                     LostFocus="SetPattern"/>
+
+                            <TextBox Grid.Row="1" Grid.Column="0"
+                                     x:Uid="/GFlow/Resources/Format"
+                                     BorderThickness="1" Margin="3"
+                                     PlaceholderText="Format"
+                                     Text="{Binding Format}"
+                                     FontFamily="Consolas"
+                                     LostFocus="SetFormat"/>
+
+                            <Button Style="{ThemeResource TextBlockButtonStyle}"
+                                    Grid.Row="0" Grid.Column="1"
+                                    Foreground="#AAA"
+                                    Click="ApplyRegex">
+                                <Grid>
+                                    <SymbolIcon Symbol="Pause"
+                                                Visibility="{Binding Enabled, Converter={StaticResource DataVisConverter}}" />
+                                    <SymbolIcon Symbol="Play"
+                                                Visibility="{Binding Enabled, Converter={StaticResource DataVisConverter}, ConverterParameter=1}" />
+                                </Grid>
+                            </Button>
+                            <Border Grid.Row="0" Grid.Column="1"
+                                    Visibility="{Binding Valid, Converter={StaticResource DataVisConverter}, ConverterParameter=1}"
+                                    Width="30" Height="30" Background="OrangeRed">
+                                <TextBlock Text="!" Foreground="White" FontWeight="Bold" FontSize="20"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+
+                            <Button Style="{ThemeResource TextBlockButtonStyle}"
+                                    Grid.Row="1" Grid.Column="1"
+                                    Foreground="#AAA"
+                                    Click="RemoveRegex">
+                                <SymbolIcon Symbol="Delete" />
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+        <Button Style="{ThemeResource TextBlockButtonStyle}"
+                HorizontalAlignment="Right"
+                Foreground="#AAA"
+                Click="AddRegex">
+            <SymbolIcon Symbol="Add" />
+        </Button>
+    </StackPanel>
+</Page>

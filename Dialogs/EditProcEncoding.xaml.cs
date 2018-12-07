@@ -20,39 +20,36 @@ using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
 using Net.Astropenguin.Messaging;
 
-namespace libtaotu.Dialogs
+namespace GFlow.Dialogs
 {
 	using Models.Procedure;
-	using Pages;
-	using Resources;
 
-	sealed partial class EditProcEncoding : ContentDialog
+	sealed partial class EditProcEncoding : Page
 	{
 		public static readonly string ID = typeof( EditProcFind ).Name;
 
 		private ProcEncoding EditTarget;
 		private SortedDictionary<string, int> SupportedCodePages = new SortedDictionary<string, int>();
 
-		private EditProcEncoding()
+		public EditProcEncoding()
 		{
 			this.InitializeComponent();
 			SetTemplate();
 		}
 
-		public EditProcEncoding( ProcEncoding EditTarget )
-			:this()
+		protected override void OnNavigatedTo( NavigationEventArgs e )
 		{
-			this.EditTarget = EditTarget;
-
-			DecodeHtmlCheck.IsChecked = EditTarget.DecodeHtml;
-			MessageBus.Subscribe( this, MessageBus_OnDelivery );
+			base.OnNavigatedTo( e );
+			if ( e.Parameter is ProcEncoding EditTarget )
+			{
+				this.EditTarget = EditTarget;
+				DecodeHtmlCheck.IsOn = EditTarget.DecodeHtml;
+				DecodeUrlCheck.IsOn = EditTarget.DecodeUrl;
+			}
 		}
 
 		private void SetTemplate()
 		{
-			StringResources stx = StringResources.Load( "/libtaotu/Message" );
-			PrimaryButtonText = stx.Str( "OK" );
-
 			int[] KnownCodePages = new int[] {
 				37, 437, 500, 708, 720, 737, 775, 850, 852, 855, 857, 858, 860, 861, 862, 863, 864
 				, 865, 866, 869, 870, 874, 875, 932, 936, 949, 950, 1026, 1047, 1140, 1141, 1142, 1143
@@ -95,7 +92,12 @@ namespace libtaotu.Dialogs
 
 		private void SetDecodeHtml( object sender, RoutedEventArgs e )
 		{
-			EditTarget.DecodeHtml = ( bool ) DecodeHtmlCheck.IsChecked;
+			EditTarget.DecodeHtml = DecodeHtmlCheck.IsOn;
+		}
+
+		private void SetDecodeUrl( object sender, RoutedEventArgs e )
+		{
+			EditTarget.DecodeUrl = DecodeUrlCheck.IsOn;
 		}
 
 		private void ChangeEncoding( object sender, SelectionChangedEventArgs e )
@@ -103,35 +105,5 @@ namespace libtaotu.Dialogs
 			EditTarget.CodePage = ( ( KeyValuePair<string, int> ) e.AddedItems[ 0 ] ).Value;
 		}
 
-		private void RunTilHere( object sender, RoutedEventArgs e )
-		{
-			TestRunning.IsActive = true;
-			MessageBus.SendUI( typeof( ProceduresPanel ), "RUN", EditTarget );
-		}
-
-		private async void MessageBus_OnDelivery( Message Mesg )
-		{
-			ProcConvoy Convoy = Mesg.Payload as ProcConvoy;
-			if ( Mesg.Content == "RUN_RESULT"
-				&& Convoy != null
-				&& Convoy.Dispatcher == EditTarget )
-			{
-				TestRunning.IsActive = false;
-
-				IEnumerable<IStorageFile> ISFs = Convoy.Payload as IEnumerable<IStorageFile>;
-				if ( ISFs != null && 0 < ISFs.Count() )
-				{
-					Preview.Navigate( Shared.SourceView, ISFs.First() );
-				}
-				else if ( Convoy.Payload is string )
-				{
-					IStorageFile ISF = await AppStorage.MkTemp();
-					await ISF.WriteString( ( string ) Convoy.Payload );
-
-					Preview.Navigate( Shared.SourceView, ISF );
-				}
-
-			}
-		}
 	}
 }

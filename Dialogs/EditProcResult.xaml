@@ -1,152 +1,71 @@
-﻿<ContentDialog
-    x:Class="libtaotu.Dialogs.EditProcResult"
+﻿<Page
+    x:Class="GFlow.Dialogs.EditProcResult"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:libtaotu.Dialogs"
+    xmlns:local="using:GFlow.Dialogs"
     xmlns:i="using:Net.Astropenguin.UI.Icons"
     xmlns:p="using:Net.Astropenguin.UI"
     xmlns:v="using:Net.Astropenguin.UI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Style="{StaticResource ScrollContentDialog}"
-    Background="#111"
-    IsSecondaryButtonEnabled="False">
-    <ContentDialog.Title>
-        <TextBlock x:Uid="/libtaotu/Resources/Result" Text="Result view"
-                   Foreground="White" />
-    </ContentDialog.Title>
-
-    <ContentDialog.Resources>
-        <Style x:Key="StretchListItem" TargetType="ListViewItem">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="Padding" Value="0" />
-        </Style>
+    mc:Ignorable="d">
+    <Page.Resources>
         <v:DataVisConverter x:Key="DataVisConverter" />
-    </ContentDialog.Resources>
+    </Page.Resources>
 
-    <Grid x:Name="LayoutRoot">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <!-- Preview Section -->
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <!-- Test Button -->
-        <Button Grid.Row="0" Grid.ColumnSpan="2"
-                Style="{StaticResource IconButton}"
-                HorizontalAlignment="Right" VerticalAlignment="Center"
-                Click="RunTilHere">
-            <Grid Height="30">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="30" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <ProgressRing x:Name="TestRunning" Width="30" Height="30" />
-                    <i:IconTestTube AutoScale="True" />
-                <TextBlock Grid.Column="1" x:Uid="/libtaotu/Resources/Test"
-                           Margin="5" Foreground="White"
-                           VerticalAlignment="Center" HorizontalAlignment="Center"
-                           Text="Test" />
-            </Grid>
-        </Button>
-
+    <StackPanel x:Name="LayoutRoot">
         <!-- Key / Mode  -->
         <TextBox x:Name="KeyInput"
-                 Grid.Row="1" Grid.Column="0" Margin="3"
+                 BorderThickness="1"
                  PlaceholderText="Key" LostFocus="SetKey" />
-        <Button Grid.Row="1" Grid.Column="1" Margin="3"
-                Style="{StaticResource IconButton}"
-                Height="30" Click="ToggleMode">
+
+        <TextBlock Margin="0,10,0,0" x:Uid="/GFlow/Resources/RunMode" Text="RunMode" />
+        <Button Click="ToggleMode">
             <TextBlock Text="{Binding ModeName}" Foreground="White" />
         </Button>
 
-        <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="5"
-              Visibility="{Binding IsOutput, Converter={StaticResource DataVisConverter}}">
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
+        <Grid Margin="0,10,0,0" Visibility="{Binding IsOutput, Converter={StaticResource DataVisConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-
-            <TextBlock x:Uid="/libtaotu/Resources/OutputDefs"
-                       Grid.Column="0" Margin="3"
+            <TextBlock x:Uid="/GFlow/Resources/OutputDefs"
+                       Grid.Column="0"
                        VerticalAlignment="Center"
                        Foreground="White" Text="Output Defs" />
-
-            <Button Grid.Column="1" Margin="3"
-                    Style="{StaticResource IconButton}"
-                    Width="30" Height="30"
+            <Button Style="{ThemeResource TextBlockButtonStyle}"
+                    Foreground="#AAA"
+                    Grid.Column="1"
                     Click="AddOutputDef">
-                <i:IconPlusSign AutoScale="True" />
-            </Button>
-
-            <ListView Grid.Row="1" Grid.ColumnSpan="2"
-                      ItemsSource="{Binding OutputDefs}"
-                      ItemContainerStyle="{StaticResource StretchListItem}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <TextBox x:Uid="/libtaotu/Resources/Key"
-                                     Grid.Column="0" Margin="3"
-                                     PlaceholderText="Key"
-                                     Text="{Binding Key}"
-                                     FontFamily="Lucida Console"
-                                     LostFocus="SetDefKey"/>
-
-                            <!-- Subprocess -->
-                            <Button x:Uid="/libtaotu/Resources/SubProcs"
-                                    Grid.Column="1" Margin="3"
-                                    Style="{StaticResource IconButton}"
-                                    Click="Subprocess">
-                                <Grid Width="30" Height="30">
-                                    <i:IconSteps AutoScale="True" Foreground="{StaticResource SubtleBrush}"/>
-                                    <i:IconSteps Visibility="{Binding HasSubProcs, Converter={StaticResource DataVisConverter}}"
-                                                 AutoScale="True" Foreground="{StaticResource MajorBrush}" />
-                                </Grid>
-                            </Button>
-
-                            <Button Style="{StaticResource IconButton}"
-                                    Grid.Column="2" Margin="3"
-                                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                                    Width="30" Height="30"
-                                    Click="RemoveOutputDef">
-                                <i:IconCross AutoScale="True" />
-                            </Button>
-
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </Grid>
-
-        <!-- Preview Section -->
-        <Grid Grid.Row="3" Grid.ColumnSpan="3"
-              Margin="5">
-            <Frame x:Name="Preview" />
-            <Button Style="{StaticResource IconButton}"
-                    Margin="10"
-                    HorizontalAlignment="Right" VerticalAlignment="Top"
-                    Click="SaveResult">
-                <i:IconSave AutoScale="True" Width="30" Height="30" />
+                <SymbolIcon Symbol="Add" />
             </Button>
         </Grid>
+        <ItemsControl ItemsSource="{Binding ProcessNodes}"
+                      Visibility="{Binding IsOutput, Converter={StaticResource DataVisConverter}}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Uid="/GFlow/Resources/Key"
+                                 Grid.Column="0" Margin="3"
+                                 BorderThickness="1"
+                                 PlaceholderText="Key"
+                                 Text="{Binding Key}"
+                                 FontFamily="Consolas"
+                                 LostFocus="SetDefKey"/>
+                        <Button Style="{ThemeResource TextBlockButtonStyle}"
+                                Foreground="#AAA"
+                                Grid.Column="1" Margin="3"
+                                Click="RemoveOutputDef">
+                            <SymbolIcon Symbol="Delete" />
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
-    </Grid>
-</ContentDialog>
+    </StackPanel>
+</Page>

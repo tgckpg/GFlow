@@ -6,46 +6,34 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
 using Net.Astropenguin.IO;
-using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Messaging;
 
-namespace libtaotu.Dialogs
+namespace GFlow.Dialogs
 {
 	using Models.Procedure;
 	using Pages;
-	using Resources;
 
-	sealed partial class EditProcChakra : ContentDialog
+	sealed partial class EditProcChakra : Page
 	{
 		private ProcChakra EditTarget;
 
 		public EditProcChakra()
 		{
 			this.InitializeComponent();
-			SetTemplate();
 		}
 
-		private void SetTemplate()
+		protected override void OnNavigatedTo( NavigationEventArgs e )
 		{
-			StringResources stx = StringResources.Load( "/libtaotu/Message" );
-			PrimaryButtonText = stx.Str( "OK" );
+			base.OnNavigatedTo( e );
 
-			MessageBus.Subscribe( this, MessageBus_OnDelivery );
-		}
-
-		public EditProcChakra( ProcChakra EditTarget )
-			:this()
-		{
-			this.EditTarget = EditTarget;
-			ScriptInput.DataContext = EditTarget;
-		}
-
-		private void RunTilHere( object sender, RoutedEventArgs e )
-		{
-			TestRunning.IsActive = true;
-			MessageBus.SendUI( typeof( ProceduresPanel ), "RUN", EditTarget );
+			if ( e.Parameter is ProcChakra )
+			{
+				EditTarget = ( ProcChakra ) e.Parameter;
+				ScriptInput.DataContext = EditTarget;
+			}
 		}
 
 		private async void OpenScript( object sender, RoutedEventArgs e )
@@ -57,26 +45,9 @@ namespace libtaotu.Dialogs
 
 		private async void ExportScript( object sender, RoutedEventArgs e )
 		{
-			IStorageFile ISF = await AppStorage.SaveFileAsync( "script", new string[] { ".js" } );
-			if ( ISF == null ) return;
+			IStorageFile ISF = await AppStorage.MkTemp();
 			await ISF.WriteString( EditTarget.Script );
-		}
-
-		private void MessageBus_OnDelivery( Message Mesg )
-		{
-			ProcConvoy Convoy = Mesg.Payload as ProcConvoy;
-			if ( Mesg.Content == "RUN_RESULT"
-				&& Convoy != null
-				&& Convoy.Dispatcher == EditTarget )
-			{
-				TestRunning.IsActive = false;
-
-				IEnumerable<IStorageFile> ISF = Convoy.Payload as IEnumerable<IStorageFile>;
-				if( ISF != null )
-				{
-					Preview.Navigate( Shared.SourceView, ISF.First() );
-				}
-			}
+			MessageBus.Send( typeof( GFEditor ), "PREVIEW", new Tuple<IStorageFile, string>( ISF, "js" ) );
 		}
 	}
 }

@@ -15,16 +15,15 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
+using Net.Astropenguin.Messaging;
 
-using libtaotu.Crawler;
-using libtaotu.Models.Procedure;
-using libtaotu.Resources;
+using GFlow.Crawler;
+using GFlow.Models.Procedure;
 
-namespace libtaotu.Dialogs
+namespace GFlow.Dialogs
 {
-	sealed partial class EditProcFind : ContentDialog
+	sealed partial class EditProcFind : Page
 	{
 		public static readonly string ID = typeof( EditProcFind ).Name;
 
@@ -33,33 +32,29 @@ namespace libtaotu.Dialogs
 		private ProcFind EditTarget;
 		private ProceduralSpider MCrawler;
 
-		private EditProcFind()
+		public EditProcFind()
 		{
 			this.InitializeComponent();
 			MCrawler = new ProceduralSpider( new Procedure[ 0 ] );
-			SetTemplate();
 		}
 
-		private void SetTemplate()
+		protected override void OnNavigatedTo( NavigationEventArgs e )
 		{
-			StringResources stx = StringResources.Load( "/libtaotu/Message" );
-			PrimaryButtonText = stx.Str( "OK" );
-		}
-
-		public EditProcFind( ProcFind EditTarget )
-			:this()
-		{
-			this.EditTarget = EditTarget;
-
-			if( EditTarget.RegexPairs.Count == 0 )
+			base.OnNavigatedTo( e );
+			if ( e.Parameter is ProcFind EditTarget )
 			{
-				EditTarget.RegexPairs.Add( new ProcFind.RegItem() );
-			}
+				this.EditTarget = EditTarget;
 
-			RegexControl.DataContext = EditTarget;
-			if ( !string.IsNullOrEmpty( EditTarget.TestLink ) )
-			{
-				TestLink.Text = EditTarget.TestLink;
+				if ( EditTarget.RegexPairs.Count == 0 )
+				{
+					EditTarget.RegexPairs.Add( new ProcFind.RegItem() );
+				}
+
+				RegexControl.DataContext = EditTarget;
+				if ( !string.IsNullOrEmpty( EditTarget.TestLink ) )
+				{
+					TestLink.Text = EditTarget.TestLink;
+				}
 			}
 		}
 
@@ -137,9 +132,7 @@ namespace libtaotu.Dialogs
 		{
 			if ( TestContent == null ) return;
 			IStorageFile ISF = await EditTarget.FilterContent( MCrawler, TestContent );
-
-			Frame.Navigate( Shared.SourceView, ISF );
-			FrameContainer.Visibility = Visibility.Visible;
+			MessageBus.Send( typeof( Pages.GFEditor ), "PREVIEW", ISF );
 		}
 	}
 }

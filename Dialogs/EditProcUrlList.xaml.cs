@@ -16,35 +16,38 @@ using Windows.UI.Xaml.Navigation;
 
 using Net.Astropenguin.Loaders;
 
-using libtaotu.Crawler;
-using libtaotu.Models.Procedure;
-using libtaotu.Resources;
+using GFlow.Crawler;
+using GFlow.Models.Procedure;
+using GFlow.Resources;
+using Windows.Storage;
+using Net.Astropenguin.Messaging;
 
-namespace libtaotu.Dialogs
+namespace GFlow.Dialogs
 {
-	sealed partial class EditProcUrlList : ContentDialog
+	sealed partial class EditProcUrlList : Page
 	{
 		private ProcUrlList EditTarget;
+		string TargetUrl;
 
-		private EditProcUrlList()
+		public EditProcUrlList()
 		{
-			InitializeComponent();
-			SetTemplate();
+			this.InitializeComponent();
 		}
 
-		private void SetTemplate()
+		protected override void OnNavigatedTo( NavigationEventArgs e )
 		{
-			StringResources stx = StringResources.Load( "/libtaotu/Message" );
-			PrimaryButtonText = stx.Str( "OK" );
+			base.OnNavigatedTo( e );
+			if( e.Parameter is ProcUrlList )
+			{
+				EditTarget = ( ProcUrlList ) e.Parameter;
+				SetTarget();
+			}
 		}
 
-		public EditProcUrlList( ProcUrlList procUrlList )
-			:this()
+		private void SetTarget()
 		{
-			EditTarget = procUrlList;
-
-			IncomingCheck.IsChecked = EditTarget.Incoming;
-			DelimitedCheck.IsChecked = EditTarget.Delimited;
+			IncomingCheck.IsOn = EditTarget.Incoming;
+			DelimitedCheck.IsOn = EditTarget.Delimited;
 			PrefixInput.Text = EditTarget.Prefix;
 			UrlList.ItemsSource = EditTarget.Urls;
 
@@ -61,25 +64,20 @@ namespace libtaotu.Dialogs
 
 		private void AddUrl( object sender, RoutedEventArgs e ) { TryAddUrl(); }
 
-		private async void AddRemainingUrl( ContentDialog sender, ContentDialogButtonClickEventArgs args )
+		private void AddRemainingUrl( ContentDialog sender, ContentDialogButtonClickEventArgs args )
 		{
 			if ( TryAddUrl() )
 			{
 				args.Cancel = true;
-
-				await Task.Delay( 300 );
-				this.Hide();
 			}
 		}
 
 		private void RemoveUrl( object sender, RoutedEventArgs e )
 		{
-			Button B = sender as Button;
-			string s = B.DataContext as string;
-			EditTarget.Urls.Remove( s );
+			EditTarget.Urls.Remove( TargetUrl );
 
 			// Restore input
-			UrlInput.Text = s;
+			UrlInput.Text = TargetUrl;
 
 			UrlList.ItemsSource = null;
 			UrlList.ItemsSource = EditTarget.Urls;
@@ -87,15 +85,15 @@ namespace libtaotu.Dialogs
 
 		private async void PreviewUrl( object sender, RoutedEventArgs e )
 		{
-			Button B = sender as Button;
-			string Url = B.DataContext as string;
-			Frame.Navigate( Shared.SourceView, await new ProceduralSpider( new Procedure[ 0 ] ).DownloadSource( Url ) );
-			FrameContainer.Visibility = Visibility.Visible;
-		}
-
-		private void CloseFrame( object sender, RoutedEventArgs e )
-		{
-			FrameContainer.Visibility = Visibility.Collapsed;
+			try
+			{
+				IStorageFile ISF = await new ProceduralSpider( new Procedure[ 0 ] ).DownloadSource( TargetUrl );
+				if ( ISF != null )
+				{
+					MessageBus.Send( typeof( Pages.GFEditor ), "PREVIEW", ISF );
+				}
+			}
+			catch ( Exception ) { }
 		}
 
 		private bool TryAddUrl()
@@ -119,12 +117,22 @@ namespace libtaotu.Dialogs
 
 		private void SetIncoming( object sender, RoutedEventArgs e )
 		{
-			EditTarget.Incoming = ( bool ) IncomingCheck.IsChecked;
+			EditTarget.Incoming = IncomingCheck.IsOn;
 		}
 
 		private void SetDelimited( object sender, RoutedEventArgs e )
 		{
-			EditTarget.Delimited = ( bool ) DelimitedCheck.IsChecked;
+			EditTarget.Delimited = DelimitedCheck.IsOn;
 		}
+
+		private void Border_RightTapped( object sender, RightTappedRoutedEventArgs e )
+		{
+			if ( sender is FrameworkElement Element )
+			{
+				FlyoutBase.ShowAttachedFlyout( Element );
+				TargetUrl = ( string ) Element.DataContext;
+			}
+		}
+
 	}
 }

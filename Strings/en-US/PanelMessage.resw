@@ -133,7 +133,7 @@
     <value>Invalid XML?</value>
   </data>
   <data name="NoUsablePayload" xml:space="preserve">
-    <value>Unable to find a usable payload, skipping this ste</value>
+    <value>Unable to find a usable payload, skipping this step.</value>
   </data>
   <data name="ParseOK" xml:space="preserve">
     <value>Parse Success</value>
@@ -156,8 +156,8 @@
   <data name="SaveFailed" xml:space="preserve">
     <value>Save failed</value>
   </data>
-  <data name="Welcome" xml:space="preserve">
-    <value>Welcome to Procedural Spider's Control Panel</value>
+  <data name="WritingFile" xml:space="preserve">
+    <value>Writing File: {0}</value>
   </data>
   <data name="SCRIPT_LIVE" xml:space="preserve">
     <value>Script has {0} second(s) to live</value>
@@ -196,7 +196,7 @@
     <value>Entry point not found, skipping this step.</value>
   </data>
   <data name="NotAFeedRun" xml:space="preserve">
-    <value>Not a feedback operation, skipping this step</value>
+    <value>Not a feedback operation, skipping this step.</value>
   </data>
   <data name="RunMode" xml:space="preserve">
     <value>Run mode: {0}</value>
@@ -224,5 +224,11 @@
   </data>
   <data name="OperationCanceled" xml:space="preserve">
     <value>Operation canceled</value>
+  </data>
+  <data name="NotAControlGraph" xml:space="preserve">
+    <value>Not a control graph</value>
+  </data>
+  <data name="LegacyFormat" xml:space="preserve">
+    <value>This file created from an older version of this app. Saving will overwrite data with the new format. Please note that older versions might no be able to read it.</value>
   </data>
 </root>

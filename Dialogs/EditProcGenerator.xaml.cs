@@ -13,55 +13,51 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-using Net.Astropenguin.Loaders;
 using Net.Astropenguin.Logging;
+using Net.Astropenguin.Messaging;
 
-namespace libtaotu.Dialogs
+namespace GFlow.Dialogs
 {
 	using Crawler;
 	using Controls;
 	using Models.Procedure;
 
-	sealed partial class EditProcGenerator : ContentDialog
+	sealed partial class EditProcGenerator : Page
 	{
 		public static readonly string ID = typeof( EditProcFind ).Name;
 
 		private ProcGenerator EditTarget;
 
-		private EditProcGenerator()
+		public EditProcGenerator()
 		{
 			this.InitializeComponent();
-			SetTemplate();
 		}
 
-		private void SetTemplate()
+		protected override void OnNavigatedTo( NavigationEventArgs e )
 		{
-			StringResources stx = StringResources.Load( "/libtaotu/Message" );
-			PrimaryButtonText = stx.Str( "OK" );
-		}
-
-		public EditProcGenerator( ProcGenerator EditTarget )
-			:this()
-		{
-			this.EditTarget = EditTarget;
-
-			if( EditTarget.StopIfs.Count == 0 )
+			base.OnNavigatedTo( e );
+			if ( e.Parameter is ProcGenerator EditTarget )
 			{
-				EditTarget.StopIfs.Add( new ProcFind.RegItem( "", "", true ) );
-			}
+				this.EditTarget = EditTarget;
 
-			if( EditTarget.NextIfs.Count == 0 )
-			{
-				EditTarget.NextIfs.Add( new ProcFind.RegItem( "", "", true ) );
-			}
+				if ( EditTarget.StopIfs.Count == 0 )
+				{
+					EditTarget.StopIfs.Add( new ProcFind.RegItem( "", "", true ) );
+				}
 
-			RegexControl.DataContext = EditTarget;
+				if ( EditTarget.NextIfs.Count == 0 )
+				{
+					EditTarget.NextIfs.Add( new ProcFind.RegItem( "", "", true ) );
+				}
 
-			IncomingCheck.IsChecked = EditTarget.Incoming;
+				RegexControl.DataContext = EditTarget;
 
-			if ( !string.IsNullOrEmpty( EditTarget.EntryPoint ) )
-			{
-				EntryPoint.Text = EditTarget.EntryPoint;
+				IncomingCheck.IsOn = EditTarget.Incoming;
+
+				if ( !string.IsNullOrEmpty( EditTarget.EntryPoint ) )
+				{
+					EntryPoint.Text = EditTarget.EntryPoint;
+				}
 			}
 		}
 
@@ -77,7 +73,7 @@ namespace libtaotu.Dialogs
 
 				await new ProceduralSpider( PList ).Crawl();
 			}
-			catch( Exception ex )
+			catch ( Exception ex )
 			{
 				ProcManager.PanelMessage( ID, ex.Message, LogType.INFO );
 			}
@@ -143,7 +139,8 @@ namespace libtaotu.Dialogs
 
 		private void SetIncoming( object sender, RoutedEventArgs e )
 		{
-			EditTarget.Incoming = ( bool ) IncomingCheck.IsChecked;
+			EditTarget.Incoming = IncomingCheck.IsOn;
 		}
+
 	}
 }

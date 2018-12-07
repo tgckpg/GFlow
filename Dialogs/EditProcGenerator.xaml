@@ -1,254 +1,191 @@
-﻿<ContentDialog
-    x:Class="libtaotu.Dialogs.EditProcGenerator"
+﻿<Page
+    x:Class="GFlow.Dialogs.EditProcGenerator"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:libtaotu.Dialogs"
+    xmlns:local="using:GFlow.Dialogs"
     xmlns:p="using:Net.Astropenguin.UI"
     xmlns:i="using:Net.Astropenguin.UI.Icons"
     xmlns:v="using:Net.Astropenguin.UI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    Style="{StaticResource ScrollContentDialog}"
-    Background="#111"
-    IsSecondaryButtonEnabled="False">
-    <ContentDialog.Resources>
-        <Style x:Key="StretchListItem" TargetType="ListViewItem">
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="Padding" Value="0" />
-        </Style>
-
+    mc:Ignorable="d">
+    <Page.Resources>
         <Style x:Key="LogStyle" TargetType="ListViewItem">
             <Setter Property="Padding" Value="0"/>
             <Setter Property="MinWidth" Value="0"/>
             <Setter Property="MinHeight" Value="0"/>
         </Style>
+        <v:DataVisConverter x:Key="DataVisConverter" />
+    </Page.Resources>
 
-        <v:DataStateConverter x:Key="DataStateConverter" />
-    </ContentDialog.Resources>
-    <ContentDialog.Title>
-        <TextBlock x:Uid="/libtaotu/Resources/UrlGenerator"
-                   Text="Edit Url Generator" Foreground="White" />
-    </ContentDialog.Title>
-
-    <Grid x:Name="RegexControl">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <StackPanel Grid.Row="0">
-            <CheckBox x:Name="IncomingCheck" Foreground="White"
-                      Unchecked="SetIncoming" Checked="SetIncoming" >
-                <TextBlock x:Uid="/libtaotu/Resources/Incoming" Foreground="White" Text="Incoming" />
-            </CheckBox>
-            <Grid Margin="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-
-                <TextBox x:Name="EntryPoint"
-                         x:Uid="/libtaotu/Resources/EntryPoint"
-                         PlaceholderText="Entry Point"
-                         LostFocus="SetEntryPoint"
-                         Grid.Column="0" />
-
-                <Button Style="{StaticResource IconButton}"
-                        HorizontalAlignment="Left" VerticalAlignment="Center"
-                        Grid.Column="1"
-                        Click="PreviewProcess">
-                    <Grid Height="30">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="30" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <ProgressRing x:Name="TestRunning" Width="30" Height="30" />
-                        <i:IconTestTube AutoScale="True" />
-                        <TextBlock Grid.Column="1" x:Uid="/libtaotu/Resources/Test"
-                                   Margin="5" Foreground="White"
-                                   VerticalAlignment="Center" HorizontalAlignment="Center"
-                                   Text="Test" />
-                    </Grid>
-                </Button>
-
-            </Grid>
-        </StackPanel>
-
-        <Grid Grid.Row="1" Margin="5">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
-            <!-- Continue If -->
-            <TextBlock Grid.Row="0" Margin="3"
-                       x:Uid="/libtaotu/Resources/ContinueIf"
-                       Foreground="White"
-                       VerticalAlignment="Center"
-                       Text="Continue if match with url" />
-            <StackPanel Grid.Row="0" Orientation="Horizontal"
-                        VerticalAlignment="Center" HorizontalAlignment="Right">
-                <Button Style="{StaticResource IconButton}"
-                        Width="30" Height="30"
-                        Click="AddNexts">
-                    <i:IconPlusSign AutoScale="True" />
-                </Button>
+    <StackPanel x:Name="RegexControl">
+        <ToggleSwitch x:Name="IncomingCheck" Toggled="SetIncoming">
+            <StackPanel>
+                <TextBlock x:Uid="/GFlow/Resources/Incoming" Text="Incoming" />
+                <TextBlock x:Uid="/GFlow/Resources/IncomingDesc"
+                           Foreground="#AAA" TextWrapping="Wrap"
+                           Text="IncomingDesc" />
             </StackPanel>
-            <ListView Grid.Row="1" ItemsSource="{Binding NextIfs}"
-                      ItemContainerStyle="{StaticResource StretchListItem}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+        </ToggleSwitch>
 
-                            <TextBox Grid.Column="0"
-                                     x:Uid="/libtaotu/Resources/Pattern"
-                                     PlaceholderText="Pattern" Margin="3"
-                                     Text="{Binding Pattern}"
-                                     FontFamily="Lucida Console"
-                                     LostFocus="SetPattern"/>
-
-                            <TextBox Grid.Column="1"
-                                     x:Uid="/libtaotu/Resources/Format"
-                                     PlaceholderText="Format" Margin="3"
-                                     Text="{Binding Format}"
-                                     FontFamily="Lucida Console"
-                                     LostFocus="SetFormat"/>
-
-                            <Border Grid.Column="2"
-                                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                                    Width="30" Height="30" >
-                                    <i:IconTick AutoScale="True" Foreground="White"/>
-                            </Border>
-
-                            <Button Style="{StaticResource IconButton}"
-                                    Grid.Column="3"
-                                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                                    Width="30" Height="30"
-                                    Click="RemoveNextRegex">
-                                <i:IconCross AutoScale="True" />
-                            </Button>
-
-                            <p:StateControl Grid.Column="2"
-                                            State="{Binding Valid, Converter={StaticResource DataStateConverter}, ConverterParameter=1}">
-                                <Border Width="30" Height="30" Background="OrangeRed">
-                                    <TextBlock Text="!" Foreground="White" FontWeight="Bold" FontSize="20"
-                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                </Border>
-                            </p:StateControl>
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-
-
-            <!-- Stop If -->
-            <TextBlock Grid.Row="2" Margin="3"
-                       x:Uid="/libtaotu/Resources/StopIf"
-                       Foreground="White"
-                       VerticalAlignment="Center"
-                       Text="Stop if" />
-            <StackPanel Grid.Row="2" Orientation="Horizontal"
-                        VerticalAlignment="Center" HorizontalAlignment="Right">
-                <!-- First Stop Skip -->
-                <Button Style="{StaticResource IconButton}"
-                        x:Uid="/libtaotu/Resources/FirstStopSkip"
-                        ToolTipService.ToolTip="First stop skip"
-                        Width="30" Height="30"
-                        Click="FirstStopSkip">
-                    <Grid>
-                        <p:StateControl State="{Binding FirstStopSkip, Converter={StaticResource DataStateConverter}}">
-                            <Rectangle Fill="DodgerBlue" Width="30" Height="30" />
-                        </p:StateControl>
-                        <TextBlock Foreground="White" FontFamily="Lucida Console"
-                                   HorizontalAlignment="Center" VerticalAlignment="Center"
-                                   Text="2" />
-                    </Grid>
-                </Button>
-                <!-- Discard Unmatched -->
-                <Button Style="{StaticResource IconButton}"
-                        Width="30" Height="30"
-                        x:Uid="/libtaotu/Resources/DiscardUnmatched"
-                        ToolTipService.ToolTip="Discard unmatched"
-                        Click="DiscardUnmatched">
-                    <Grid>
-                        <p:StateControl State="{Binding DiscardUnmatched, Converter={StaticResource DataStateConverter}}">
-                            <Rectangle Fill="DodgerBlue" Width="30" Height="30" />
-                        </p:StateControl>
-                        <i:IconCross AutoScale="True" Foreground="White" />
-                    </Grid>
-                </Button>
-                <Button Style="{StaticResource IconButton}"
-                        Width="30" Height="30"
-                        Click="AddStops">
-                    <i:IconPlusSign AutoScale="True" />
-                </Button>
-            </StackPanel>
-            <ListView Grid.Row="3" ItemsSource="{Binding StopIfs}"
-                      ItemContainerStyle="{StaticResource StretchListItem}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <TextBox Grid.Column="0"
-                                     x:Uid="/libtaotu/Resources/Pattern"
-                                     PlaceholderText="Pattern" Margin="3"
-                                     Text="{Binding Pattern}"
-                                     FontFamily="Lucida Console"
-                                     LostFocus="SetPattern"/>
-
-                            <Border Grid.Column="1"
-                                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                                    Width="30" Height="30" >
-                                    <i:IconTick AutoScale="True" Foreground="White"/>
-                            </Border>
-
-                            <Button Style="{StaticResource IconButton}"
-                                    Grid.Column="2"
-                                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                                    Width="30" Height="30"
-                                    Click="RemoveStopRegex">
-                                <i:IconCross AutoScale="True" />
-                            </Button>
-
-                            <p:StateControl Grid.Column="2"
-                                            State="{Binding Valid, Converter={StaticResource DataStateConverter}, ConverterParameter=1}">
-                                <Border Width="30" Height="30" Background="OrangeRed">
-                                    <TextBlock Text="!" Foreground="White" FontWeight="Bold" FontSize="20"
-                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                </Border>
-                            </p:StateControl>
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="EntryPoint"
+                     x:Uid="/GFlow/Resources/EntryPoint"
+                     Grid.Column="0"
+                     BorderThickness="1"
+                     PlaceholderText="Entry Point"
+                     LostFocus="SetEntryPoint"/>
+            <Button Style="{ThemeResource TextBlockButtonStyle}"
+                    HorizontalAlignment="Left" VerticalAlignment="Center"
+                    Grid.Column="1"
+                    Foreground="#AAA"
+                    Click="PreviewProcess">
+                <Grid>
+                    <ProgressRing x:Name="TestRunning" />
+                    <SymbolIcon Symbol="Play" />
+                </Grid>
+            </Button>
         </Grid>
 
-        <ListView ItemsSource="{Binding Urls}"
-                  ItemContainerStyle="{StaticResource LogStyle}"
-                  Grid.Row="2" Margin="5">
-            <ListView.ItemTemplate>
+        <!-- Continue If -->
+        <Grid Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Uid="/GFlow/Resources/ContinueIf"
+                       VerticalAlignment="Center"
+                       Grid.Column="0" Text="ContinueIf" />
+            <Button Style="{ThemeResource TextBlockButtonStyle}"
+                    Grid.Column="1"
+                    Foreground="#AAA"
+                    Click="AddNexts">
+                <SymbolIcon Symbol="Add"/>
+            </Button>
+        </Grid>
+        <ItemsControl ItemsSource="{Binding NextIfs}">
+            <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Grid.Column="2" Foreground="White"
-                               Text="{Binding}" Margin="5"
-                               TextTrimming="CharacterEllipsis"
-                               VerticalAlignment="Center"/>
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBox Grid.Row="0" Grid.Column="0"
+                                 x:Uid="/GFlow/Resources/Pattern"
+                                 BorderThickness="1" Margin="3"
+                                 PlaceholderText="Pattern"
+                                 Text="{Binding Pattern}"
+                                 FontFamily="Consolas"
+                                 LostFocus="SetPattern"/>
+                        <TextBox Grid.Row="1" Grid.Column="0"
+                                 x:Uid="/GFlow/Resources/Format"
+                                 BorderThickness="1" Margin="3"
+                                 PlaceholderText="Format"
+                                 Text="{Binding Format}"
+                                 FontFamily="Consolas"
+                                 LostFocus="SetFormat"/>
+                        <Button Style="{ThemeResource TextBlockButtonStyle}"
+                                Grid.Row="0" Grid.Column="1"
+                                Foreground="#AAA"
+                                Click="RemoveNextRegex">
+                            <SymbolIcon Symbol="Delete" />
+                        </Button>
+                        <Border Grid.Row="1" Grid.Column="1"
+                                Width="30" Height="30" Background="OrangeRed"
+                                Visibility="{Binding Valid, Converter={StaticResource DataVisConverter}, ConverterParameter=1}">
+                            <TextBlock Text="!" Foreground="White" FontWeight="Bold" FontSize="20"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </Grid>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-    </Grid>
-</ContentDialog>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Stop If -->
+        <Grid Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Uid="/GFlow/Resources/StopIf"
+                       Foreground="White" VerticalAlignment="Center"
+                       Grid.Column="0"
+                       Text="StopIf" />
+            <StackPanel Grid.Column="1" Orientation="Horizontal"
+                        VerticalAlignment="Center" HorizontalAlignment="Right">
+                <!-- Discard Unmatched -->
+                <Button Style="{ThemeResource TextBlockButtonStyle}"
+                        x:Uid="/GFlow/Resources/DiscardUnmatched"
+                        ToolTipService.ToolTip="Discard unmatched"
+                        Foreground="{ThemeResource SystemColorInactiveCaptionTextBrush}"
+                        Click="DiscardUnmatched">
+                    <Grid>
+                        <SymbolIcon Symbol="Crop" />
+                        <SymbolIcon Symbol="Crop"
+                                    Visibility="{Binding DiscardUnmatched, Converter={StaticResource DataVisConverter}}"
+                                    Foreground="{ThemeResource SystemColorActiveCaptionBrush}" />
+                    </Grid>
+                </Button>
+                <!-- First Stop Skip -->
+                <Button Style="{ThemeResource TextBlockButtonStyle}"
+                        x:Uid="/GFlow/Resources/FirstStopSkip"
+                        ToolTipService.ToolTip="First stop skip"
+                        Foreground="{ThemeResource SystemColorInactiveCaptionTextBrush}"
+                        Click="FirstStopSkip">
+                    <Grid>
+                        <TextBlock FontFamily="Lucida Console" Text="2" />
+                        <TextBlock FontFamily="Lucida Console" Text="2"
+                                   Visibility="{Binding FirstStopSkip, Converter={StaticResource DataVisConverter}}"
+                                   Foreground="{ThemeResource SystemColorActiveCaptionBrush}" />
+                    </Grid>
+                </Button>
+                <Button Style="{ThemeResource TextBlockButtonStyle}"
+                        Foreground="#AAA"
+                        Click="AddStops">
+                    <SymbolIcon Symbol="Add"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+        <ItemsControl ItemsSource="{Binding StopIfs}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0"
+                                 x:Uid="/GFlow/Resources/Pattern"
+                                 PlaceholderText="Pattern" Margin="3"
+                                 BorderThickness="1"
+                                 Text="{Binding Pattern}"
+                                 FontFamily="Consolas"
+                                 LostFocus="SetPattern"/>
+                        <Border Grid.Column="1" Visibility="{Binding Valid, Converter={StaticResource DataVisConverter}, ConverterParameter=1}"
+                                Width="30" Height="30" Background="OrangeRed">
+                            <TextBlock Text="!" Foreground="White" FontWeight="Bold" FontSize="20"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <Button Style="{ThemeResource TextBlockButtonStyle}"
+                                Grid.Column="2"
+                                Foreground="#AAA"
+                                Click="RemoveStopRegex">
+                            <SymbolIcon Symbol="Delete"/>
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+    </StackPanel>
+</Page>

@@ -1,0 +1,139 @@
+﻿<Page
+    x:Class="GFlow.Pages.GFEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GFlow.Pages"
+    xmlns:msc="using:Microsoft.Graphics.Canvas.UI.Xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <Style x:Key="LogStyle" TargetType="ListViewItem">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="MinWidth" Value="0"/>
+            <Setter Property="MinHeight" Value="0"/>
+        </Style>
+    </Page.Resources>
+    <Page.TopAppBar>
+        <CommandBar x:Name="GFMenu"
+                    VerticalContentAlignment="Center"
+                    ClosedDisplayMode="Hidden"
+                    DefaultLabelPosition="Right"
+                    LightDismissOverlayMode="On">
+            <AppBarButton Icon="Add" Label="New file" Click="NewFile_Click" />
+            <AppBarButton Icon="OpenFile" Label="Open" Click="Open_Click" />
+            <AppBarButton Icon="Save" Label="Save" Click="SaveBtn_Click" />
+            <AppBarButton Icon="SaveLocal" Label="Save As" Click="SaveAsBtn_Click" />
+            <AppBarSeparator />
+            <AppBarButton Icon="ZoomIn" Label="Zoom In" />
+            <AppBarButton Label="100%" />
+            <AppBarButton Icon="ZoomOut" Label="Zoom Out" />
+            <CommandBar.Content>
+                <TextBlock Margin="10,0,0,0" x:Name="FileName" Text="Untitled" />
+            </CommandBar.Content>
+        </CommandBar>
+    </Page.TopAppBar>
+
+    <Grid Background="#FF666666">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="MasterGrid_R0" />
+            <RowDefinition Height="auto" />
+            <RowDefinition x:Name="MasterGrid_R2" Height="auto" />
+        </Grid.RowDefinitions>
+
+        <msc:CanvasControl x:Name="DrawBoard"
+                           AllowDrop="True"
+                           DragOver="DrawBoard_DragOver"
+                           DragLeave="DrawBoard_DragLeave"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal"
+                    Background="#222"
+                    BorderThickness="0,0,0,3" BorderBrush="{ThemeResource SystemControlForegroundAccentBrush}">
+            <Button x:Name="BtnProcList" Click="ProcList_Click" Background="{ThemeResource SystemControlForegroundAccentBrush}">
+                <TextBlock Text="Procedures" />
+            </Button>
+            <Button x:Name="BtnPreview" Click="Preview_Click">
+                <TextBlock Text="Preview" />
+            </Button>
+            <Button x:Name="BtnOutput" Click="Output_Click">
+                <TextBlock Text="Output" />
+            </Button>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" >
+            <Button x:Name="BtnToggleFull"
+                    Style="{ThemeResource ButtonRevealStyle}"
+                    Background="Transparent" VerticalAlignment="Stretch"
+                    Click="ToggleFull_Click">
+                <FontIcon FontSize="17" Glyph="&#xE1D9;"/>
+            </Button>
+        </StackPanel>
+
+        <Grid x:Name="ContentGrid" Grid.Column="0" Grid.Row="2"
+              Background="#222" Height="155">
+            <GridView x:Name="ProceduresList"
+                      ItemsSource="{Binding ProcChoices}"
+                      CanDragItems="True"
+                      DragItemsStarting="ProceduresList_DragItemsStarting"
+                      DragItemsCompleted="ProceduresList_DragItemsCompleted"
+                      ScrollViewer.VerticalScrollMode="Disabled"
+                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                      ScrollViewer.HorizontalScrollMode="Enabled"
+                      DisplayMemberPath="Value" SelectedValuePath="Key">
+                <GridView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsWrapGrid Orientation="Vertical" ItemWidth="200" />
+                    </ItemsPanelTemplate>
+                </GridView.ItemsPanel>
+            </GridView>
+
+            <Frame x:Name="Preview" Visibility="Collapsed" />
+
+            <ListView x:Name="RunLog" Margin="5"
+                      Visibility="Collapsed"
+                      ItemContainerStyle="{StaticResource LogStyle}">
+                <ListView.ItemContainerTransitions>
+                    <TransitionCollection />
+                </ListView.ItemContainerTransitions>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock FontFamily="Lucida Console"
+                                   TextWrapping="Wrap"
+                                   Text="{Binding LogLine}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+
+        <!-- Property Panel -->
+        <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"
+              Width="300" Background="#222"
+              BorderThickness="5,0,0,0" BorderBrush="#444">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackPanel x:Name="ProcMeta">
+                <TextBox Margin="10,10,10,0"
+                         x:Name="ProcName"
+                         IsEnabled="False"
+                         Padding="0"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         LostFocus="ProcName_LostFocus"
+                         TextWrapping="Wrap"
+                         FontSize="25" Text="{Binding Name, Mode=TwoWay}" />
+                <TextBlock Margin="10,0,10,0" Foreground="#AAA" Text="{Binding TypeName}" />
+            </StackPanel>
+
+            <ScrollViewer Grid.Row="1">
+                <Frame x:Name="PropertyPanel" Margin="10" />
+            </ScrollViewer>
+        </Grid>
+
+    </Grid>
+</Page>

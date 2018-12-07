@@ -1,61 +1,37 @@
-﻿<ContentDialog
-    x:Class="libtaotu.Dialogs.EditProcEncoding"
+﻿<Page
+    x:Class="GFlow.Dialogs.EditProcEncoding"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:libtaotu.Dialogs"
+    xmlns:local="using:GFlow.Dialogs"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:i="using:Net.Astropenguin.UI.Icons"
-    Style="{StaticResource ScrollContentDialog}"
-    Background="#111"
-    IsSecondaryButtonEnabled="False">
+    xmlns:i="using:Net.Astropenguin.UI.Icons">
 
-    <ContentDialog.Title>
-        <TextBlock x:Uid="/libtaotu/Resources/Encoding"
-                   Text="Edit Encoding" Foreground="White" />
-    </ContentDialog.Title>
-
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <ComboBox Grid.Column="0"
-                  x:Name="Encodings"
+    <StackPanel>
+        <TextBlock x:Uid="/GFlow/Resources/CodePage" Text="CodePage" />
+        <TextBlock x:Uid="/GFlow/Resources/CodePageDesc"
+                   TextWrapping="Wrap"
+                   Foreground="#AAA" Text="CodePageDesc" />
+        <ComboBox x:Name="Encodings"
                   SelectionChanged="ChangeEncoding"
                   Loaded="Encodings_Loaded"
-                  DisplayMemberPath="Key" SelectedValuePath="Value"
-                  HorizontalAlignment="Left" VerticalAlignment="Center" />
-        <Button Style="{StaticResource IconButton}"
-                Margin="5" Grid.Column="1"
-                HorizontalAlignment="Center" VerticalAlignment="Center"
-                Click="RunTilHere">
-            <Grid Height="30">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="30" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <ProgressRing x:Name="TestRunning" Width="30" Height="30" />
-                <i:IconTestTube AutoScale="True" />
-                <TextBlock Grid.Column="1" x:Uid="/libtaotu/Resources/Test"
-                           Margin="5" Foreground="White"
-                           VerticalAlignment="Center" HorizontalAlignment="Center"
-                           Text="Test" />
-            </Grid>
-        </Button>
-        <CheckBox x:Name="DecodeHtmlCheck" Grid.Row="1" Foreground="White"
-                  Unchecked="SetDecodeHtml" Checked="SetDecodeHtml" >
-            <TextBlock x:Uid="/libtaotu/Resources/DecodeHtml" Foreground="White" Text="Decode Html" />
-        </CheckBox>
-        <!-- Preview Section -->
-        <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="5">
-            <Frame x:Name="Preview" />
-        </Grid>
-    </Grid>
-</ContentDialog>
+                  DisplayMemberPath="Key" SelectedValuePath="Value" />
+        <ToggleSwitch x:Name="DecodeHtmlCheck" Margin="0,10,0,0" Toggled="SetDecodeHtml">
+            <StackPanel>
+                <TextBlock x:Uid="/GFlow/Resources/DecodeHtml" Text="DecodeHtml" />
+                <TextBlock x:Uid="/GFlow/Resources/DecodeHtmlDesc"
+                           Foreground="#AAA" TextWrapping="Wrap"
+                           Text="DecodeHtmlDesc" />
+            </StackPanel>
+        </ToggleSwitch>
+        <ToggleSwitch x:Name="DecodeUrlCheck" Margin="0,10,0,0" Toggled="SetDecodeUrl">
+            <StackPanel>
+                <TextBlock x:Uid="/GFlow/Resources/DecodeUrl" Text="DecodeUrl" />
+                <TextBlock x:Uid="/GFlow/Resources/DecodeUrlDesc"
+                           Foreground="#AAA" TextWrapping="Wrap"
+                           Text="DecodeUrlDesc" />
+            </StackPanel>
+        </ToggleSwitch>
+    </StackPanel>
+</Page>

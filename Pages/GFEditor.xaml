@@ -119,6 +119,8 @@
             </Grid.RowDefinitions>
             <StackPanel x:Name="ProcMeta">
                 <TextBox Margin="10,10,10,0"
+                         x:Name="ProcName"
+                         IsEnabled="False"
                          Padding="0"
                          BorderThickness="0"
                          Background="Transparent"

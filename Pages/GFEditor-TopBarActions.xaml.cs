@@ -93,14 +93,12 @@ namespace GFlow.Pages
 			try
 			{
 				await Unsafe_ReadDrawboardLegacy( ISF );
-
 			}
 			catch( Exception )
 			{
 				ProcManager.PanelMessage( ID, Res.RSTR( "InvalidXML" ), LogType.ERROR );
 				return;
 			}
-
 
 			Success:
 			ProcManager.PanelMessage( ID, Res.RSTR( "ParseOK" ), LogType.INFO );

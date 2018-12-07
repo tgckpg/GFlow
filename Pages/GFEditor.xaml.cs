@@ -26,6 +26,8 @@ namespace GFlow.Pages
 	using Controls;
 	using Resources;
 	using Models.Procedure;
+	using Net.Astropenguin.Controls;
+	using Windows.System;
 
 	public sealed partial class GFEditor : Page
 	{
@@ -68,7 +70,9 @@ namespace GFlow.Pages
 			RunLog.ItemsSource = Logs;
 
 			MessageBus.Subscribe( this, MessageBus_OnDelivery );
-			RightTapped += GFEditor_RightTapped;
+
+			if ( Application.Current is IKeyboardControl KeyControl )
+				KeyControl.KeyboardControl.RegisterCombination( x => GFMenu.IsOpen = !GFMenu.IsOpen, VirtualKey.F9 );
 
 			StartAutoBackup();
 		}
@@ -127,6 +131,7 @@ namespace GFlow.Pages
 		private void GFP_OnShowProperty( GFProcedure Target )
 		{
 			ProcMeta.DataContext = Target.Properties;
+			ProcName.IsEnabled = true;
 			PropertyPanel.Navigate( Target.Properties.PropertyPage, Target.Properties );
 		}
 

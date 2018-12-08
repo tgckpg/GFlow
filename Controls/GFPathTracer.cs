@@ -41,14 +41,17 @@ namespace GFlow.Controls
 			}
 		}
 
-		public void RestoreLegacy( ProcManager PM )
+		public GFProcedure RestoreLegacy( ProcManager PM, int SPCounter = 0 )
 		{
 			lock( this )
 			{
 				int i = 0, j = 0;
-				PM.ProcList.Select( x => new GFProcedure( x ) ).AggExec( ( a, b, s ) =>
+				float OffsetY = 0 < SPCounter ? 3 * 300 * SPCounter + 50 : 0;
+				GFProcedure[] GFProcs = PM.ProcList.Select( x => new GFProcedure( x ) ).ToArray();
+
+				GFProcs.AggExec( ( a, b, s ) =>
 				{
-					if( s == 0 )
+					if ( s == 0 && SPCounter == 0 )
 					{
 						b.IsStart = true;
 					}
@@ -56,8 +59,21 @@ namespace GFlow.Controls
 					if ( s < 2 )
 					{
 						DrawBoard.Add( b );
-						b.Bounds.Y = i * 200 + 25;
+						b.Bounds.Y = i * 200 + 25 + OffsetY;
 						b.Bounds.X = j * 400 + 50;
+
+						if ( b.Properties is IProcessList ProcessList )
+						{
+							foreach ( IProcessNode PNode in ProcessList.ProcessNodes )
+							{
+								GFProcedure SubStart = RestoreLegacy( PNode.SubProcedures, SPCounter + 1 );
+								if ( SubStart != null )
+								{
+									DrawBoard.Add( new GFLink( b.GetTransmitter( PNode ), SubStart.Receptor ) );
+									SPCounter++;
+								}
+							}
+						}
 
 						if ( 0 < s )
 						{
@@ -71,6 +87,8 @@ namespace GFlow.Controls
 						}
 					}
 				} );
+
+				return GFProcs.FirstOrDefault();
 			}
 		}
 

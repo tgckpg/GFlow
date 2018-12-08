@@ -18,7 +18,7 @@ namespace GFlow.Controls
 			, { "GENERATOR", ( typeof( ProcGenerator ), "/GFlow/ProcItems:GENERATOR" ) }
 			, { "FIND", ( typeof( ProcFind ), "/GFlow/ProcItems:FIND" ) }
 			, { "PARAMETER", ( typeof( ProcParameter ), "/GFlow/ProcItems:PARAMETER" ) }
-			, { "CHKRA", ( typeof( ProcChakra ), "/GFlow/ProcItems:CHAKRA" ) }
+			, { "CHAKRA", ( typeof( ProcChakra ), "/GFlow/ProcItems:CHAKRA" ) }
 			, { "ENCODING", ( typeof( ProcEncoding ), "/GFlow/ProcItems:ENCODING" ) }
 			, { "RESULT", ( typeof( ProcResult ), "/GFlow/ProcItems:RESULT" ) }
 		};

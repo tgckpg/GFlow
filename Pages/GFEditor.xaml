@@ -51,7 +51,7 @@
                            DragLeave="DrawBoard_DragLeave"/>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal"
-                    Background="#222"
+                    Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
                     BorderThickness="0,0,0,3" BorderBrush="{ThemeResource SystemControlForegroundAccentBrush}">
             <Button x:Name="BtnProcList" Click="ProcList_Click" Background="{ThemeResource SystemControlForegroundAccentBrush}">
                 <TextBlock Text="Procedures" />
@@ -74,7 +74,7 @@
         </StackPanel>
 
         <Grid x:Name="ContentGrid" Grid.Column="0" Grid.Row="2"
-              Background="#222" Height="155">
+              Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}" Height="155">
             <GridView x:Name="ProceduresList"
                       ItemsSource="{Binding ProcChoices}"
                       CanDragItems="True"
@@ -111,7 +111,7 @@
 
         <!-- Property Panel -->
         <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"
-              Width="300" Background="#222"
+              Width="300" Background="{ThemeResource AppBarBackgroundThemeBrush}"
               BorderThickness="5,0,0,0" BorderBrush="#444">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

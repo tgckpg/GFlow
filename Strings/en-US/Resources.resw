@@ -217,7 +217,7 @@
     <value>Stop if</value>
   </data>
   <data name="SubProcs.Text" xml:space="preserve">
-    <value>Sub procedures</value>
+    <value>Sub Procedures</value>
   </data>
   <data name="Sync.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
     <value>Synchronous</value>

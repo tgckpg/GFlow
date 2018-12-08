@@ -147,6 +147,9 @@ namespace GFlow.Controls
 		{
 			_DragHandle.SetLabelOwner( Properties );
 
+			if ( Properties.PropertyPage == null )
+				Children.Remove( PropNode );
+
 			if ( Properties is IProcessList ProcList )
 			{
 				BindProcessNodes( ProcList );

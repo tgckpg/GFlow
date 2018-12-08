@@ -25,7 +25,7 @@ namespace GFlow.Controls
 
 		public IList<SDataGFProcTarget> ProcsLinkFrom( GFProcedure From )
 		{
-			lock( this )
+			lock ( this )
 			{
 				AllLinks = DrawBoard.Find<GFLink>( 1 );
 				return Unsafe_ProcsLinkFrom( From );
@@ -43,7 +43,7 @@ namespace GFlow.Controls
 
 		public GFProcedure RestoreLegacy( ProcManager PM, int SPCounter = 0 )
 		{
-			lock( this )
+			lock ( this )
 			{
 				int i = 0, j = 0;
 				float OffsetY = 0 < SPCounter ? 3 * 300 * SPCounter + 50 : 0;
@@ -72,6 +72,10 @@ namespace GFlow.Controls
 									DrawBoard.Add( new GFLink( b.GetTransmitter( PNode ), SubStart.Receptor ) );
 									SPCounter++;
 								}
+
+								// ProcList should be empty for each SubProcess in GFlow
+								// as they are dynamically added at the runtime
+								PNode.SubProcedures.ProcList.Clear();
 							}
 						}
 
@@ -94,7 +98,7 @@ namespace GFlow.Controls
 
 		public void RestoreLinks( GFProcedure From, IList<SDataGFProcTarget> Targets )
 		{
-			lock( this )
+			lock ( this )
 			{
 				IEnumerator<SDataGFProcTarget> GEnum = Targets.GetEnumerator();
 
@@ -242,7 +246,7 @@ namespace GFlow.Controls
 	class SDataGFProcRel
 	{
 		[DataMember] public GFProcedure Source;
-		[DataMember] public IList<SDataGFProcTarget> Targets; 
+		[DataMember] public IList<SDataGFProcTarget> Targets;
 	}
 
 	[DataContract]

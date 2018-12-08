@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 using Net.Astropenguin.Controls;
+using Net.Astropenguin.Linq;
 using Net.Astropenguin.Logging;
 using Net.Astropenguin.Messaging;
 
@@ -44,7 +45,7 @@ namespace GFlow.Pages
 			}
 		}
 
-		Action Unregister;
+		List<Action> UnRegKeys = new List<Action>();
 		Button ActiveTab;
 
 		string DragProc;
@@ -73,14 +74,18 @@ namespace GFlow.Pages
 			MessageBus.Subscribe( this, MessageBus_OnDelivery );
 
 			if ( Application.Current is IKeyboardControl KeyControl )
-				Unregister = KeyControl.KeyboardControl.RegisterCombination( x => GFMenu.IsOpen = !GFMenu.IsOpen, VirtualKey.F9 );
+			{
+				UnRegKeys.Add( KeyControl.KeyboardControl.RegisterCombination( x => GFMenu.IsOpen = !GFMenu.IsOpen, VirtualKey.F9 ) );
+				UnRegKeys.Add( KeyControl.KeyboardControl.RegisterCombination( x => ToggleFull(), VirtualKey.Control, VirtualKey.K ) );
+			}
 
 			StartAutoBackup();
 		}
 
 		public void Dispose()
 		{
-			Unregister?.Invoke();
+			UnRegKeys.ExecEach( x => x() );
+			UnRegKeys.Clear();
 			MessageBus.Unsubscribe( this, MessageBus_OnDelivery );
 		}
 
@@ -148,6 +153,7 @@ namespace GFlow.Pages
 			Running = true;
 
 			ActivateTab( BtnOutput );
+			BtnOutput.FontWeight = FontWeights.Normal;
 			RunLog.Visibility = Visibility.Visible;
 
 			GFProcedure StartProc = DBoard.Find<GFProcedure>( 1 ).FirstOrDefault( x => x.IsStart ) ?? Target;
@@ -174,7 +180,7 @@ namespace GFlow.Pages
 					return;
 				}
 
-				MessageBus.SendUI( typeof( GFEditor ), "PREVIEW", Convoy.Payload );
+				MessageBus.SendUI( typeof( GFEditor ), "PREVIEW", Convoy );
 			}
 		}
 
@@ -213,7 +219,9 @@ namespace GFlow.Pages
 			}
 		}
 
-		private void ToggleFull_Click( object sender, RoutedEventArgs e )
+		private void ToggleFull_Click( object sender, RoutedEventArgs e ) => ToggleFull();
+
+		private void ToggleFull()
 		{
 			if ( MasterGrid_R0.Height.IsStar )
 			{

@@ -66,7 +66,7 @@
                             <TextBlock Grid.Column="0" Grid.RowSpan="2"
                                        Text="{Binding Index}" FontFamily="Lucida Console"
                                        VerticalAlignment="Center" HorizontalAlignment="Center"
-                                       Foreground="White" Margin="3"/>
+                                       Margin="3"/>
 
                             <TextBox Grid.Column="1" Grid.Row="0"
                                      x:Uid="/GFlow/Resources/Label"

@@ -8,6 +8,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.System;
 using Windows.UI;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
@@ -18,6 +19,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+using Net.Astropenguin.Controls;
 using Net.Astropenguin.Logging;
 using Net.Astropenguin.Messaging;
 
@@ -26,10 +28,8 @@ namespace GFlow.Pages
 	using Controls;
 	using Resources;
 	using Models.Procedure;
-	using Net.Astropenguin.Controls;
-	using Windows.System;
 
-	public sealed partial class GFEditor : Page
+	public sealed partial class GFEditor : Page, IDisposable
 	{
 		private static readonly string ID = typeof( GFEditor ).Name;
 
@@ -44,6 +44,7 @@ namespace GFlow.Pages
 			}
 		}
 
+		Action Unregister;
 		Button ActiveTab;
 
 		string DragProc;
@@ -72,9 +73,15 @@ namespace GFlow.Pages
 			MessageBus.Subscribe( this, MessageBus_OnDelivery );
 
 			if ( Application.Current is IKeyboardControl KeyControl )
-				KeyControl.KeyboardControl.RegisterCombination( x => GFMenu.IsOpen = !GFMenu.IsOpen, VirtualKey.F9 );
+				Unregister = KeyControl.KeyboardControl.RegisterCombination( x => GFMenu.IsOpen = !GFMenu.IsOpen, VirtualKey.F9 );
 
 			StartAutoBackup();
+		}
+
+		public void Dispose()
+		{
+			Unregister?.Invoke();
+			MessageBus.Unsubscribe( this, MessageBus_OnDelivery );
 		}
 
 		private void GFEditor_RightTapped( object sender, RightTappedRoutedEventArgs e )

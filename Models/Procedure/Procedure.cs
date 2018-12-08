@@ -59,7 +59,7 @@ namespace GFlow.Models.Procedure
 			get
 			{
 				if ( string.IsNullOrEmpty( _TypeName ) )
-					_TypeName = ProcStrRes.Str( RawName );
+					_TypeName = GFProcedureList.ResolveProcName( RawName );
 
 				return _TypeName;
 			}
@@ -72,7 +72,7 @@ namespace GFlow.Models.Procedure
 			get
 			{
 				if ( string.IsNullOrEmpty( _Name ) )
-					_Name = ProcStrRes.Str( RawName );
+					_Name = TypeName;
 
 				return _Name;
 			}

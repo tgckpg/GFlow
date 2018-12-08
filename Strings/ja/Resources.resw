@@ -195,7 +195,7 @@
   <data name="StopIf.Text" xml:space="preserve">
     <value>ストップ条件</value>
   </data>
-  <data name="SubProcs.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
+  <data name="SubProcs.Text" xml:space="preserve">
     <value>サブプロセス</value>
   </data>
   <data name="Sync.[using:Windows.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">

@@ -126,9 +126,6 @@
   <data name="ENCODING" xml:space="preserve">
     <value>Encoding</value>
   </data>
-  <data name="EXTRACT" xml:space="preserve">
-    <value>Extractor</value>
-  </data>
   <data name="FEEDBACK" xml:space="preserve">
     <value>Feedback</value>
   </data>
@@ -140,12 +137,6 @@
   </data>
   <data name="INPUT" xml:space="preserve">
     <value>User Input</value>
-  </data>
-  <data name="LIST" xml:space="preserve">
-    <value>List Builder</value>
-  </data>
-  <data name="MARK" xml:space="preserve">
-    <value>Marker</value>
   </data>
   <data name="MATCH" xml:space="preserve">
     <value>Match</value>
@@ -164,9 +155,6 @@
   </data>
   <data name="SOURCE_AVAIL" xml:space="preserve">
     <value>Source</value>
-  </data>
-  <data name="TRANSLATE" xml:space="preserve">
-    <value>zh-hans → zh-hant</value>
   </data>
   <data name="URLLIST" xml:space="preserve">
     <value>Url List</value>

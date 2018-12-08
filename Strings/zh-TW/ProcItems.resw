@@ -126,9 +126,6 @@
   <data name="ENCODING" xml:space="preserve">
     <value>編碼</value>
   </data>
-  <data name="EXTRACT" xml:space="preserve">
-    <value>提取</value>
-  </data>
   <data name="FEEDBACK" xml:space="preserve">
     <value>反饋</value>
   </data>
@@ -140,12 +137,6 @@
   </data>
   <data name="INPUT" xml:space="preserve">
     <value>用戶輸入</value>
-  </data>
-  <data name="LIST" xml:space="preserve">
-    <value>列表生成</value>
-  </data>
-  <data name="MARK" xml:space="preserve">
-    <value>標籤</value>
   </data>
   <data name="MATCH" xml:space="preserve">
     <value>匹配</value>
@@ -164,9 +155,6 @@
   </data>
   <data name="SOURCE_AVAIL" xml:space="preserve">
     <value>沿用</value>
-  </data>
-  <data name="TRANSLATE" xml:space="preserve">
-    <value>简 → 繁 轉換</value>
   </data>
   <data name="URLLIST" xml:space="preserve">
     <value>網址列表</value>

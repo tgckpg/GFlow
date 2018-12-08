@@ -41,16 +41,19 @@ namespace GFlow.Controls
 			}
 		}
 
+		public static string ResolveProcName( string Name )
+		{
+			(Type PType, string PString) = Registered[ Name ];
+			string[] Str = PString.Split( ':' );
+			return StringResources.Load( Str[ 0 ] ).Str( Str[ 1 ] );
+		}
+
 		public Dictionary<string, string> ProcChoices { get; set; } = new Dictionary<string, string>();
 
 		public GFProcedureList()
 		{
-			foreach ( KeyValuePair<string, (Type, string)> KV in Registered )
-			{
-				string[] Str = KV.Value.Item2.Split( ':' );
-				StringResources stx = StringResources.Load( Str[ 0 ] );
-				ProcChoices[ KV.Key ] = stx.Str( Str[ 1 ] );
-			}
+			foreach ( string Name in Registered.Keys )
+				ProcChoices[ Name ] = ResolveProcName( Name );
 		}
 
 	}

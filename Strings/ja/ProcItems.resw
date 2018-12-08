@@ -126,9 +126,6 @@
   <data name="ENCODING" xml:space="preserve">
     <value>文字コード</value>
   </data>
-  <data name="EXTRACT" xml:space="preserve">
-    <value>導出</value>
-  </data>
   <data name="FEEDBACK" xml:space="preserve">
     <value>饋還</value>
   </data>
@@ -140,12 +137,6 @@
   </data>
   <data name="INPUT" xml:space="preserve">
     <value>ユーザー入力</value>
-  </data>
-  <data name="LIST" xml:space="preserve">
-    <value>リストビルダ</value>
-  </data>
-  <data name="MARK" xml:space="preserve">
-    <value>標識</value>
   </data>
   <data name="MATCH" xml:space="preserve">
     <value>配合</value>
@@ -164,9 +155,6 @@
   </data>
   <data name="SOURCE_AVAIL" xml:space="preserve">
     <value>たどる</value>
-  </data>
-  <data name="TRANSLATE" xml:space="preserve">
-    <value>中国語の変換 簡 → 繁</value>
   </data>
   <data name="URLLIST" xml:space="preserve">
     <value>URLリスト</value>

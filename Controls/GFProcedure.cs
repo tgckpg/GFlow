@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Controls;
 using Net.Astropenguin.DataModel;
 using Net.Astropenguin.IO;
 using Net.Astropenguin.Linq;
+using Net.Astropenguin.Loaders;
 
 namespace GFlow.Controls
 {
@@ -119,17 +120,19 @@ namespace GFlow.Controls
 			SPButton = CreateIconButton( "\uEC43", 0xFF000044 );
 			SPButton.MousePress = SetStart;
 
+			StringResources stx = StringResources.Load( "/GFlow/Resources" );
+
 			// IO Nodes
-			InputNode = CreatePropNode( "Input" );
+			InputNode = CreatePropNode( stx.Text( "Input" ) );
 			InputNode.Children.Add( new GFReceptor( this ) );
-			OutputNode = CreatePropNode( "Output" );
+			OutputNode = CreatePropNode( stx.Text( "Output" ) );
 			OutputNode.Children.Add( new GFTransmitter( this ) );
 
 			// SubProc Nodes
 			PNPanel = new GFPanel();
 
 			// Prop Node
-			PropNode = CreatePropNode( "Properties" );
+			PropNode = CreatePropNode( stx.Text( "Properties" ) );
 			PropNode.MousePress = ( s, e ) => OnShowProperty?.Invoke( this );
 
 			TitlePanel.Children.Add( DragHandle );

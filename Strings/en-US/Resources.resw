@@ -246,4 +246,13 @@
   <data name="DecodeUrlDesc.Text" xml:space="preserve">
     <value>Translates Url encoded characters back to it's printing form. Such as "%D0%96" to "Ж".</value>
   </data>
+  <data name="Input.Text" xml:space="preserve">
+    <value>Input</value>
+  </data>
+  <data name="Output.Text" xml:space="preserve">
+    <value>Output</value>
+  </data>
+  <data name="Properties.Text" xml:space="preserve">
+    <value>Properties</value>
+  </data>
 </root>

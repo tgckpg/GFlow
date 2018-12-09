@@ -159,6 +159,9 @@
   <data name="Incoming.Text" xml:space="preserve">
     <value>傳入的參數</value>
   </data>
+  <data name="Input.Text" xml:space="preserve">
+    <value>輸入</value>
+  </data>
   <data name="Key.Text" xml:space="preserve">
     <value>鍵</value>
   </data>
@@ -170,6 +173,9 @@
   </data>
   <data name="Marker.Text" xml:space="preserve">
     <value>標籤對應</value>
+  </data>
+  <data name="Output.Text" xml:space="preserve">
+    <value>輸出</value>
   </data>
   <data name="OutputDefs.Text" xml:space="preserve">
     <value>整合輸出</value>
@@ -185,6 +191,9 @@
   </data>
   <data name="Prefix.PlaceholderText" xml:space="preserve">
     <value>前綴</value>
+  </data>
+  <data name="Properties.Text" xml:space="preserve">
+    <value>內容</value>
   </data>
   <data name="Result.Text" xml:space="preserve">
     <value>整合結果</value>

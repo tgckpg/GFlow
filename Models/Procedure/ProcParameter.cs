@@ -211,68 +211,56 @@ namespace GFlow.Models.Procedure
 
 		private async Task<ProcConvoy> IncomingTemplates( ICrawler Crawler, ProcConvoy UsableConvoy )
 		{
-			if ( UsableConvoy.Payload is string )
+			IStorageFile Temp;
+			switch ( UsableConvoy.Payload )
 			{
-				return new ProcConvoy( this, FormatParams( Crawler, ( string ) UsableConvoy.Payload ) );
+				case IStorageFile ISF:
+					Temp = await AppStorage.MkTemp();
+					await Temp.WriteString( FormatParams( Crawler, await ISF.ReadString() ) );
+					return new ProcConvoy( this, Temp );
+				case IEnumerable<IStorageFile> ISFs:
+					List<IStorageFile> TemplatedStrs = new List<IStorageFile>();
+					foreach ( IStorageFile ISF in ISFs )
+					{
+						Temp = await AppStorage.MkTemp();
+						await Temp.WriteString( FormatParams( Crawler, await ISF.ReadString() ) );
+						TemplatedStrs.Add( Temp );
+					}
+					return new ProcConvoy( this, TemplatedStrs );
+				case string Text:
+					return new ProcConvoy( this, FormatParams( Crawler, Text ) );
+				case IEnumerable<string> Texts:
+					return new ProcConvoy( this, Texts.Remap( x => FormatParams( Crawler, x ) ) );
 			}
-			else if ( UsableConvoy.Payload is IStorageFile )
-			{
-				IStorageFile tmp = await AppStorage.MkTemp();
-				await tmp.WriteString( FormatParams( Crawler, await ( ( IStorageFile ) UsableConvoy.Payload ).ReadString() ) );
-				return new ProcConvoy( this, tmp );
-			}
-			else if ( UsableConvoy.Payload is IEnumerable<IStorageFile> )
-			{
-				IEnumerable<IStorageFile> Templates = ( IEnumerable<IStorageFile> ) UsableConvoy.Payload;
-				List<IStorageFile> TemplatedStrs = new List<IStorageFile>();
 
-				foreach ( IStorageFile Template in Templates )
-				{
-					IStorageFile tmp = await AppStorage.MkTemp();
-					await tmp.WriteString( FormatParams( Crawler, await Template.ReadString() ) );
-					TemplatedStrs.Add( tmp );
-				}
-
-				return new ProcConvoy( this, TemplatedStrs );
-			}
-			else
-			{
-				IEnumerable<string> Templates = ( IEnumerable<string> ) UsableConvoy.Payload;
-				return new ProcConvoy( this, Templates.Remap( x => FormatParams( Crawler, x ) ) );
-			}
+			throw new ArgumentException( "Unexpected type for UsableConvoy.Payload" );
 		}
 
 		private async Task<ProcConvoy> IncomingArguments( ICrawler Crawler, ProcConvoy UsableConvoy )
 		{
-			if ( UsableConvoy.Payload is string )
+			IStorageFile Temp;
+			switch ( UsableConvoy.Payload )
 			{
-				return new ProcConvoy( this, ApplyParams( Crawler, ( ( string ) UsableConvoy.Payload ).Split( new char[] { '\n' }, ParamDefs.Count ) ) );
+				case IStorageFile ISF:
+					Temp = await AppStorage.MkTemp();
+					await Temp.WriteString( ApplyParams( Crawler, await ISF.ReadLines( ParamDefs.Count ) ) );
+					return new ProcConvoy( this, Temp );
+				case IEnumerable<IStorageFile> ISFs:
+					List<IStorageFile> TemplatedStrs = new List<IStorageFile>();
+					foreach ( IStorageFile ISF in ISFs )
+					{
+						Temp = await AppStorage.MkTemp();
+						await Temp.WriteString( ApplyParams( Crawler, await ISF.ReadLines( ParamDefs.Count ) ) );
+						TemplatedStrs.Add( Temp );
+					}
+					return new ProcConvoy( this, TemplatedStrs );
+				case string Text:
+					return new ProcConvoy( this, ApplyParams( Crawler, Text.Split( new char[] { '\n' }, ParamDefs.Count ) ) );
+				case IEnumerable<string> Texts:
+					return new ProcConvoy( this, Texts.Remap( x => ApplyParams( Crawler, x ) ) );
 			}
-			else if ( UsableConvoy.Payload is IStorageFile )
-			{
-				IStorageFile tmp = await AppStorage.MkTemp();
-				await tmp.WriteString( ApplyParams( Crawler, await ( ( IStorageFile ) UsableConvoy.Payload ).ReadLines( ParamDefs.Count ) ) );
-				return new ProcConvoy( this, tmp );
-			}
-			else if ( UsableConvoy.Payload is IEnumerable<IStorageFile> )
-			{
-				IEnumerable<IStorageFile> Args = ( IEnumerable<IStorageFile> ) UsableConvoy.Payload;
-				List<IStorageFile> TemplatedStrs = new List<IStorageFile>();
 
-				foreach ( IStorageFile Arg in Args )
-				{
-					IStorageFile tmp = await AppStorage.MkTemp();
-					await tmp.WriteString( ApplyParams( Crawler, await Arg.ReadLines( ParamDefs.Count ) ) );
-					TemplatedStrs.Add( tmp );
-				}
-
-				return new ProcConvoy( this, TemplatedStrs );
-			}
-			else
-			{
-				IEnumerable<string> Args = ( IEnumerable<string> ) UsableConvoy.Payload;
-				return new ProcConvoy( this, Args.Remap( x => ApplyParams( Crawler, x ) ) );
-			}
+			throw new ArgumentException( "Unexpected type for UsableConvoy.Payload" );
 		}
 
 		private void SetMode( string name )

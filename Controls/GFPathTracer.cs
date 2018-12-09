@@ -60,7 +60,7 @@ namespace GFlow.Controls
 					{
 						DrawBoard.Add( b );
 						b.Bounds.Y = i * 200 + 25 + OffsetY;
-						b.Bounds.X = j * 400 + 50;
+						b.Bounds.X = j * 400 + 50 * i + 50;
 
 						if ( b.Properties is IProcessList ProcessList )
 						{

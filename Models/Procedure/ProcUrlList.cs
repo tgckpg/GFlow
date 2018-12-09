@@ -7,6 +7,7 @@ using Windows.Storage;
 using Windows.UI.Xaml.Controls;
 
 using Net.Astropenguin.IO;
+using Net.Astropenguin.Linq;
 using Net.Astropenguin.Logging;
 
 namespace GFlow.Models.Procedure
@@ -54,41 +55,29 @@ namespace GFlow.Models.Procedure
 
 				if ( UsableConvoy != null )
 				{
-					ConvoyUrls = new HashSet<string>();
 					IEnumerable<string> Payloads;
 
-					if ( UsableConvoy.Payload is IEnumerable<IStorageFile> )
+					switch( UsableConvoy.Payload )
 					{
-						IEnumerable<IStorageFile> CSFs = ( IEnumerable<IStorageFile> ) UsableConvoy.Payload;
-						List<string> Defs = new List<string>();
-
-						foreach ( IStorageFile CSF in CSFs )
-						{
-							Defs.Add( await CSF.ReadString() );
-						}
-
-						Payloads = Defs;
-					}
-					else if ( UsableConvoy.Payload is IStorageFile )
-					{
-						Payloads = new string[] { await ( ( IStorageFile ) UsableConvoy.Payload ).ReadString() };
-					}
-					else if ( UsableConvoy.Payload is string )
-					{
-						Payloads = new string[] { ( string ) UsableConvoy.Payload };
-					}
-					else
-					{
-						Payloads = ( IEnumerable<string> ) UsableConvoy.Payload;
+						case IStorageFile ISF:
+							Payloads = new string[] { await ISF.ReadString() };
+							break;
+						case IEnumerable<IStorageFile> CSFs:
+							Payloads = await CSFs.Remap( x => x.ReadString() );
+							break;
+						case string Text:
+							Payloads = new string[] { Text };
+							break;
+						case IEnumerable<string> Texts:
+							Payloads = Texts;
+							break;
+						default:
+							throw new ArgumentException( "Unexpected type for UsableConvoy.Payload" );
 					}
 
 					if ( Delimited )
 					{
-						foreach ( string Urls in Payloads )
-							foreach ( string Url in Urls.Split( new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries ) )
-							{
-								ConvoyUrls.Add( Url );
-							}
+						ConvoyUrls = new HashSet<string>( Payloads.Breakdown( x => x.Split( new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries ) ) );
 					}
 					else
 					{

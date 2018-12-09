@@ -38,6 +38,15 @@ namespace GFlow.Pages
 		IStorageFile CurrentFile;
 		DispatcherTimer AutoBackupTimer = new DispatcherTimer();
 
+		protected override void OnNavigatedTo( NavigationEventArgs e )
+		{
+			base.OnNavigatedTo( e );
+			if( e.Parameter is IStorageFile ISF )
+			{
+				OpenNow( ISF );
+			}
+		}
+
 		private void StartAutoBackup()
 		{
 			AutoBackupTimer.Interval = TimeSpan.FromSeconds( 60 );
@@ -69,11 +78,18 @@ namespace GFlow.Pages
 		}
 
 		private async void Open_Click( object sender, RoutedEventArgs e )
+			=> OpenNow( await AppStorage.OpenFileAsync( ".xml" ) );
+
+		private async void OpenNow( IStorageFile ISF )
 		{
 			if ( await SaveChanges() == null )
 				return;
 
-			IStorageFile ISF = await AppStorage.OpenFileAsync( ".xml" );
+			OpenFile( ISF );
+		}
+
+		private async void OpenFile( IStorageFile ISF )
+		{
 			if ( ISF == null ) return;
 
 			ProcManager.PanelMessage( ID, Res.SSTR( "Reading", ISF.Name ), LogType.INFO );
@@ -94,7 +110,7 @@ namespace GFlow.Pages
 			{
 				await Unsafe_ReadDrawboardLegacy( ISF );
 			}
-			catch( Exception )
+			catch ( Exception )
 			{
 				ProcManager.PanelMessage( ID, Res.RSTR( "InvalidXML" ), LogType.ERROR );
 				return;

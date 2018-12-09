@@ -15,7 +15,8 @@
     <StackPanel x:Name="ScriptInput">
         <StackPanel Background="#111"
                     Visibility="{Binding ShortScript, Converter={StaticResource DataVisConverter}}">
-            <TextBlock Margin="10" Text="{Binding ShortScript}" FontFamily="Consolas" />
+            <TextBlock Margin="10" Text="{Binding ShortScript}"
+                       Foreground="White" FontFamily="Consolas" />
             <Button Style="{ThemeResource TextBlockButtonStyle}"
                     HorizontalAlignment="Right" Foreground="#AAA"
                     Click="ExportScript">

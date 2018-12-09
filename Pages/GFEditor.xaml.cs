@@ -45,6 +45,7 @@ namespace GFlow.Pages
 			}
 		}
 
+		Action[] Tabs;
 		List<Action> UnRegKeys = new List<Action>();
 		Button ActiveTab;
 
@@ -52,6 +53,7 @@ namespace GFlow.Pages
 		string DropProc;
 
 		bool Running = false;
+		int PTabIndex = 0;
 
 		ObservableCollection<LogArgs> Logs = new ObservableCollection<LogArgs>();
 
@@ -73,10 +75,14 @@ namespace GFlow.Pages
 
 			MessageBus.Subscribe( this, MessageBus_OnDelivery );
 
+			Tabs = new Action[] { ShowProcList, ShowPreview, ShowOutput };
+
 			if ( Application.Current is IKeyboardControl KeyControl )
 			{
 				UnRegKeys.Add( KeyControl.KeyboardControl.RegisterCombination( x => GFMenu.IsOpen = !GFMenu.IsOpen, VirtualKey.F9 ) );
 				UnRegKeys.Add( KeyControl.KeyboardControl.RegisterCombination( x => ToggleFull(), VirtualKey.Control, VirtualKey.K ) );
+				UnRegKeys.Add( KeyControl.KeyboardControl.RegisterCombination( x => NextTab(), VirtualKey.Control, VirtualKey.Tab ) );
+				UnRegKeys.Add( KeyControl.KeyboardControl.RegisterCombination( x => PrevTab(), VirtualKey.Control, VirtualKey.Shift, VirtualKey.Tab ) );
 			}
 
 			StartAutoBackup();
@@ -152,9 +158,7 @@ namespace GFlow.Pages
 			if ( Running ) return;
 			Running = true;
 
-			ActivateTab( BtnOutput );
-			BtnOutput.FontWeight = FontWeights.Normal;
-			RunLog.Visibility = Visibility.Visible;
+			ShowOutput();
 
 			GFProcedure StartProc = DBoard.Find<GFProcedure>( 1 ).FirstOrDefault( x => x.IsStart ) ?? Target;
 			GFPathTracer Tracer = new GFPathTracer( DBoard );
@@ -191,36 +195,32 @@ namespace GFlow.Pages
 
 		private void DrawBoard_DragLeave( object sender, DragEventArgs e ) { DropProc = null; }
 
-		private void ProcList_Click( object sender, RoutedEventArgs e )
+		private void ShowProcList()
 		{
-			if ( sender is Button Btn )
-			{
-				ActivateTab( Btn );
-				ProceduresList.Visibility = Visibility.Visible;
-			}
+			ActivateTab( BtnProcList );
+			ProceduresList.Visibility = Visibility.Visible;
+			PTabIndex = 0;
 		}
 
-		private void Preview_Click( object sender, RoutedEventArgs e )
+		private void ShowPreview()
 		{
-			if ( sender is Button Btn )
-			{
-				ActivateTab( Btn );
-				Preview.Visibility = Visibility.Visible;
-			}
+			ActivateTab( BtnPreview );
+			Preview.Visibility = Visibility.Visible;
+			PTabIndex = 1;
 		}
 
-		private void Output_Click( object sender, RoutedEventArgs e )
+		private void ShowOutput()
 		{
-			if ( sender is Button Btn )
-			{
-				ActivateTab( Btn );
-				RunLog.Visibility = Visibility.Visible;
-				BtnOutput.FontWeight = FontWeights.Normal;
-			}
+			ActivateTab( BtnOutput );
+			RunLog.Visibility = Visibility.Visible;
+			BtnOutput.FontWeight = FontWeights.Normal;
+			PTabIndex = 2;
 		}
+
+		private void NextTab() => ( Tabs.ElementAtOrDefault( PTabIndex + 1 ) ?? Tabs.First() ).Invoke();
+		private void PrevTab() => ( Tabs.ElementAtOrDefault( PTabIndex - 1 ) ?? Tabs.Last() ).Invoke();
 
 		private void ToggleFull_Click( object sender, RoutedEventArgs e ) => ToggleFull();
-
 		private void ToggleFull()
 		{
 			if ( MasterGrid_R0.Height.IsStar )
@@ -262,8 +262,7 @@ namespace GFlow.Pages
 			{
 				var j = Dispatcher.RunIdleAsync( x =>
 				{
-					ActivateTab( BtnPreview );
-					Preview.Visibility = Visibility.Visible;
+					ShowPreview();
 					Preview.Navigate( Shared.SourceView, Mesg.Payload );
 				} );
 			}

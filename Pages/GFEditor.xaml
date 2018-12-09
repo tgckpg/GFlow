@@ -14,25 +14,6 @@
             <Setter Property="MinHeight" Value="0"/>
         </Style>
     </Page.Resources>
-    <Page.TopAppBar>
-        <CommandBar x:Name="GFMenu"
-                    VerticalContentAlignment="Center"
-                    ClosedDisplayMode="Hidden"
-                    DefaultLabelPosition="Right"
-                    LightDismissOverlayMode="On">
-            <AppBarButton Icon="Add" Label="New file" Click="NewFile_Click" />
-            <AppBarButton Icon="OpenFile" Label="Open" Click="Open_Click" />
-            <AppBarButton Icon="Save" Label="Save" Click="SaveBtn_Click" />
-            <AppBarButton Icon="SaveLocal" Label="Save As" Click="SaveAsBtn_Click" />
-            <AppBarSeparator />
-            <AppBarButton Icon="ZoomIn" Label="Zoom In" />
-            <AppBarButton Label="100%" />
-            <AppBarButton Icon="ZoomOut" Label="Zoom Out" />
-            <CommandBar.Content>
-                <TextBlock Margin="10,0,0,0" x:Name="FileName" Text="Untitled" />
-            </CommandBar.Content>
-        </CommandBar>
-    </Page.TopAppBar>
 
     <Grid Background="#FF666666">
         <Grid.ColumnDefinitions>
@@ -44,7 +25,6 @@
             <RowDefinition Height="auto" />
             <RowDefinition x:Name="MasterGrid_R2" Height="auto" />
         </Grid.RowDefinitions>
-
         <msc:CanvasControl x:Name="DrawBoard"
                            AllowDrop="True"
                            DragOver="DrawBoard_DragOver"
@@ -53,13 +33,13 @@
         <StackPanel Grid.Row="1" Orientation="Horizontal"
                     Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
                     BorderThickness="0,0,0,3" BorderBrush="{ThemeResource SystemControlForegroundAccentBrush}">
-            <Button x:Name="BtnProcList" Click="ProcList_Click" Background="{ThemeResource SystemControlForegroundAccentBrush}">
+            <Button x:Name="BtnProcList" Click="{x:Bind ShowProcList}" Background="{ThemeResource SystemControlForegroundAccentBrush}">
                 <TextBlock Text="Procedures" />
             </Button>
-            <Button x:Name="BtnPreview" Click="Preview_Click">
+            <Button x:Name="BtnPreview" Click="{x:Bind ShowPreview}">
                 <TextBlock Text="Preview" />
             </Button>
-            <Button x:Name="BtnOutput" Click="Output_Click">
+            <Button x:Name="BtnOutput" Click="{x:Bind ShowOutput}">
                 <TextBlock Text="Output" />
             </Button>
         </StackPanel>
@@ -135,5 +115,24 @@
             </ScrollViewer>
         </Grid>
 
+        <CommandBar x:Name="GFMenu"
+                    Grid.ColumnSpan="2"
+                    Grid.RowSpan="3"
+                    VerticalContentAlignment="Center"
+                    ClosedDisplayMode="Hidden"
+                    DefaultLabelPosition="Right"
+                    LightDismissOverlayMode="On">
+            <AppBarButton Icon="Add" Label="New file" Click="NewFile_Click" />
+            <AppBarButton Icon="OpenFile" Label="Open" Click="Open_Click" />
+            <AppBarButton Icon="Save" Label="Save" Click="SaveBtn_Click" />
+            <AppBarButton Icon="SaveLocal" Label="Save As" Click="SaveAsBtn_Click" />
+            <AppBarSeparator />
+            <AppBarButton Icon="ZoomIn" Label="Zoom In" />
+            <AppBarButton Label="100%" />
+            <AppBarButton Icon="ZoomOut" Label="Zoom Out" />
+            <CommandBar.Content>
+                <TextBlock Margin="10,0,0,0" x:Name="FileName" Text="Untitled" />
+            </CommandBar.Content>
+        </CommandBar>
     </Grid>
 </Page>

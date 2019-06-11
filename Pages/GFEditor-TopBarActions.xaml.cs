@@ -50,9 +50,17 @@ namespace GFlow.Pages
 		private void StartAutoBackup()
 		{
 			AutoBackupTimer.Interval = TimeSpan.FromSeconds( 60 );
-			AutoBackupTimer.Tick += ( s, e ) => Backup();
+			AutoBackupTimer.Tick += AutoBackupTimer_Tick;
 			AutoBackupTimer.Start();
 		}
+
+		private void StopAutoBackup()
+		{
+			AutoBackupTimer.Stop();
+			AutoBackupTimer.Tick -= AutoBackupTimer_Tick;
+		}
+
+		private void AutoBackupTimer_Tick( object sender, object e ) => Backup();
 
 		private async void SaveBtn_Click( object sender, RoutedEventArgs e ) => await Save();
 
@@ -282,7 +290,7 @@ namespace GFlow.Pages
 				MessageDialog LegacyWarning = new MessageDialog( Res.RSTR( "LegacyFormat" ) );
 				await Popups.ShowDialog( LegacyWarning );
 
-				DBoard = new GFDrawBoard( DrawBoard );
+				DBoard = new GFDrawBoard( Guid.Parse( PM.GUID ), DrawBoard );
 				GFPathTracer Tracer = new GFPathTracer( DBoard );
 				Tracer.RestoreLegacy( PM );
 				DBoard.Find<GFProcedure>().ExecEach( ( Action<GFProcedure> ) BindGFPEvents );

@@ -90,6 +90,7 @@ namespace GFlow.Pages
 
 		public void Dispose()
 		{
+			StopAutoBackup();
 			UnRegKeys.ExecEach( x => x() );
 			UnRegKeys.Clear();
 			MessageBus.Unsubscribe( this, MessageBus_OnDelivery );
@@ -160,7 +161,7 @@ namespace GFlow.Pages
 
 			ShowOutput();
 
-			GFProcedure StartProc = DBoard.Find<GFProcedure>( 1 ).FirstOrDefault( x => x.IsStart ) ?? Target;
+			GFProcedure StartProc = DBoard.StartProc ?? Target;
 			GFPathTracer Tracer = new GFPathTracer( DBoard );
 			ProcConvoy Convoy = null;
 

@@ -19,7 +19,7 @@ namespace GFlow.Controls
 	using Models.Interfaces;
 	using Pages;
 
-	class ProcManager : ActiveData
+	partial class ProcManager : ActiveData
 	{
 		public static readonly string ID = typeof( ProcManager ).Name;
 

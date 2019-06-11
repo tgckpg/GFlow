@@ -41,6 +41,29 @@ namespace GFlow.Controls
 			}
 		}
 
+		public ProcManager CreateProcManager( GFProcedure From )
+		{
+			lock( this )
+			{
+				AllLinks = DrawBoard.Find<GFLink>( 1 );
+
+				GFProcedure To = From;
+				GFLink Link = AllLinks.FirstOrDefault( x => x.From.Nucleus.Equals( From ) );
+				HashSet<GFProcedure> LoopGuard = new HashSet<GFProcedure>() { To };
+				while ( Link != null )
+				{
+					To = Link.To.Nucleus as GFProcedure;
+					if ( To == null || LoopGuard.Contains( To ) )
+						break;
+
+					LoopGuard.Add( To );
+					Link = AllLinks.FirstOrDefault( x => x.From.Nucleus.Equals( To ) );
+				}
+
+				return Unsafe_CreateProcManager( From, To, From );
+			}
+		}
+
 		public GFProcedure RestoreLegacy( ProcManager PM, int SPCounter = 0 )
 		{
 			lock ( this )
@@ -237,7 +260,7 @@ namespace GFlow.Controls
 			{
 				GFProcedure To = ( GFProcedure ) Link.To.Nucleus;
 				ProcList.Add( RealizeProcedure( To, LoopGuard ) );
-				Link = AllLinks.FirstOrDefault( x => x.From.Nucleus.Equals( To ) );
+				Link = AllLinks.FirstOrDefault( x => x.From.Nucleus.Equals( To ) && x.From.SynapseType == SynapseType.TRUNK );
 			}
 		}
 	}

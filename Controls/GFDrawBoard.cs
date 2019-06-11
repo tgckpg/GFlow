@@ -28,6 +28,8 @@ namespace GFlow.Controls
 		[DataMember]
 		public Vector2 PanOffset { get; set; } = Vector2.Zero;
 
+		public GFProcedure StartProc => Find<GFProcedure>( 1 ).FirstOrDefault( x => x.IsStart );
+
 		private CanvasControl Stage;
 		private GFElement HitTarget;
 		private IGFDraggable DragTarget;
@@ -38,6 +40,12 @@ namespace GFlow.Controls
 		public GFDrawBoard( CanvasControl Canvas )
 		{
 			SetStage( Canvas );
+		}
+
+		public GFDrawBoard( Guid BoardId, CanvasControl Canvas )
+			: this( Canvas )
+		{
+			this.BoardId = BoardId;
 		}
 
 		public void SetStage( CanvasControl Canvas )

@@ -344,7 +344,7 @@ namespace GFlow.Models.Procedure
 			return ParamDefs.IndexOf( P );
 		}
 
-		public static void StoreParams( ProcConvoy Convoy, XRegistry Settings )
+		public static void StoreParams( ProcConvoy Convoy, Action<XParameter> Store )
 		{
 			ProcParameter Defs = ( ProcParameter ) ProcManager.TracePackage( Convoy, ( P, C ) => P is ProcParameter )?.Dispatcher;
 			if ( Defs == null ) return;
@@ -352,9 +352,17 @@ namespace GFlow.Models.Procedure
 			XParameter PDefs = new XParameter( "PPValues" );
 			Defs.AssignParamDefs( PDefs );
 
-			Settings.SetParameter( PDefs );
+			Store( PDefs );
 		}
 
+		public static ProcConvoy RestoreParams( string PPValues, object Payload = null )
+		{
+			ProcParameter Proc = new ProcParameter();
+			Proc.SetParamDefs( XParameter.Parse( PPValues ) );
+			return new ProcConvoy( Proc, Payload );
+		}
+
+		// Legacy Method
 		public static ProcConvoy RestoreParams( XRegistry Settings, object Payload = null )
 		{
 			XParameter PPParams = Settings.Parameter( "PPValues" );
@@ -376,10 +384,9 @@ namespace GFlow.Models.Procedure
 			XParameter[] Params = Param.Parameters( "i" );
 			foreach ( XParameter P in Params )
 			{
-				AddDef( new ParamDef( P.GetValue( "label" ), P.GetValue( "default" ) )
-				{
-					Indexer = this.Indexer
-				} );
+				ParamDef Def = ParamDef.Create( P );
+				Def.Indexer = Indexer;
+				AddDef( Def );
 			}
 		}
 
@@ -395,28 +402,27 @@ namespace GFlow.Models.Procedure
 			}
 		}
 
-
 		public class ParamDef : ActiveData
 		{
 			public Func<ParamDef, int> Indexer = ( x ) => 0;
-			public int RIndex { get { return Indexer( this ); } }
+			public int RIndex => Indexer( this );
 			public string Index
 			{
-				get { return "{" + Indexer( this ) + "}"; }
+				get => "{" + Indexer( this ) + "}";
 				set { NotifyChanged( "Index" ); }
 			}
 
 			private string _Label;
 			public string Label
 			{
-				get { return _Label; }
+				get => _Label;
 				set { _Label = value; NotifyChanged( "Label" ); }
 			}
 
 			private string _Default;
 			public string Default
 			{
-				get { return _Default; }
+				get => _Default;
 				set { _Default = value; NotifyChanged( "Default" ); }
 			}
 
@@ -434,6 +440,12 @@ namespace GFlow.Models.Procedure
 					, new XKey( "default", _Default )
 				} );
 
+				return Def;
+			}
+
+			public static ParamDef Create( XParameter Param )
+			{
+				ParamDef Def = new ParamDef( Param.GetValue( "label" ), Param.GetValue( "default" ) );
 				return Def;
 			}
 		}

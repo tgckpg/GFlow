@@ -46,7 +46,6 @@
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" >
             <Button x:Name="BtnToggleFull"
-                    Style="{ThemeResource ButtonRevealStyle}"
                     Background="Transparent" VerticalAlignment="Stretch"
                     Click="ToggleFull_Click">
                 <FontIcon FontSize="17" Glyph="&#xE1D9;"/>
